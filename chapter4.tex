@@ -6,7 +6,7 @@
 
 Surveillance and outbreak response systems often report incidence counts of new cases detected in each inter--observation time interval. Analyzing this type of time series data is challenging since we must overcome many of the same challenges that we face in modeling the transmission dynamics of infectious diseases in small population settings with prevalence data --- discrete snapshots of a continuously evolving epidemic process, detecting a fraction of the new cases, and often directly observing only one aspect of the disease process. Furthermore, our task is made more difficult by the additional computational burden that results from repeated evaluation of CTMC likelihoods; the products of exponential waiting time distributions consist of polynomially increasing numbers of terms, and agent--based data augmentation MCMC algorithms become unwieldy as the numbers of subject--path proposals required to meaningfully perturb the CTMC likelihood get large \citep{fintzi2017efficient}. 
 
-In this chapter, we show how the LNA of Section \ref{subsubsec:lna_background} can be adapted to obtain approximate inference for SEMs fit to epidemic count data in large populations. Our contributions are threefold: First, we demonstrate how the SEM dynamics should be reparameterized so that the LNA can be used to approximate transition densities of the counting processes for disease state transition events. Second, we fold the LNA into a Bayesian data augmentation framework in which latent LNA paths are sampled using the elliptical slice sampling (EliptSS) algorithm of \cite{murray2010}. This provides us with general machinery for jointly updating the latent paths while absolving us of the \textit{de facto} modeling choice that the data be Gaussian in order to efficiently perform inference as in \cite{komorowski2009,fearnhead2014}, or the need to use particle filter methods for non--Gaussian emission distributions as in \cite{golightly2015delayed}. Finally, we introduce a non--centered parameterization for the latent LNA process that massively improves the efficiency of our DA MCMC framework and makes it tractable for fitting complex models. 
+In this chapter, we show how the LNA of Section \ref{subsubsec:lna_background} can be adapted to obtain approximate inference for SEMs fit to epidemic count data in large populations. Our contributions are threefold: First, we demonstrate how the SEM dynamics should be reparameterized so that the LNA can be used to approximate transition densities of the counting processes for disease state transition events. Second, we fold the LNA into a Bayesian data augmentation framework in which latent LNA paths are sampled using the elliptical slice sampling (EliptSS) algorithm of \cite{murray2010}. This provides us with general machinery for jointly updating the latent paths while absolving us of the \textit{de facto} modeling choice that the data be Gaussian in order to efficiently perform inference as in \cite{fearnhead2014,komorowski2009}, or the need to use particle filter methods for non--Gaussian emission distributions as in \cite{golightly2015delayed}. Finally, we introduce a non--centered parameterization for the latent LNA process that massively improves the efficiency of our DA MCMC framework and makes it tractable for fitting complex models. 
 
 \section{Fitting Stochastic Epidemic Models via the Linear Noise Approximation}
 \label{sec:lna_methods}
@@ -17,6 +17,7 @@ For clarity, we will present the algorithm for fitting SEMs via the LNA in the c
 \label{subsec:lna_measproc}
 Incidence data, $ \bY = \lbrace Y_1,\dots,Y_L\rbrace $,  arise as increments of the cumulative numbers of new cases accumulated over a set of time intervals, $ \mcI = \lbrace\mcI_1,\dots,\mcI_L:\ \mcI_\ell = (t_{\ell-1},t_\ell]\rbrace $. In outbreak or surveillance settings, we do not typically believe that every case is detected since individuals may be asymptomatic or may escape detection. Let $ \bN^c = (N^c_{SI}, N^c_{IR}) $ denote the counting process for the cumulative numbers of infections ($ S\rightarrow I $ transitions) and recoveries ($ I\rightarrow R $ transitions), and let $ \Delta \bN^c(t_\ell) = \bN^c(t_\ell) - \bN^c(t_{\ell-1})$ denote the change in cumulative numbers of transitions over $ \mcI_\ell $; so, $ \Delta N^c_{SI}(t_\ell)$ is the incidence over $ (t_{\ell-1},t_\ell] $. We might choose to model the number of observed cases as a Poisson sample of the true incidence with detection rate $ \rho $. Thus,
 \begin{equation}
+\label{eqn:incidence_emitprob}
 Y_\ell|\Delta N^c_{SI}(t_\ell),\rho \sim \mr{Pois}(\rho\Delta N^c_{SI}(t_\ell)).
 \end{equation}
 
@@ -25,19 +26,55 @@ There are two minor points that we wish to make note of before proceeding. First
 \subsection{Latent Epidemic Process}
 \label{subsec:lna_epid_proc}
 
-The SIR model is typically expressed in terms of compartment counts, $ \bX^c = \lbrace S^c,I^c,R^c\rbrace $, that evolve in continuous time on state space $ \mcS_X^c = \left \lbrace \mcC_{lmn}:l,m,n\in\lbrace1,\dots,P\rbrace,\ l+m+n=P\right \rbrace $. When we take the waiting times between disease state transitions to have exponential distributions, $ \bX $ evolves according to a Markov jump process (MJP). If our data had consisted of prevalence counts, which arise as partial observations of infected individuals, we might have chosen to approximate transition densities of the MJP in the usual way that appears in \cite{komorowski2009,fearnhead2014}. That is, we would write down the diffusion approximation for increments of the MJP, which takes the form of a chemical Langevin equation (CLE), and Taylor expand the resulting stochastic differential equation (SDE) around its deterministic limit, discarding higher order terms, to arrive at the LNA. 
+The SIR model is typically expressed in terms of compartment counts, $ \bX^c = \lbrace S^c,I^c,R^c\rbrace $, that evolve in continuous time on state space $ \mcS_X^c = \left \lbrace \mcC_{lmn}:l,m,n\in\lbrace1,\dots,P\rbrace,\ l+m+n=P\right \rbrace $. We will make the (not particularly limiting) modeling choice to express the waiting times between disease state transitions as being exponentially distributed. Thus, $ \bX $ evolves according to a Markov jump process (MJP). If our data had consisted of prevalence counts, which arise as partial observations of infected individuals, we might have chosen to approximate transition densities of the MJP in the usual way that appears in \cite{komorowski2009,fearnhead2014}. That is, we would write down the diffusion approximation for increments of the MJP for $ \bX $, which takes the form of a chemical Langevin equation (CLE), and Taylor expand the resulting stochastic differential equation (SDE) around its deterministic limit, discarding higher order terms, to arrive at the LNA. 
 
-However, incidence data are discretely observed, partial realizations of the increments of counting processes that evolve continuously in time as individuals transition among disease states. 
+However, incidence data are discretely observed, partial realizations of the increments of counting processes that evolve continuously in time as individuals transition among disease states. The emission probabilities for incidence data, e.g., (\ref{eqn:incidence_emitprob}), depend on the change in $ N_{SI}^c $ over the time interval $ (t_{\ell-1},t_\ell] $, not on the change in $ I $ over the interval. It would be incorrect to treat incidence as simply the difference in prevalence since we could easily construct a scenario where there are positive numbers of infections, but where the prevalence does not change due to an equal number of recoveries. We need to construct the LNA that approximates transition densities of $ \bN $ if we are to write down correctly specified emission probabilities.
 
-The state space of the counting process $ \bN^c $ is $ \mcS_N^c = \left \lbrace \mcC_{lmn}:l,m,n\in\lbrace1,\dots,P\rbrace,\ l+m+n=P\right \rbrace $. 
+The cumulative incidence process for infections and recoveries, $ \bN^c $, is a Markov jump process state space {\small$ \mcS_N^c = \left \lbrace \mcC_{jk}:j,k\in\lbrace0,\dots,P\rbrace\right \rbrace $}. Let $ \beta $ denote the per--contact infection rate, and $ \mu $ denote the rate at which each infected individual recovers. The rate at which $ \bN^c $ transitions from state $ \bn $ to $ \bn^{\prime}$ is given by
+\begin{equation}
+	\label{eqn:lna_sir_rates}
+	\blambda_{\bn,\bn^\prime} = \left \lbrace \begin{array}{ll}
+	\lambda_{SI} = \beta S I, & \bn = (n_{SI},n_{IR}),\ \bn^\prime = (n_{SI}+1,n_{IR}),\text{ and } n_{SI}+1\leq P, \\
+	 \lambda_{IR} = \mu I, &  \bn = (n_{SI},n_{IR}),\  \bn^\prime = (n_{SI},n_{IR}+1),\text{ and } n_{IR}+1\leq P, \\
+	 0, & \text{for all other } \bn \text{ and } \bn^\prime.
+	\end{array} \right.
+\end{equation}
 
+\subsection{Diffusion Approximation --- SIR Model}
+\label{subsec:diff_approx_sir}
 
-If we choose to model the waiting times between disease state transitions as being exponentially distributed with per--contact infection rate $ \beta $ and recovery rate $ \mu $, then $ \bX $ is a time--homogeneous a Markov jump process (MJP) with rates of transition from state $ \bx $ to $ \bx^\prime $ given by
+As outlined in Section \ref{subsubsec:diff_approx}, there are a variety of methods for arriving at a diffusion approximation for a Markov jump process, which under certain conditions yield equivalent results (for a comprehensive reference, see \cite{fuchs2013inference}). In the interest of clarity, we follow \cite{fearnhead2014,golightly2013simulation,golightly2015delayed,wilkinson2011stochastic} and appeal to an intuitive, though somewhat informal, construction of the CLE by matching its drift and diffusion with the approximate moments of increments of the MJP paths in infinitesimal time intervals. Fo more detailed presentations see \cite{fuchs2013inference,gillespie2000chemical,wallace2012linear}. 
 
+Suppose that, at the current time, the compartment counts are given by $ \bX^c(t) = \bx^c_t $ and we initialize $ \bN^c(t) = \bs{0} $. We are interested in approximating the numbers of infections and recoveries in a small time interval, $ (t, t+\dt] $, $ \bN^c(\dt)$. Suppose further that it is possible to choose $ \dt $ such that the following two \textit{leap} conditions hold:
+
+\begin{enumerate}
+	\item $ \dt $ is sufficiently \textit{small} that the $ \bX^c $ is essentially unchanged over $ (t,t+\dt] $, so that the rates of infections and recoveries are approximately constant: 
+	\begin{equation}\label{eqn:tau_cond_1}
+	\blambda(\bX^c(t^\prime)) \approx \blambda(\bx^c(t)),\ \forall t^\prime \in (t,t+\dt].
+	\end{equation}
+	\item $ \dt $ is sufficiently \textit{large} that we can expect many disease state transitions of each type:
+	\begin{equation}\label{eqn:tau_cond_2}
+	\blambda(\bx^c(t)) \gg \bs{1}.
+	\end{equation}
+\end{enumerate}
+
+Condition (\ref{eqn:tau_cond_1}) implies that the numbers of infections and recoveries in $ (t,t+\dt] $ are essentially independent of one another since the rates at which they occur are approximately constant within the interval \cite{gillespie2000chemical}. This condition also carries the stronger implication (see \cite{gillespie2000chemical}) that the numbers of infections and recoveries in the interval are independent Poisson random variables with rates $ \blambda(\bx^c(t)\dt) $, i.e., $ N^c_{SI}(\dt) \sim \mr{Poisson}(\beta S(t)I(t)\dt) $ and $ N^c_{IR}(\dt) \sim \mr{Poisson}(\mu I(t)\dt) $. The second leap condition, (\ref{eqn:tau_cond_2}), implies that the Poisson distributed increments can be well approximated by independent Gaussian random variables. 
+
+Let $ \bN(\dt) = (N_{SI},N_{IR}) \sim MVN(\blambda(\bX)\dt, \bLambda(\bX)\dt) $, where $ \bLambda = \diag\left (\blambda(\bX) \right )$, and let $ \bZ\sim MVN(\bs{0},\mb{I}) $. If (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, we have that 
+\begin{equation}
+\bN(t+\dt) \approx \blambda(\bX(t))\dt + \bLambda(\bX(t))^{1/2}\dt^{1/2}\bZ.
+\end{equation}
+This implies the equivalent CLE
+\begin{equation}
+\label{eqn:sir_cle}
+\rmd \bN(t) = \blambda(\bX(t))\dt + \blambda(\bX(t))^{1/2}\rmd\bW_t, 
+\end{equation}
+where $ \bW_t $ are independent Brownian motion.
+
+Now, what remains is to reparameterize (\ref{eqn:sir_cle}) so that we need not make reference to $ \bX(t) $ explicitly, thus ensuring that the CLE is self--consistent with respect to $ \bN $. 
 
 \begin{itemize}
-	\item MJP notation
-	\item Diffusion approximation and reparameterization
+	\item Diffusion approximation and reparameterization - Resume with reparameterization.
 	\item LNA
 	\item Noncentered parameterization
 	\item MCMC
