@@ -13,10 +13,12 @@
 \newcommand{\boeta}{\boldsymbol{\eta}}
 \newcommand{\bmu}{\boldsymbol{\mu}}
 \newcommand{\bSigma}{\boldsymbol{\Sigma}}
+\newcommand{\bA}{\mathbf{A}}
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bM}{\mathbf{M}}
 \newcommand{\bW}{\mathbf{W}}
 \newcommand{\bN}{\mathbf{N}}
+\newcommand{\bNtil}{\widetilde{\bN}}
 \newcommand{\bR}{\mathbf{R}}
 \newcommand{\br}{\mathbf{r}}
 \newcommand{\bn}{\mathbf{n}}
@@ -26,9 +28,11 @@
 \newcommand{\by}{\mathbf{Y}}
 \newcommand{\bZ}{\mathbf{Z}}
 \newcommand{\bz}{\mathbf{z}}
+\newcommand{\e}{\mathrm{e}}
 \newcommand{\mcC}{\mathcal{C}}
 \newcommand{\mcI}{\mathcal{I}}
 \newcommand{\mcS}{\mathcal{S}}
+\newcommand{\mcL}{\mathcal{L}}
 \newcommand{\bs}[1]{\boldsymbol{#1}}
 \newcommand{\mr}[1]{\mathrm{#1}}
 \newcommand{\mb}[1]{\mathbf{#1}}
@@ -37,8 +41,13 @@
 \newcommand{\dt}{\rmd t}
 
 % --- sample stuff only -----
-\usepackage{amsmath}
-\usepackage{alltt}  % 
+\usepackage{amsmath}       % align environment
+\usepackage{alltt}         % 
+\usepackage{kbordermatrix} % matrix with element labels
+
+\renewcommand{\kbldelim}{(}
+\renewcommand{\kbrdelim}{)}
+
 \newenvironment{demo}
   {\begin{alltt}\leftskip3em
      \def\\{\ttfamily\char`\\}%
