@@ -11,7 +11,7 @@ In this chapter, we show how the LNA of Section \ref{subsubsec:lna_background} c
 \section{Fitting Stochastic Epidemic Models via the Linear Noise Approximation}
 \label{sec:lna_methods}
 
-For clarity, we will present the algorithm for fitting SEMs via the LNA in the context of fitting the susceptible--infected--recovered (SIR) model to Poisson distributed incidence counts before proceeding to generalize the algorithm to more complex SEM dynamics and measurement processes. This simple SIR model is an abstraction of the transmission dynamics of an outbreak as a closed, homogeneously mixing population of $ P $ exchangeable individuals who are either susceptible $ (S) $, infected, and hence infectious, $ (I) $, or recovered $ (R) $. It is important to note that the model compartments refer to disease states as they relate to the transmission dynamics, not the disease process. Thus, an individual is considered to be recovered when she no longer has infectious contact with other individuals in the population, not when she clears disease carriage. As another example, in the susceptible--exposed--infected--recovered (SEIR) type models that we will consider later, the latent period in which an individual is exposed, but not yet infectious, should be understood as possibly varying in population with different contact dynamics, even when the incubation period of the pathogen should arguably be consistent across groups.
+For clarity, we will present the algorithm for fitting SEMs via the LNA in the context of fitting the susceptible--infected--recovered (SIR) model to Poisson distributed incidence counts. We will, however, provide notation where appropriate so that the generality of the algorithm should be apparent. The SIR model is an abstraction of the transmission dynamics of an outbreak as a closed, homogeneously mixing population of $ P $ exchangeable individuals who are either susceptible $ (S) $, infected, and hence infectious, $ (I) $, or recovered $ (R) $. It is important to note that the model compartments refer to disease states as they relate to the transmission dynamics, not the disease process. Thus, an individual is considered to be recovered when she no longer has infectious contact with other individuals in the population, not when she clears disease carriage. As another example, in the susceptible--exposed--infected--recovered (SEIR) type models that we will consider later, the latent period in which an individual is exposed, but not yet infectious, should be understood as possibly varying in population with different contact dynamics, even when the incubation period of the pathogen should arguably be consistent across groups.
 
 \subsection{Measurement Process and Data}
 \label{subsec:lna_measproc}
@@ -81,7 +81,12 @@ We should reparameterize (\ref{eqn:sir_cle_X}) so that we need not make referenc
 	I \rightarrow R & 0& -1 & 1
 }.
 \end{equation}
-Now, $ \bX $ is coupled to $ \bN $ via $ \bX(t) = \bx_0 + \bA^T\bN(t) $. For the SIR model, 
+Now, $ \bX $ is coupled to $ \bN $ via the relationship,
+\begin{equation}
+\label{eqn:incid2prev}
+\bX(t) = \bx_0 + \bA^T\bN(t).
+\end{equation}
+For the SIR model, 
 \begin{align}
 \left (\begin{array}{c}
 S(t) \\
@@ -110,16 +115,32 @@ which enables us to rewrite (\ref{eqn:sir_cle_X}) as
 \subsubsection{Log transforming the CLE}
 \label{subsubsec:log_cle}
 Note that changes in compartment volumes affect the rates, and hence increments in the incidence process, multiplicatively. Therefore, from a scientific perspective, we would like for perturbations about the drift in (\ref{eqn:sir_cle_N}) to be symmetric on a multiplicative, not an additive scale. Hence, we log transform (\ref{eqn:sir_cle_N}). Let $ \bNtil = \log(\bN + \bs{1}) \implies\bN = \exp(\bNtil) - \bs{1}$. By It\^{o}'s lemma \cite{oksendal2003stochastic}, the corresponding SDE for $ \bNtil $ is 
-\begin{align}
+	\begin{align}
 \label{eqn:sir_log_cle}
-\rmd\bNtil &= \diag\left (\exp(-\bNtil(t) - 0.5\exp(-2\bNtil)\right )\blambda\left (\exp(\bNtil)-\bs{1}\right )\dt + \nonumber\\
-& \hspace{0.5in} \diag\left (\exp(-\bNtil)\right )\bLambda\left (\exp(\bNtil)-1\right )^{1/2}\rmd\bW_t .
+\rmd\bNtil(t) &= \diag\left (\exp(-\bNtil(t)) - 0.5\exp(-2\bNtil(t))\right )\blambda\left (\exp(\bNtil(t))-\bs{1}\right )\dt\ + \nonumber\\
+& \hspace{0.5in} \diag\left (\exp(-\bNtil(t))\right )\bLambda\left (\exp(\bNtil(t))-1\right )^{1/2}\rmd\bW_t \\
+\label{eqn:sir_log_cle_gen}
+&= \boeta(\bNtil(t))\dt + \bPhi(\bNtil(t))^{1/2}\rmd\bW_t
 \end{align}
 
-\subsection{Linear Noise Approximation --- SIR Model}
+\subsection{Linear Noise Approximation}
 \label{subsec:sir_lna}
 
+In Section \ref{subsubsec:lna_background}, we followed \cite{fearnhead2014,golightly2013simulation,golightly2015delayed} in obtaining the LNA for SDEs of the same form as (\ref{eqn:sir_log_cle_gen}). Briefly, the derivation proceeded as follows: we first decomposed $ \bNtil $ into its deterministic ODE limit and a stochastic residual. The SDE corresponding to  (\ref{eqn:sir_log_cle}) was then Taylor expanded around its deterministic limit, discarding higher order terms, to obtain a linear SDE for the residual. This linear SDE had an explicit solution as a Gaussian random variable. Taken together, the LNA was seen to be a Gaussian approximation of the transition density of $ \bNtil $, the moments of which corresponded to solutions of a coupled system of non--autonomous ODEs.
 
+In the infinite population limit, time--evolution of a MJP with SIR dynamics is given as the solution, $ \bmu(t) $, to the system of ODEs \cite{allen2008introduction,fuchs2013inference}:
+\begin{equation}
+\label{eqn:lna_ode_drift}
+\frac{\rmd\bmu(t)}{\dt} = \boeta(\bmu(t)),\hspace{0.25in} \bNtil(0) = 0,\ \bX(0) = \bx_0.
+\end{equation}
+
+Let $ \bF(t) $ be the Jacobian, $ \left (\pdiv{\boeta_i(\bmu(t))}{\bmu_j(t)}\right )_{i,j\in{1,\dots,|\bNtil|}} $. We now decompose $ \bNtil(t) =  \bmu(\bNtil) + \epsilon\bM(t)$ for $ \epsilon \ll 1 $, and suppose that the log--incidence process is close to its deterministic limit in the sense that $ ||\bNtil(t) - \bmu(t)|| = \mcO(\epsilon)\ \forall t\geq 0$. Substituting the decomposition into (\ref{eqn:sir_log_cle}) and Taylor expanding around $ \bmu(t) $ gives
+\begin{align}
+\label{eqn:lna_diffusion}
+\rmd\bNtil &= \rmd(\bmu(t) + \epsilon\bM(t)) = \boeta(\bmu(t) + \epsilon\bM(t))\dt + \bPhi(\bmu(t) + \epsilon\bM(t))^{1/2}\rmd\bW_t
+\end{align} 
+which can be solved explicitly given fixed initial conditions. Let $ \bm(t) \E(\bM(t))$ and $ \bV(t) = \Var(\bM(t)) $.  
+Equations (\ref{eqn:lna_diffusion}) together define the linear noise approximation. 
 
 \begin{itemize}
 
