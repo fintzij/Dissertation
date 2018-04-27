@@ -26,11 +26,11 @@ There are two minor points that we wish to make note of before proceeding. First
 \subsection{Latent Epidemic Process}
 \label{subsec:lna_epid_proc}
 
-The SIR model is typically expressed in terms of compartment counts, $ \bX^c = \lbrace S^c,I^c,R^c\rbrace $, that evolve in continuous time on state space $ \mcS_X^c = \left \lbrace \mcC_{lmn}:l,m,n\in\lbrace1,\dots,P\rbrace,\ l+m+n=P\right \rbrace $. We will make the (not particularly limiting) modeling choice to express the waiting times between disease state transitions as being exponentially distributed. Thus, $ \bX $ evolves according to a Markov jump process (MJP). If our data had consisted of prevalence counts, which arise as partial observations of infected individuals, we might have chosen to approximate transition densities of the MJP in the usual way that appears in \cite{komorowski2009,fearnhead2014}. That is, we would write down the diffusion approximation for increments of the MJP for $ \bX $, which takes the form of a chemical Langevin equation (CLE), and Taylor expand the resulting stochastic differential equation (SDE) around its deterministic limit, discarding higher order terms, to arrive at the LNA. 
+The SIR model is typically expressed in terms of compartment counts, $ \bX^c = \lbrace S^c,I^c,R^c\rbrace $, that evolve in continuous time on state space $ \mcS_X^c = \left \lbrace \mcC_{lmn}:l,m,n\in\lbrace0,\dots,P\rbrace,\ l+m+n=P\right \rbrace $. We will make the (not particularly limiting) modeling choice to express the waiting times between disease state transitions as being exponentially distributed. Thus, $ \bX $ evolves according to a Markov jump process (MJP). If our data had consisted of prevalence counts, which arise as partial observations of infected individuals, we might have chosen to approximate transition densities of the MJP for $ \bX $ in the usual way that appears in \cite{komorowski2009,fearnhead2014}. 
 
-However, incidence data are discretely observed, partial realizations of the increments of counting processes that evolve continuously in time as individuals transition among disease states. The emission probabilities for incidence data, e.g., (\ref{eqn:incidence_emitprob}), depend on the change in $ N_{SI}^c $ over the time interval $ (t_{\ell-1},t_\ell] $, not on the change in $ I $ over the interval. It would be incorrect to treat incidence as simply the difference in prevalence since we could easily construct a scenario where there are positive numbers of infections, but where the prevalence does not change due to an equal number of recoveries. We need to construct the LNA that approximates transition densities of $ \bN $ if we are to write down correctly specified emission probabilities.
+However, incidence data are discretely observed, partial realizations of the increments of counting processes that evolve continuously in time as individuals transition among disease states. The emission probabilities for incidence data, e.g., (\ref{eqn:incidence_emitprob}), depend on the change in $ N_{SI}^c $ over the time interval $ (t_{\ell-1},t_\ell] $, not on the change in $ I $ over the interval. It would be incorrect to treat incidence as simply the difference in prevalence. We could easily construct a scenario where there are positive numbers of infections, but where the prevalence does not change due to an equal number of recoveries. We need to construct the LNA that approximates transition densities of $ \bN $ if we are to write down correctly specified emission probabilities.
 
-The cumulative incidence process for infections and recoveries, $ \bN^c $, is a Markov jump process state space {\small$ \mcS_N^c = \left \lbrace \mcC_{jk}:j,k\in\lbrace0,\dots,P\rbrace\right \rbrace $}. Let $ \beta $ denote the per--contact infection rate, and $ \mu $ denote the rate at which each infected individual recovers. Suppressing the dependence on the rate parameters, the rate at which $ \bN^c $ transitions from state $ \bn $ to $ \bn^{\prime}$ is 
+The cumulative incidence process for infections and recoveries, $ \bN^c $, is a Markov jump process state space $ \mcS_N^c = \left \lbrace \mcC_{jk}:j,k\in\lbrace0,\dots,P\rbrace\right \rbrace $. Let $ \beta $ denote the per--contact infection rate, and $ \mu $ denote the rate at which each infected individual recovers. The rate at which $ \bN^c $ transitions from state $ \bn $ to $ \bn^{\prime}$ is 
 \begin{equation}
 	\label{eqn:lna_sir_rates}
 	\blambda_{\bn,\bn^\prime} = \left \lbrace \begin{array}{ll}
@@ -41,7 +41,7 @@ The cumulative incidence process for infections and recoveries, $ \bN^c $, is a 
 \end{equation}
 
 \subsection{Diffusion Approximation --- SIR Model}
-\label{subsec:diff_approx_sir}
+\label{subsec:diff_approx}
 
 As outlined in Section \ref{subsubsec:diff_approx}, there are a variety of methods for arriving at a diffusion approximation for a Markov jump process, which under certain conditions yield equivalent results (for a comprehensive reference, see \cite{fuchs2013inference}). In the interest of clarity, we follow \cite{fearnhead2014,golightly2013simulation,golightly2015delayed,wilkinson2011stochastic} and appeal to an intuitive, though somewhat informal, construction of the CLE by matching its drift and diffusion with the approximate moments of increments of the MJP path in infinitesimal time intervals. For more detailed presentations see \cite{fuchs2013inference,gillespie2000chemical,wallace2012linear}. 
 
@@ -60,7 +60,7 @@ Suppose that, at the current time, the compartment counts are given by $ \bX^c(t
 
 Condition (\ref{eqn:tau_cond_1}), which can be trivially satisfied just by choosing $ \dt $ to be small, implies that the numbers of infections and recoveries in $ (t,t+\dt] $ are essentially independent of one another since the rates at which they occur are approximately constant within the interval \cite{gillespie2000chemical}. This condition also carries the stronger implication that the numbers of infections and recoveries in the interval are independent Poisson random variables with rates $ \blambda(\bx^c(t)\dt) $, i.e., $ N^c_{SI}(\dt) \sim \mr{Poisson}(\beta S(t)I(t)\dt) $ and $ N^c_{IR}(t+\dt) \sim \mr{Poisson}(\mu I(t)\dt) $. Condition (\ref{eqn:tau_cond_2}), which we can reasonably expect to be satisfied in large populations where transmission dynamics are near their deterministic ODE limits \cite{wallace2012linear}, implies that the Poisson distributed increments can be well approximated by independent Gaussian random variables. 
 
-If (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, the change in the cumulative incidence of infections and recoveries can be approximated as 
+Thus, (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, we can approximate the integer--valued processes, $ \bX^c $ and $ \bN^c $, with the real--valued processes, $ \bX $ and $ \bN $. The state space of $ \bX $ is $ \mcS_X^R = \lbrace \mcV_{lmn}:l,m,n \in [0,P],\ l+m+n=P\in\rbrace $, and the state space  of $ \bN $ is $ \mcS_N^R = \lbrace \mcV_{jk}: j,k \in [0,P]\rbrace $. Note that sample paths of the MJPs for $ \bX^c $ and $ \bN^c $ are non--negative, and $ \bN^c $ is non--decreasing. Eventually, we will also seek to enforce positivity and monotonicity in sample paths of $ \bX $ and $ \bN $. For now, the change in cumulative incidence of infections and recoveries in an infinitesimal time step can be approximated as 
 \begin{equation}
 \bN(t+\dt) - \bN(t) \approx \blambda(\bX(t))\dt + \bLambda(\bX(t))^{1/2}\dt^{1/2}\bZ,
 \end{equation}
@@ -69,11 +69,11 @@ where $ \bLambda = \diag\left (\blambda(\bX) \right )$ and $ \bZ\sim MVN(\bs{0},
 \label{eqn:sir_cle_X}
 \rmd \bN(t) = \blambda(\bX(t))\dt + \bLambda(\bX(t))^{1/2}\rmd\bW_t, 
 \end{equation}
-where $ \bW_t $ are independent Brownian motion and $ \bLambda(\bX(t))^{1/2} $ is the matrix square root. 
+where $ \bW_t $ is a vector of independent Brownian motion and $ \bLambda(\bX(t))^{1/2} $ denotes the matrix square root of $ \bLambda(\bX(t)) $. 
 
-\subsubsection{Reparameterization the CLE in terms of comparment counts}
+\subsubsection{Reparameterizating the CLE in terms of incidence}
 \label{subsubsec:cle_repar}
-We should reparameterize (\ref{eqn:sir_cle_X}) so that we need not make reference to $ \bX $ explicitly, thus ensuring that the CLE is self--consistent with respect to $ \bN $. To this end, we borrow a reparameterization from \cite{breto2009time,ho2016direct} for expressing $ \bX (t)$ in terms of $ \bN(t) $, conditional on the initial conditions $ \bX(t) = \bx_0 $ and $ \bN(t) = \bs{0} $. Let $ \bA $ denote the matrix whose rows specify the changes in the numbers of susceptible, infected, and recovered individuals corresponding to one infection or recovery event:
+The LNA of (\ref{eqn:sir_cle_X}) will involve derivatives of the rates, $ \blambda $, with respect to the incidence process, $ \bN $. In order to enable us to compute these derivatives, we borrow from \cite{breto2009time,ho2016direct} a reparameterization for $ \bX (t)$ in terms of $ \bN(t) $, conditional on the initial conditions $ \bX(t) = \bx_0 $ and $ \bN(t) = \bs{0} $. Let $ \bA $ denote the matrix whose rows specify changes in counts of susceptible, infected, and recovered individuals corresponding to one infection or recovery event:
 \begin{equation}
 \label{eqn:sir_stoich}
 \bA = \kbordermatrix{& S & I &  R\\
@@ -81,6 +81,7 @@ We should reparameterize (\ref{eqn:sir_cle_X}) so that we need not make referenc
 	I \rightarrow R & 0& -1 & 1
 }.
 \end{equation}
+
 Now, $ \bX $ is coupled to $ \bN $ via the relationship,
 \begin{equation}
 \label{eqn:incid2prev}
@@ -114,7 +115,7 @@ which enables us to rewrite (\ref{eqn:sir_cle_X}) as
 
 \subsubsection{Log transforming the CLE}
 \label{subsubsec:log_cle}
-Note that changes in compartment volumes affect the rates, and hence increments in the incidence process, multiplicatively. Therefore, from a scientific perspective, we would like for perturbations about the drift in (\ref{eqn:sir_cle_N}) to be symmetric on a multiplicative, not an additive scale. Hence, we log transform (\ref{eqn:sir_cle_N}). Let $ \bNtil = \log(\bN + \bs{1}) \implies\bN = \exp(\bNtil) - \bs{1}$. By It\^{o}'s lemma \cite{oksendal2003stochastic}, the corresponding SDE for $ \bNtil $ is 
+Changes in compartment volumes affect the rates, and hence increments in the incidence process, multiplicatively. Therefore, from a scientific perspective, we would like for perturbations about the drift in (\ref{eqn:sir_cle_N}) to be symmetric on a multiplicative, not an additive scale. Hence, we log transform (\ref{eqn:sir_cle_N}). Let $ \bNtil = \log(\bN + \bs{1}) \implies\bN = \exp(\bNtil) - \bs{1}$. By It\^{o}'s lemma \cite{oksendal2003stochastic}, the corresponding SDE for $ \bNtil $ is 
 	\begin{align}
 \label{eqn:sir_log_cle}
 \rmd\bNtil(t) &= \diag\left (\exp(-\bNtil(t)) - 0.5\exp(-2\bNtil(t))\right )\blambda\left (\exp(\bNtil(t))-\bs{1}\right )\dt\ + \nonumber\\
@@ -126,25 +127,40 @@ Note that changes in compartment volumes affect the rates, and hence increments 
 \subsection{Linear Noise Approximation}
 \label{subsec:sir_lna}
 
-In Section \ref{subsubsec:lna_background}, we followed \cite{fearnhead2014,golightly2013simulation,golightly2015delayed} in obtaining the LNA for SDEs of the same form as (\ref{eqn:sir_log_cle_gen}). Briefly, the derivation proceeded as follows: we first decomposed $ \bNtil $ into its deterministic ODE limit and a stochastic residual. The SDE corresponding to  (\ref{eqn:sir_log_cle}) was then Taylor expanded around its deterministic limit, discarding higher order terms, to obtain a linear SDE for the residual. This linear SDE had an explicit solution as a Gaussian random variable. Taken together, the LNA was seen to be a Gaussian approximation of the transition density of $ \bNtil $, the moments of which corresponded to solutions of a coupled system of non--autonomous ODEs.
+In Section \ref{subsubsec:lna_background}, we followed \cite{fearnhead2014,golightly2013simulation,golightly2015delayed} in obtaining the LNA for SDEs of the same form as (\ref{eqn:sir_log_cle_gen}). Briefly, the derivation proceeded as follows: we first decomposed $ \bNtil $ into its deterministic ODE limit and a stochastic residual. The SDE corresponding to (\ref{eqn:sir_log_cle}) was then Taylor expanded around its deterministic limit, discarding higher order terms, to obtain a linear SDE for the residual. This linear SDE had an explicit solution as a Gaussian random variable. As noted in \cite{wallace2012linear}, the LNA can reasonably approximate the stochastic aspects of a density dependent MJP when conditions (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, at least over short time horizons. Over longer time periods the approximation may deteriorate as departures from the deterministic behavior of the system, which is determined by its initial conditions, accumulate.  One solution, proposed in \cite{fearnhead2014} and that we will adopt here, is to restart the LNA approximation at the beginning of each inter--observation interval. 
 
-In the infinite population limit, time--evolution of a MJP with SIR dynamics is given as the solution, $ \bmu(t) $, to the system of ODEs \cite{allen2008introduction,fuchs2013inference}:
+The restarting LNA of (\ref{eqn:sir_log_cle_gen}) over a time interval, $ (t_{\ell-1},t_\ell] $, was seen to be a Gaussian approximation of the transition density of $ \bNtil $,
 \begin{equation}
-\label{eqn:lna_ode_drift}
-\frac{\rmd\bmu(t)}{\dt} = \boeta(\bmu(t)),\hspace{0.25in} \bNtil(0) = 0,\ \bX(0) = \bx_0.
+\label{eqn:lna_transition_density}
+\bNtil(t_\ell)|\bntil(t_{\ell-1}), \bx(t_{\ell-1}),\btheta \sim MVN\left (\bmu(t_\ell) + \bm(\bntil(t_{\ell-1}) - \bmu(t_{\ell-1})), \bSigma(t_\ell)\right ),
 \end{equation}
-
-Let $ \bF(t) $ be the Jacobian, $ \left (\pdiv{\boeta_i(\bmu(t))}{\bmu_j(t)}\right )_{i,j\in{1,\dots,|\bNtil|}} $. We now decompose $ \bNtil(t) =  \bmu(\bNtil) + \epsilon\bM(t)$ for $ \epsilon \ll 1 $, and suppose that the log--incidence process is close to its deterministic limit in the sense that $ ||\bNtil(t) - \bmu(t)|| = \mcO(\epsilon)\ \forall t\geq 0$. Substituting the decomposition into (\ref{eqn:sir_log_cle}) and Taylor expanding around $ \bmu(t) $ gives
+where $ \bmu(\cdot) $, $ \bm(\cdot) $, and $ \bSigma(\cdot) $ are solutions to the coupled, non--autonomous system of ODEs,
 \begin{align}
-\label{eqn:lna_diffusion}
-\rmd\bNtil &= \rmd(\bmu(t) + \epsilon\bM(t)) = \boeta(\bmu(t) + \epsilon\bM(t))\dt + \bPhi(\bmu(t) + \epsilon\bM(t))^{1/2}\rmd\bW_t
-\end{align} 
-which can be solved explicitly given fixed initial conditions. Let $ \bm(t) \E(\bM(t))$ and $ \bV(t) = \Var(\bM(t)) $.  
-Equations (\ref{eqn:lna_diffusion}) together define the linear noise approximation. 
+\label{eqn:lna_ode_drift}
+\frac{\rmd\bmu(t)}{\dt} &= \boeta(\bmu(t)),\\
+\label{eqn:lna_ode_resid}
+\frac{\rmd\bm(t)}{\dt} &= \bF(t)\bm(t),\\
+\label{eqn:lna_ode_diffusion}
+\frac{\rmd\bSigma(t)}{\dt} &= \bF(t)\bSigma(t) + \bSigma(t)\bF(t)^T + \bPhi(t),
+\end{align}
+with respect to initial conditions $ \bN(t_{\ell-1}) = \bs{0} $,\ $ \bX(t_{\ell-1}) = \bx(t_{\ell-1}),\ \bm(t_{\ell-1}) = \bs{0}$, and $ \bSigma(t_{\ell-1}) = \bs{0} $, and where $ \bF(t) $ is the Jacobian $ \left (\pdiv{\boeta_i(\bmu(t))}{\bmu_j(t)}\right )_{i,j\in{1,\dots,|\bNtil|}} $ evaluated along the solution to (\ref{eqn:lna_ode_drift}). Note that we need never actually solve (\ref{eqn:lna_ode_resid}) since $ \bm(t_{\ell-1}) = \bs{0} $ implies that $ \bm(t_\ell) = \bs{0}\ \forall\ l=0,\dots,\L-1$. 
+
+In practice, the transition density (\ref{eqn:lna_transition_density}) could be used, as written, to approximate transition densities of the log--incidence process, $ \bNtil $ and to obtain sample paths for the incidence process, $ \bN $. However, we will make two modifications: We will seek to enforce the non--negativity of $ \bX $ and $ \bN $, as well as the monotonicity of increments in $ \bN $. We do this for two reasons: We wish to more faithfully approximate the MJP, particularly near the state space boundaries. We also wish to avoid numerical instabilities that arise when $ \bN $ or $ \bX $ become negative, and that can cause the numerical tools used to integrate the LNA ODEs to fail. We also adopt a non--centered parameterization for the log--incidence process in terms of centered and scaled standard normal random variables. The reasons for this will be discussed in the next subsection. 
+
+\begin{algorithm}[h!]
+	\caption{Linear noise approximation for incidence paths.}\label{alg:LNA_}
+	\begin{algorithmic}[1]
+		\State Vertical update: $ u|x \sim \mathrm{Unif}(0,f(x))$,
+		\State Horizontal update: $ x|u \sim \mathrm{Unif}(\mcS),\ S = \lbrace x: f(x) > u\rbrace$.
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{Inference via the linear noise approximation}
+\label{subsec:lna_inference}
+
 
 \begin{itemize}
-
-	\item LNA
+	\item LNA as deterministic mapping - i.e., define a DoLNA operation.
 	\item Non--centered parameterization
 	\item MCMC
 \end{itemize}
