@@ -42,15 +42,15 @@ The cumulative incidence process for infections and recoveries, $ \bN^c $, is a 
 
 \subsection{Tractable Approximations for Intractable Likelihoods}
 \label{subsec:lna_motivation}
-We would like to make inferences about the posterior distribution of the parameters, $ \btheta $, that govern the dynamics of the latent process and sampling distribution. This is
+We would like to make inferences about the posterior distribution of the parameters, e.g., $ \btheta = (\beta, \mu, \bX(t_0), \rho)$, that govern the latent epidemic process and sampling distribution, 
 \begin{align}
 \label{eqn:posterior}
  \pi(\btheta|\bY)&\propto \pi(\bY|\btheta)\pi(\btheta) = \int L(\bY|\bN^c,\btheta)\pi(\bN^c|\btheta)\pi(\btheta)\rmd\pi(\bN^c)\nonumber\\
  &= \int_{\mcS^c}\prod_{\ell=1}^L \Pr\left (\bY_\ell|\Delta\bN_{SI}^c(t_\ell),\btheta\right )\pi\left (\bN^c(t_\ell)|\bn^c(t_{\ell-1}),\btheta\right )\pi(\btheta)\rmd\pi(\bN^c)
 \end{align}
-where $ \pi(\btheta) $ specifies the prior density of the model parameters. However, this integral is analytically intractable, and is challenging to evaluate computationally due to the size of the state space of $ \bN^c $. In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:posterior}) into an integral over a much more computationally tractable product of Gaussian densities and non--Gaussian emission probabilities.
+where $ \pi(\btheta) $ specifies the prior density of the model parameters. However, this integral is analytically intractable, and is challenging to evaluate computationally due to the size of the state space of $ \bN^c $. In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:posterior}) into an integral over a much more computationally tractable product of Gaussian densities and non--Gaussian emission probabilities. As we shall see, approximating the complete data likelihood that appears in the posterior $ \pi(\btheta,\bN^c|\btheta) $ with a Gaussian state space model will open the doors to efficient algorithms for sampling from the approximate posterior. 
 
-\subsection{Diffusion Approximation --- SIR Model}
+\subsection{Diffusion Approximation}
 \label{subsec:diff_approx}
 
 As outlined in Section \ref{subsubsec:diff_approx}, there are a variety of methods for arriving at a diffusion approximation for a Markov jump process, which under certain conditions yield equivalent results (for a comprehensive reference, see \cite{fuchs2013inference}). In the interest of clarity, we follow \cite{fearnhead2014,golightly2013simulation,golightly2015delayed,wilkinson2011stochastic} and appeal to an intuitive, though somewhat informal, construction of the CLE by matching its drift and diffusion with the approximate moments of increments of the MJP path in infinitesimal time intervals. For more detailed presentations see \cite{fuchs2013inference,gillespie2000chemical,wallace2012linear}. 
@@ -70,7 +70,7 @@ Suppose that, at the current time, the compartment counts are given by $ \bX^c(t
 
 Condition (\ref{eqn:tau_cond_1}), which can be trivially satisfied just by choosing $ \dt $ to be small, implies that the numbers of infections and recoveries in $ (t,t+\dt] $ are essentially independent of one another since the rates at which they occur are approximately constant within the interval \cite{gillespie2000chemical}. This condition also carries the stronger implication that the numbers of infections and recoveries in the interval are independent Poisson random variables with rates $ \blambda(\bx^c(t)\dt) $, i.e., $ N^c_{SI}(\dt) \sim \mr{Poisson}(\beta S(t)I(t)\dt) $ and $ N^c_{IR}(t+\dt) \sim \mr{Poisson}(\mu I(t)\dt) $. Condition (\ref{eqn:tau_cond_2}), which we can reasonably expect to be satisfied in large populations where transmission dynamics are near their deterministic ODE limits \cite{wallace2012linear}, implies that the Poisson distributed increments can be well approximated by independent Gaussian random variables. 
 
-Thus, (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, we can approximate the integer--valued processes, $ \bX^c $ and $ \bN^c $, with the real--valued processes, $ \bX $ and $ \bN $. The state space of $ \bX $ is $ \mcS_X^R = \lbrace \mcV_{lmn}:l,m,n \in [0,P],\ l+m+n=P\in\rbrace $, and the state space  of $ \bN $ is $ \mcS_N^R = \lbrace \mcV_{jk}: j,k \in [0,P]\rbrace $. Note that sample paths of the MJPs for $ \bX^c $ and $ \bN^c $ are non--negative, and $ \bN^c $ is non--decreasing. Eventually, we will also seek to enforce positivity and monotonicity in sample paths of $ \bX $ and $ \bN $. For now, the change in cumulative incidence of infections and recoveries in an infinitesimal time step can be approximated as 
+Thus, (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, we can approximate the integer--valued processes, $ \bX^c $ and $ \bN^c $, with the real--valued processes, $ \bX $ and $ \bN $. Note that sample paths of the MJPs for $ \bX^c $ and $ \bN^c $ are non--negative, and $ \bN^c $ is non--decreasing. Eventually, we will also seek to enforce positivity and monotonicity in sample paths of $ \bX $ and $ \bN $. Therefore, she state space of $ \bX $ is $ \mcS_X^R = \lbrace \mcV_{lmn}:l,m,n \in [0,P],\ l+m+n=P\rbrace $, and the state space  of $ \bN $ is $ \mcS_N^R = \lbrace \mcV_{jk}: j,k \in [0,P]\rbrace $. We will look past these constraints for now and approximate the changes in cumulative incidence of infections and recoveries in an infinitesimal time step as 
 \begin{equation}
 \bN(t+\dt) - \bN(t) \approx \blambda(\bX(t))\dt + \bLambda(\bX(t))^{1/2}\dt^{1/2}\bZ,
 \end{equation}
@@ -155,13 +155,23 @@ where $ \bmu(\cdot) $, $ \bm(\cdot) $, and $ \bSigma(\cdot) $ are solutions to t
 \end{align}
 with respect to initial conditions $ \bN(t_{\ell-1}) = \bs{0} $,\ $ \bX(t_{\ell-1}) = \bx(t_{\ell-1}),\ \bm(t_{\ell-1}) = \bs{0}$, and $ \bSigma(t_{\ell-1}) = \bs{0} $, and where $ \bF(t) $ is the Jacobian $ \left (\pdiv{\boeta_i(\bmu(t))}{\bmu_j(t)}\right )_{i,j\in{1,\dots,|\bNtil|}} $ evaluated along the solution to (\ref{eqn:lna_ode_drift}). Note that we need never actually solve (\ref{eqn:lna_ode_resid}) since $ \bm(t_{\ell-1}) = \bs{0} $ implies that $ \bm(t_\ell) = \bs{0}\ \forall\ l=0,\dots,\L-1$. 
 
-In practice, the transition density (\ref{eqn:lna_transition_density}) could be used, as written, to approximate transition densities of the log--incidence process, $ \bNtil $ and to obtain sample paths for the incidence process, $ \bN $. However, we will make two modifications: We will seek to enforce the non--negativity of $ \bX $ and $ \bN $, as well as the monotonicity of increments in $ \bN $. We do this for two reasons: We wish to more faithfully approximate the MJP, particularly near the state space boundaries. We also wish to avoid numerical instabilities that arise when $ \bN $ or $ \bX $ become negative, and that can cause the numerical tools used to integrate the LNA ODEs to fail. We also adopt a non--centered parameterization for the log--incidence process in terms of centered and scaled standard normal random variables. The reasons for this will be discussed in the next subsection. 
+In practice, the transition density (\ref{eqn:lna_transition_density}) could be used, as written, to approximate transition densities of the log--incidence process, $ \bNtil $ and to obtain sample paths of the incidence process, $ \bN $. However, we will make two modifications: We will seek to enforce the non--negativity of $ \bX $ and $ \bN $, along with the monotonicity of increments in $ \bN $. We do this for two reasons: We wish to more faithfully approximate the MJP, particularly near the state space boundaries. We also wish to avoid numerical instabilities that arise when $ \bN $ or $ \bX $ become negative and that can cause the numerical tools used to integrate the LNA ODEs to fail. For reasons that will be discussed in the next subsection, we also adopt a non--centered parameterization for the log--incidence process by deterministic mapping standard normal random variables, $ \bZ\sim MVN(\bs{0},\mb{I}) $, onto a LNA path.  The procedure for applying this mapping, denoted \doLNA, is presented in Algorithm (\ref{alg:doLNA}), below. 
 
 \begin{algorithm}[h!]
-	\caption{Linear noise approximation for incidence paths.}\label{alg:LNA_}
+	\caption{Mapping standard normal draws onto log--incidence LNA paths.}
+	\label{alg:doLNA}
 	\begin{algorithmic}[1]
-		\State Vertical update: $ u|x \sim \mathrm{Unif}(0,f(x))$,
-		\State Horizontal update: $ x|u \sim \mathrm{Unif}(\mcS),\ S = \lbrace x: f(x) > u\rbrace$.
+		\Procedure{doLNA}{$ \bZ,\btheta,\mcI $}
+		\State $ \bX(t_0) \gets \bx_0,\ \bN(t_0) \gets \bs{0},\ \bNtil(t_0) \gets \bs{0},\ \bmu(t_0) \gets \bs{0},\ \bSigma(t_0) \gets \bs{0} $
+		\For{$ \ell = 1,\dots,n $}
+		\State $ \bmu(t_\ell),\ \bSigma(t_\ell) \gets $ solutions to (\ref{eqn:lna_ode_drift}) and (\ref{eqn:lna_ode_diffusion}) over $ (t_{\ell-1}, t_\ell] $
+		\State $ \bNtil(t_\ell)\gets \bmu(t_\ell) + \bSigma(t_\ell)^{1/2}\bZ(t_\ell) $ \Comment{non--centered parameterization}
+		\State $ \bN(t_\ell)\gets \bNtil(t_{\ell-1}) + \exp(\bNtil(t_\ell)) - \bs{1} $
+		\State \textbf{restart initial conditions:} 
+		\State {\hspace{1in} $ \bx_\ell \gets \bx_{\ell-1} + \bA^T\bN(t_\ell),\ \bNtil(t_\ell) \gets \bs{0},\ \bmu(t_\ell)\gets\bs{0},\ \bSigma(t_\ell)\gets\bs{0} $ }
+		\EndFor
+		\State \Return $\lbrace \bN(t_0),\bN(t_1),\dots,\bN(t_L)\rbrace $ \Comment{return incidence sample path}
+		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
