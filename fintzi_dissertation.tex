@@ -1,6 +1,12 @@
  
 \documentclass [12pt, proquest] {uwthesis}[03/04/2018]
  
+\usepackage{amsmath}       % align environment
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
+\usepackage{alltt}         % 
+\usepackage{kbordermatrix} % matrix with element labels
+\usepackage{dsfont} 
 \usepackage{natbib}
 \def\bibpreamble{\protect\addcontentsline{toc}{chapter}{Bibliography}}
 
@@ -52,13 +58,8 @@
 \newcommand{\deriv}[2]{\frac{\rmd#1}{\rmd#2}}
 \newcommand{\pdiv}[2]{\frac{\partial#1}{\partial#2}}
 \newcommand{\doLNA}{\texttt{doLNA}}
+\newcommand{\ind}[1]{\mathds{1}_{\lbrace#1\rbrace}}
 
-% --- sample stuff only -----
-\usepackage{amsmath}       % align environment
-\usepackage[noend]{algpseudocode}
-\usepackage{algorithm}
-\usepackage{alltt}         % 
-\usepackage{kbordermatrix} % matrix with element labels
 
 \renewcommand{\kbldelim}{(}
 \renewcommand{\kbrdelim}{)}

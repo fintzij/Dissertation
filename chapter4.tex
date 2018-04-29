@@ -4,9 +4,9 @@
 \section{Overview}
 \label{sec:lna_overview}
 
-Surveillance and outbreak response systems often report incidence counts of new cases detected in each inter--observation time interval. Analyzing this type of time series data is challenging since we must overcome many of the same challenges that we face in modeling the transmission dynamics of infectious diseases in small population settings with prevalence data --- discrete snapshots of a continuously evolving epidemic process, detecting a fraction of the new cases, and often directly observing only one aspect of the disease process. Furthermore, our task is made more difficult by the additional computational burden that results from repeated evaluation of CTMC likelihoods; the products of exponential waiting time distributions consist of polynomially increasing numbers of terms, and agent--based data augmentation MCMC algorithms become unwieldy as the numbers of subject--path proposals required to meaningfully perturb the CTMC likelihood get large \citep{fintzi2017efficient}. 
+Surveillance and outbreak response systems often report incidence counts of new cases detected in each inter--observation time interval. Analyzing this type of time series data is challenging since we must overcome many of the same challenges that we face in modeling the transmission dynamics of infectious diseases in small population settings with prevalence data --- discrete snapshots of a continuously evolving epidemic process, detecting a fraction of the new cases, and often directly observing only one aspect of the disease process. Furthermore, our task is made more difficult by the additional computational burden that results from repeated evaluation of CTMC likelihoods; the products of exponential waiting time distributions consist of polynomially increasing numbers of terms, and agent--based data augmentation (DA) MCMC algorithms become unwieldy as the numbers of subject--path proposals required to meaningfully perturb the CTMC likelihood get large \citep{fintzi2017efficient}. 
 
-In this chapter, we show how the LNA of Section \ref{subsubsec:lna_background} can be adapted to obtain approximate inference for SEMs fit to epidemic count data in large populations. Our contributions are threefold: First, we demonstrate how the SEM dynamics should be reparameterized so that the LNA can be used to approximate transition densities of the counting processes for disease state transition events. Second, we fold the LNA into a Bayesian data augmentation framework in which latent LNA paths are sampled using the elliptical slice sampling (EliptSS) algorithm of \cite{murray2010}. This provides us with general machinery for jointly updating the latent paths while absolving us of the \textit{de facto} modeling choice that the data be Gaussian in order to efficiently perform inference as in \cite{fearnhead2014,komorowski2009}, or the need to use computationally intensive particle filter methods for non--Gaussian emission distributions as in \cite{golightly2015delayed}. Finally, we introduce a non--centered parameterization for the LNA that massively improves the efficiency of our DA MCMC framework and makes it tractable for fitting complex models. 
+In this chapter, we show how the LNA of Section \ref{subsubsec:lna_background} can be adapted to obtain approximate inference for SEMs fit to epidemic count data in large populations. Our contributions are threefold: First, we demonstrate how the SEM dynamics should be reparameterized so that the LNA can be used to approximate transition densities of the counting processes for disease state transition events. Second, we fold the LNA into a Bayesian DA framework in which latent LNA paths are sampled using the elliptical slice sampling (EliptSS) algorithm of \cite{murray2010}. This provides us with general machinery for jointly updating the latent paths while absolving us of the \textit{de facto} modeling choice that the data be Gaussian in order to efficiently perform inference as in \cite{fearnhead2014,komorowski2009}, or the need to use computationally intensive particle filter methods for non--Gaussian emission distributions as in \cite{golightly2015delayed}. Finally, we introduce a non--centered parameterization for the LNA that massively improves the efficiency of our DA MCMC framework and makes it tractable for fitting complex models. 
 
 \section{Fitting Stochastic Epidemic Models via the Linear Noise Approximation}
 \label{sec:lna_methods}
@@ -44,11 +44,11 @@ The cumulative incidence process for infections and recoveries, $ \bN^c $, is a 
 \label{subsec:lna_motivation}
 We would like to make inferences about the posterior distribution of the parameters, e.g., $ \btheta = (\beta, \mu, \bX(t_0), \rho)$, that govern the latent epidemic process and sampling distribution, 
 \begin{align}
-\label{eqn:posterior}
+\label{eqn:intractable_posterior}
  \pi(\btheta|\bY)&\propto \pi(\bY|\btheta)\pi(\btheta) = \int L(\bY|\bN^c,\btheta)\pi(\bN^c|\btheta)\pi(\btheta)\rmd\pi(\bN^c)\nonumber\\
  &= \int_{\mcS^c}\prod_{\ell=1}^L \Pr\left (\bY_\ell|\Delta\bN_{SI}^c(t_\ell),\btheta\right )\pi\left (\bN^c(t_\ell)|\bn^c(t_{\ell-1}),\btheta\right )\pi(\btheta)\rmd\pi(\bN^c)
 \end{align}
-where $ \pi(\btheta) $ specifies the prior density of the model parameters. However, this integral is analytically intractable, and is challenging to evaluate computationally due to the size of the state space of $ \bN^c $. In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:posterior}) into an integral over a much more computationally tractable product of Gaussian densities and non--Gaussian emission probabilities. As we shall see, approximating the complete data likelihood that appears in the posterior $ \pi(\btheta,\bN^c|\btheta) $ with a Gaussian state space model will open the doors to efficient algorithms for sampling from the approximate posterior. 
+where $ \pi(\btheta) $ specifies the prior density of the model parameters. However, this integral is analytically intractable and is challenging to compute numerically due to the size of the state space of $ \bN^c $. In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:intractable_posterior}) into an integral over a much more computationally tractable product of Gaussian densities and non--Gaussian emission probabilities. As we shall see, approximating the complete data likelihood in the posterior $ \pi(\btheta,\bN^c|\btheta) $ with a Gaussian state space model will open the doors to efficient algorithms for sampling from the approximate posterior. 
 
 \subsection{Diffusion Approximation}
 \label{subsec:diff_approx}
@@ -70,7 +70,7 @@ Suppose that, at the current time, the compartment counts are given by $ \bX^c(t
 
 Condition (\ref{eqn:tau_cond_1}), which can be trivially satisfied just by choosing $ \dt $ to be small, implies that the numbers of infections and recoveries in $ (t,t+\dt] $ are essentially independent of one another since the rates at which they occur are approximately constant within the interval \cite{gillespie2000chemical}. This condition also carries the stronger implication that the numbers of infections and recoveries in the interval are independent Poisson random variables with rates $ \blambda(\bx^c(t)\dt) $, i.e., $ N^c_{SI}(\dt) \sim \mr{Poisson}(\beta S(t)I(t)\dt) $ and $ N^c_{IR}(t+\dt) \sim \mr{Poisson}(\mu I(t)\dt) $. Condition (\ref{eqn:tau_cond_2}), which we can reasonably expect to be satisfied in large populations where transmission dynamics are near their deterministic ODE limits \cite{wallace2012linear}, implies that the Poisson distributed increments can be well approximated by independent Gaussian random variables. 
 
-Thus, (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, we can approximate the integer--valued processes, $ \bX^c $ and $ \bN^c $, with the real--valued processes, $ \bX $ and $ \bN $. Note that sample paths of the MJPs for $ \bX^c $ and $ \bN^c $ are non--negative, and $ \bN^c $ is non--decreasing. Eventually, we will also seek to enforce positivity and monotonicity in sample paths of $ \bX $ and $ \bN $. Therefore, she state space of $ \bX $ is $ \mcS_X^R = \lbrace \mcV_{lmn}:l,m,n \in [0,P],\ l+m+n=P\rbrace $, and the state space  of $ \bN $ is $ \mcS_N^R = \lbrace \mcV_{jk}: j,k \in [0,P]\rbrace $. We will look past these constraints for now and approximate the changes in cumulative incidence of infections and recoveries in an infinitesimal time step as 
+Thus, (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, we can approximate the integer--valued processes, $ \bX^c $ and $ \bN^c $, with the real--valued processes, $ \bX $ and $ \bN $. For the SIR model, the state space of $ \bX $ is $ \mcS_X^R = \lbrace \mcV_{lmn}:l,m,n \in [0,P],\ l+m+n=P\rbrace $, and the state space  of $ \bN $ is $ \mcS_N^R = \lbrace \mcV_{jk}: j,k \in [0,P] \rbrace $. More generally, the state space of $ \bX $ will be the set of compartment volumes that are non--negative and that sum to the population size, while the state space of $ \bN $ is the set of non--decreasing and non--negative incidence paths, constrained so that they do not lead to invalid prevalence paths (e.g., if at some point there are more recoveries than infections, which would lead to a negative number of infected individuals). For now, we will ignore the constraints on $ \mcS_N^R $ and $ \mcS_X^R $, and approximate the changes in cumulative incidence of infections and recoveries in an infinitesimal time step as 
 \begin{equation}
 \bN(t+\dt) - \bN(t) \approx \blambda(\bX(t))\dt + \bLambda(\bX(t))^{1/2}\dt^{1/2}\bZ,
 \end{equation}
@@ -155,29 +155,50 @@ where $ \bmu(\cdot) $, $ \bm(\cdot) $, and $ \bSigma(\cdot) $ are solutions to t
 \end{align}
 with respect to initial conditions $ \bN(t_{\ell-1}) = \bs{0} $,\ $ \bX(t_{\ell-1}) = \bx(t_{\ell-1}),\ \bm(t_{\ell-1}) = \bs{0}$, and $ \bSigma(t_{\ell-1}) = \bs{0} $, and where $ \bF(t) $ is the Jacobian $ \left (\pdiv{\boeta_i(\bmu(t))}{\bmu_j(t)}\right )_{i,j\in{1,\dots,|\bNtil|}} $ evaluated along the solution to (\ref{eqn:lna_ode_drift}). Note that we need never actually solve (\ref{eqn:lna_ode_resid}) since $ \bm(t_{\ell-1}) = \bs{0} $ implies that $ \bm(t_\ell) = \bs{0}\ \forall\ l=0,\dots,\L-1$. 
 
-In practice, the transition density (\ref{eqn:lna_transition_density}) could be used, as written, to approximate transition densities of the log--incidence process, $ \bNtil $ and to obtain sample paths of the incidence process, $ \bN $. However, we will make two modifications: We will seek to enforce the non--negativity of $ \bX $ and $ \bN $, along with the monotonicity of increments in $ \bN $. We do this for two reasons: We wish to more faithfully approximate the MJP, particularly near the state space boundaries. We also wish to avoid numerical instabilities that arise when $ \bN $ or $ \bX $ become negative and that can cause the numerical tools used to integrate the LNA ODEs to fail. For reasons that will be discussed in the next subsection, we also adopt a non--centered parameterization for the log--incidence process by deterministic mapping standard normal random variables, $ \bZ\sim MVN(\bs{0},\mb{I}) $, onto a LNA path.  The procedure for applying this mapping, denoted \doLNA, is presented in Algorithm (\ref{alg:doLNA}), below. 
+Approximating the transition densities of $ \bN $ using the LNA, (\ref{eqn:lna_transition_density}), enables us to approximate the observed data likelihood in (\ref{eqn:intractable_posterior}) with a Gaussian state space model. The augmented approximate posterior is
+\begin{align}
+\label{eqn:lna_approximate_posterior}
+\pi(\bNtil,\btheta|\bY) &\propto L(\bY|\bNtil,\btheta)\ind{\bN\in\mcS_N^R}\ind{\bX\in\mcS_X^R}\pi(\bNtil|\btheta)\pi(\btheta) \nonumber\\
+&= \prod_{\ell=1}^{L}\Pr(\bY_\ell|\Delta\bNtil(t_\ell),\btheta)\ind{\bN(t_\ell)\in\mcS_N^R}\ind{\bX(t_\ell)\in\mcS_X^R}\pi(\bNtil(t_\ell)|\bntil(t_{\ell-1}),\bx(t_{\ell-1}),\btheta)\pi(\btheta).
+\end{align}
+Note that the emission probabilities in (\ref{eqn:lna_approximate_posterior}) depend on the incidence, not the log--incidence, but that this just requires a simple reparameterization of the emission distribution. In our example, the observed incidence is a Poisson sample of the true incidence, $ \Pr(\bY_\ell|\Delta\bNtil(t_\ell),\btheta) = \mr{Pois}\left (\rho\left ((\exp(\Ntil_{SI}(t_\ell))-1) - (\exp(\Ntil_{SI}(t_{\ell-1})) - 1)\right )\right ) $. We also explicitly include indicators for whether the LNA path respects the positivity and monotonicity constraints of the original MJP. We do this for two reasons: We wish to more faithfully approximate the MJP. We also wish to avoid numerical instabilities that arise when $ \bN $ or $ \bX $ become negative and that can cause routines for numerically integrating the LNA ODEs to fail. 
+
+\subsection{Inference via the Linear Noise Approximation}
+\label{subsec:lna_inference}
+
+To this point, we have discussed how to construct an approximation of transition densities of the MJP representation of a SEM via the LNA. However, this is only half the battle since we must also address the computational aspects of sampling from the augmented approximate posterior, (\ref{eqn:lna_approximate_posterior}). A central computation challenge that plagues DA MCMC frameworks is that MCMC chains may suffer from severe autocorrelation when the algorithm alternately updates the latent variables given the parameters, $ \bN|\btheta\bY $, and parameters given the latent variables, $ \btheta|\bN,\bY $, see, e.g., \cite{bernardo2003non,papaspiliopoulos2003noncentered,papaspiliopoulos2007general,yu2011center}.  
+
+\subsubsection{Non--centered Parameterization}
+\label{subsubsec:noncentered_parameterization}
+
+In practice, the transition density (\ref{eqn:lna_transition_density}) could be used, as written, to approximate transition densities of the log--incidence process, $ \bNtil $ and to obtain sample paths of the incidence process, $ \bN $. However, we will make two modifications: First,  Second, for reasons that will be discussed in the next subsection, we adopt a non--centered parameterization for the log--incidence process by deterministic mapping standard normal random variables, $ \bZ\sim MVN(\bs{0},\mb{I}) $, onto LNA incidence and prevalence sample paths. The procedure for this mapping, denoted \doLNA, is presented in Algorithm (\ref{alg:doLNA}). We will denote by $ \bN(\bZ,\btheta,\mcI) $ and $ \bX(\bZ,\btheta,\mcI) $ the incidence and prevalence sample paths that are output by the \doLNA\ procedure.
 
 \begin{algorithm}[h!]
-	\caption{Mapping standard normal draws onto log--incidence LNA paths.}
+	\caption{Mapping standard normal draws onto LNA sample paths.}
 	\label{alg:doLNA}
 	\begin{algorithmic}[1]
 		\Procedure{doLNA}{$ \bZ,\btheta,\mcI $}
-		\State $ \bX(t_0) \gets \bx_0,\ \bN(t_0) \gets \bs{0},\ \bNtil(t_0) \gets \bs{0},\ \bmu(t_0) \gets \bs{0},\ \bSigma(t_0) \gets \bs{0} $
-		\For{$ \ell = 1,\dots,n $}
+		\State \textbf{initialize: }$ \bX(t_0) \gets \bx_0,\ \bN(t_0) \gets \bs{0},\ \bNtil(t_0) \gets \bs{0},\ \bmu(t_0) \gets \bs{0},\ \bSigma(t_0) \gets \bs{0} $
+		\For{$ \ell = 1,\dots,L $}
 		\State $ \bmu(t_\ell),\ \bSigma(t_\ell) \gets $ solutions to (\ref{eqn:lna_ode_drift}) and (\ref{eqn:lna_ode_diffusion}) over $ (t_{\ell-1}, t_\ell] $
 		\State $ \bNtil(t_\ell)\gets \bmu(t_\ell) + \bSigma(t_\ell)^{1/2}\bZ(t_\ell) $ \Comment{non--centered parameterization}
-		\State $ \bN(t_\ell)\gets \bNtil(t_{\ell-1}) + \exp(\bNtil(t_\ell)) - \bs{1} $
+		\State $ \bN(t_\ell)\gets \bN(t_{\ell-1}) + \exp(\bNtil(t_\ell)) - \bs{1} $
 		\State \textbf{restart initial conditions:} 
-		\State {\hspace{1in} $ \bx_\ell \gets \bx_{\ell-1} + \bA^T\bN(t_\ell),\ \bNtil(t_\ell) \gets \bs{0},\ \bmu(t_\ell)\gets\bs{0},\ \bSigma(t_\ell)\gets\bs{0} $ }
+		\State {\hspace{0.2in} $ \bX(t_\ell) \gets \bX(t_{\ell-1}) + \bA^T(\bN(t_\ell)-\bN(t_{\ell-1})),\ \bNtil(t_\ell) \gets \bs{0},\ \bmu(t_\ell)\gets\bs{0},\ \bSigma(t_\ell)\gets\bs{0} $ }
 		\EndFor
-		\State \Return $\lbrace \bN(t_0),\bN(t_1),\dots,\bN(t_L)\rbrace $ \Comment{return incidence sample path}
+		\State \hspace{-0.25in}\Return \Comment{return incidence and/or prevalence sample paths}
+		\State$\bN = \left \lbrace\bN(t_0),\bN(t_1),\dots,\bN(t_L)\right \rbrace,\ \bX = \left \lbrace \bX(t_0),\ \bX(t_1),\dots,\bX(t_\ell) \right \rbrace $
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-\subsection{Inference via the linear noise approximation}
-\label{subsec:lna_inference}
 
+Instead of targeting the posterior, $ \pi(\btheta,\bN|\bY) $, will target
+\begin{align}
+\label{eqn:lna_posterior}
+\pi(\btheta,\bZ|\bY) &\propto L(\bY|\doLNA(\bZ,\btheta,\mcI))\ind{\bN(\bZ,\btheta,\mcI)\in\mcS_N^R}\ind{\bX(\bZ,\btheta,\mcI)\in\mcS_X^R}\pi(\bZ)\pi(\btheta)
+\end{align}
+in a DA MCMC framework as we alternate between updating $ \bZ|\btheta,\bY $ and $ \btheta|\bZ,\bY $. Note that 
 
 \begin{itemize}
 	\item LNA as deterministic mapping - i.e., define a DoLNA operation.
