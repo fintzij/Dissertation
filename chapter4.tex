@@ -6,7 +6,7 @@
 
 Surveillance and outbreak response systems often report incidence counts of new cases detected in each inter--observation time interval. Analyzing this type of time series data is challenging since we must overcome many of the same challenges that we face in modeling the transmission dynamics of infectious diseases in small population settings with prevalence data --- discrete snapshots of a continuously evolving epidemic process, detecting a fraction of the new cases, and often directly observing only one aspect of the disease process. Furthermore, our task is made more difficult by the additional computational burden that results from repeated evaluation of CTMC likelihoods; the products of exponential waiting time distributions consist of polynomially increasing numbers of terms, and agent--based data augmentation (DA) MCMC algorithms become unwieldy as the numbers of subject--path proposals required to meaningfully perturb the CTMC likelihood get large \citep{fintzi2017efficient}. 
 
-In this chapter, we show how the LNA of Section \ref{subsubsec:lna_background} can be adapted to obtain approximate inference for SEMs fit to epidemic count data in large populations. Our contributions are threefold: First, we demonstrate how the SEM dynamics should be reparameterized so that the LNA can be used to approximate transition densities of the counting processes for disease state transition events. Second, we fold the LNA into a Bayesian DA framework in which latent LNA paths are sampled using the elliptical slice sampling (EliptSS) algorithm of \cite{murray2010}. This provides us with general machinery for jointly updating the latent paths while absolving us of the \textit{de facto} modeling choice that the data be Gaussian in order to efficiently perform inference as in \cite{fearnhead2014,komorowski2009}, or the need to use computationally intensive particle filter methods for non--Gaussian emission distributions as in \cite{golightly2015delayed}. Finally, we introduce a non--centered parameterization for the LNA that massively improves the efficiency of our DA MCMC framework and makes it tractable for fitting complex models. 
+In this chapter, we show how the LNA of Section \ref{subsubsec:lna_background} can be adapted to obtain approximate inference for SEMs fit to epidemic count data in large populations. Our contributions are threefold: First, we demonstrate how the SEM dynamics should be reparameterized so that the LNA can be used to approximate transition densities of the counting processes for disease state transition events. Second, we fold the LNA into a Bayesian DA framework in which latent LNA paths are sampled using the elliptical slice sampling (EliptSS) algorithm of \cite{murray2010}. This provides us with general machinery for jointly updating the latent paths while absolving us of the \textit{de facto} modeling choice that the data be Gaussian in order to efficiently perform inference as in \cite{fearnhead2014,komorowski2009}, or the need to use computationally intensive particle filter methods for non--Gaussian emission distributions as in \cite{golightly2015delayed}. Finally, we introduce a non--centered parameterization (NCP) for the LNA that massively improves the efficiency of our DA MCMC framework and makes it tractable for fitting complex models. 
 
 \section{Fitting Stochastic Epidemic Models via the Linear Noise Approximation}
 \label{sec:lna_methods}
@@ -170,17 +170,20 @@ To this point, we have discussed how to approximate transition densities of a MJ
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/lna_centered_traces}
-\caption{Posterior traceplots and histograms for a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. }
+\includegraphics[width=0.9\textwidth]{figures/lna_centered_traces}
+\caption{Posterior traceplots for a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
 \label{fig:lna_centered_traces}
 \end{figure}
 
 \subsubsection{Non--centered Parameterization}
 \label{subsubsec:noncentered_parameterization}	
 
-To alleviate 
-In practice, the transition density (\ref{eqn:lna_transition_density}) could be used, as written, to approximate transition densities of the log--incidence process, $ \bNtil $ and to obtain sample paths of the incidence process, $ \bN $. However, we will make two modifications: First,  Second, for reasons that will be discussed in the next subsection, we adopt a non--centered parameterization for the log--incidence process by deterministic mapping standard normal random variables, $ \bZ\sim MVN(\bs{0},\mb{I}) $, onto LNA incidence and prevalence sample paths. The procedure for this mapping, denoted \doLNA, is presented in Algorithm (\ref{alg:doLNA}). We will denote by $ \bN(\bZ,\btheta,\mcI) $ and $ \bX(\bZ,\btheta,\mcI) $ the incidence and prevalence sample paths that are output by the \doLNA\ procedure.
-
+We can improve the mixing of our MCMC chains by reparameterizing the log--incidence process as a deterministic mapping of standard normal random variables, $ \bZ\sim MVN(\bs{0},\mb{I}) $, which are \textit{a priori} independent of the model parameters. This NCP is carried out by noting that if $ \bNtil(t_\ell)\sim MVN(\bmu(t\ell),\bSigma(t_\ell) $ and $ \bZ(t_\ell)\sim MVN(\bs{0},\mb{I}) $, then $ \bNtil \overset{\mcL}{=}\widetilde{\bW}(t_\ell),\ \widetilde{\bW}(t_\ell) = \bmu(t_\ell) + \bSigma(t_\ell)^{1/2}\bZ(t_\ell) $. We now target the joint posterior of the model parameters and the non--centered LNA draws,
+\begin{align}
+\label{eqn:lna_noncentered_posterior}
+\pi(\btheta,\bZ|\bY) &\propto L(\bY|\doLNA(\bZ,\btheta,\mcI))\ind{\bN(\bZ,\btheta,\mcI)\in\mcS_N^R}\ind{\bX(\bZ,\btheta,\mcI)\in\mcS_X^R}\pi(\bZ)\pi(\btheta).
+\end{align}
+We will denote by $ \bN(\bZ,\btheta,\mcI) $ and $ \bX(\bZ,\btheta,\mcI) $ the incidence and prevalence sample paths that are output by the \doLNA\ procedure. The procedure for this mapping, denoted \doLNA, is presented in Algorithm (\ref{alg:doLNA}). 
 \begin{algorithm}[h!]
 	\caption{Mapping standard normal draws onto LNA sample paths.}
 	\label{alg:doLNA}
@@ -200,16 +203,18 @@ In practice, the transition density (\ref{eqn:lna_transition_density}) could be 
 	\end{algorithmic}
 \end{algorithm}
 
+The NCP of the log--incidence process substantially improves the mixing of MCMC chains that alternate between updates to $ \bZ|\btheta,\bY $ and $ \btheta|\bZ,\bY $. Figure \ref{fig:lna_centered_traces} shows traceplots of model parameters for one of MCMC chains for an SIR model fit to Poisson distributed incidence data using the centered parameterization (CP) of the LNA transition density. MCMC was run for 2.5 million iterations, following a tuning run of equal length, but each chain only manages to yield a effective sample sizes for $ R_0 $ and the infectious period duration in the low double digits. In contrast, the NCP yields effective sample sizes per--chain of between 500--700 for each of the model parameters in only 50,000 iterations, following a short tuning run of equal length. Figure \ref{fig:lna_noncentered_traces} shows the traceplot for one of the MCMC chains, which clearly mixes much better. 
 
-Instead of targeting the posterior, $ \pi(\btheta,\bN|\bY) $, will target
-\begin{align}
-\label{eqn:lna_posterior}
-\pi(\btheta,\bZ|\bY) &\propto L(\bY|\doLNA(\bZ,\btheta,\mcI))\ind{\bN(\bZ,\btheta,\mcI)\in\mcS_N^R}\ind{\bX(\bZ,\btheta,\mcI)\in\mcS_X^R}\pi(\bZ)\pi(\btheta)
-\end{align}
-in a DA MCMC framework as we alternate between updating $ \bZ|\btheta,\bY $ and $ \btheta|\bZ,\bY $. Note that 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/lna_noncentered_traces}
+	\caption{Posterior traceplots for a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_noncentered_posterior}, alternately updating $ \bZ|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bZ,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
+	\label{fig:lna_noncentered_traces}
+\end{figure}
 
-\begin{itemize}
-	\item LNA as deterministic mapping - i.e., define a DoLNA operation.
-	\item Non--centered parameterization
-	\item MCMC
-\end{itemize}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/lna_sampling_diagram}
+	\caption{Centered and non--centered representations of LNA paths. }
+	\label{fig:lna_noncentered_traces}
+\end{figure}
