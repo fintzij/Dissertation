@@ -171,7 +171,7 @@ To this point, we have discussed how to approximate transition densities of a MJ
 \begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth]{figures/lna_centered_traces}
-\caption{Posterior traceplots for a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
+\caption{Posterior traceplots for a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating the non--restarting LNA for $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
 \label{fig:lna_centered_traces}
 \end{figure}
 
@@ -212,9 +212,51 @@ The NCP of the log--incidence process substantially improves the mixing of MCMC 
 	\label{fig:lna_noncentered_traces}
 \end{figure}
 
+In each iteration of a DA MCMC algorithm, we alternate between updates to the latent path, conditional on the model parameters, and updates to the parameters, conditional on the latent path. Figure \ref{fig:lna_sampling_diagram}, which depicts the CP and NCP representations of an LNA path, provides some insight into why the NCP improves MCMC mixing. Under the CP (top plot), updates to $ \btheta|\bNtil,\bY $ are made conditionally on a \textit{fixed} LNA path. Therefore, proposed parameter values are accepted depending on whether they are concordant with the data \textit{and} the current path. Even small perturbations to model parameters can result in shifts of the LNA distributions (grey densities) that would render the current path (red points) unlikely under the proposal. In contrast, perturbations to parameters implicitly perturb an LNA path defined using the NCP, even as the LNA draws, $ \bZ $, are clamped to their current values. 
+
 \begin{figure}
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/lna_sampling_diagram}
-	\caption{Centered and non--centered representations of LNA paths. }
-	\label{fig:lna_noncentered_traces}
+	\caption{Centered (top) and non--centered (bottom) parameterizations of an LNA incidence path. In the CP, the log--incidence is normally distributed with mean and covariance obtained by solving the LNA ODEs, (\ref{eqn:lna_ode_drift}) and (\ref{eqn:lna_ode_diffusion}). In the NCP, the log--incidence is a draw from a standard normal distribution that is deterministically mapped to a sample path via the $ \doLNA $ algorithm. In both the CP and NCP, state at the end of each interval determines the initial conditions of the LNA ODEs for the next interval. Plots of CP LNA transition densities are rescaled for clarity.}
+	\label{fig:lna_sampling_diagram}
 \end{figure}
+
+The NCP of the LNA also plays an important role in facilitating efficient updates of $ \bZ|\btheta,\bY $ via the elliptical slice sampling (ElliptSS) algorithm of \cite{murray2010}, which was detailed in Section \ref{subsubsec:elliptical_slice_sampling} and is presented in Algorithm \ref{alg:elliptss_lna}. ElliptSS is an efficient and easy to implement MCMC algorithm for sampling Gaussian random variables, $ \bZ $, in models where the posterior of can be decomposed as the Gaussian prior for $ \bZ $ and an arbitrary likelihood, $ L(\bY|\bZ,\btheta) $, i.e.,
+\begin{equation}
+\label{eqn:eliptss_posterior_decomp}
+\pi(\btheta,\bZ|\bY)\propto L(\bY|\bZ,\btheta)MVN(\bZ;\mu_\bZ,\bSigma_\bZ).
+\end{equation}
+The target posterior under the LNA NCP, (\ref{eqn:lna_noncentered_posterior}), is of this form, regardless of whether the LNA is restarted at the beginning of each inter--observation interval, as in \cite{fearnhead2014}, or the non--restarting version is used as in \cite{komorowski2009}. Note that the CP cannot be expressed in the form (\ref{eqn:eliptss_posterior_decomp}) when we use the restarting version of the LNA. Although each transition density, (\ref{eqn:lna_transition_density}), is itself Gaussian, the joint LNA path, $ \bN $, is not \textit{a priori} Gaussian when the LNA ODEs are restarted since the mean of $ \bN(t_\ell) $ depends non--linearly on the value of $ \bN(t_{\ell-1}) $. The quality of the LNA approximation is known to degenerate over long time intervals. Restarting the LNA ODEs has been established to improve the approximation when analyzing time series data of non--negligible length \cite{fearnhead2014,giagos2010inference}. Hence, use of the NCP is critical to enabling the use of ElliptSS for jointly updating of $ \bZ|\btheta,\bY $ when using the restarting version of the LNA. 
+
+\begin{algorithm}[h!]
+	\caption{Sampling LNA draws via elliptical slice sampling.}
+	\label{alg:elliptss_lna}
+	\begin{algorithmic}[1]
+		\Procedure{\doElliptSS}{$ \bZ_{cur},\btheta,\bY,\mcI $}
+		\State Sample ellipse: $ \bZ_{prop} \sim N(\bs{0}, \mb{I}) $
+		\State Sample threshold: $ u|\bx \sim \mr{Unif}(0, L(\bY|\doLNA(\bZ_{cur},\btheta,\mcI))) $
+		\State Initial proposal (also defining a bracket): \vspace{-0.1in}
+		\begin{align*}
+		\phi &\sim \mr{Unif}(0,2\pi)\\
+		(L_{\psi}, R_\psi) &\leftarrow (\psi - 2\pi, \psi)
+		\end{align*}
+		\State Set $ \bZ' \leftarrow \bZ_{cur}\cos(\phi) + \bZ_{prop}\sin(\phi) $. 
+		\If{$ L(\bY|\doLNA(\bZ',\btheta,\mcI)) > u $}{ accept $ \bZ' $}
+		\State\Return{ $ \bZ' $}
+		\Else
+		\State Shrink bracket and try a new angle.
+		\State{\textbf{If:} $ \phi < 0 $}{ \textbf{then: }$ L_\phi \leftarrow\phi $ }{ \textbf{else: }$ R_\phi \leftarrow \phi $}
+		\State $ \phi \sim \mr{Unif}(L_\phi, R_\phi) $.
+		\State \textbf{GoTo:} 5.
+		\EndIf
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Initializing the LNA draws}
+\label{subsubsec:lna_init}
+In simple models, reasonable parameter values will generally lead to valid LNA paths for initial $ \bZ\sim MVN(\bs{0},\mb{I}) $, i.e., paths that satisfy the monotonicity and positivity conditions, and thus have non--zero likelihood. However, this is not necessarily the case for complex models with many types of transition events, or when the time--series of incidence counts is long. One option is to include a re--sampling step after line 6 in Algorithm \ref{alg:doLNA}, in which $ \bZ(t_\ell) $ is redrawn in place until the conditions for a valid path over the interval are met. It is important to note that such a procedure does not sample from the correct distribution since $ \bZ $ is not actually a truncated multivariate Gaussian. To correct for this, we will ``warm--up" the LNA path with an initial run of \doElliptSS iterations in which the likelihood only consists of the indicators for whether the path is valid. Obviously, such chicanery is not always, or even frequently necessary, and so we only resort to these shenanigans in dire circumstances. Finally, note that ElliptSS, as well as any valid MCMC algorithm for updating $ \btheta|\bZ,\bY $, will never lead to an invalid LNA path as long as the current LNA draws and model parameters correspond to a valid path.
+
+\subsubsection{Parameter updates}
+\label{subsubsec:lna_param_updates}
+Each MCMC iteration will consist of a number of ElliptSS updates, typically one but possibly 2--3 for complex models, followed by a set of parameter updates. We will generally use the variant of the automated factor slice sampler of \cite{tibbits2014automated}, possibly in conjunction with a hit--and--run slice sampler to preserve ergodicity when updating in only some slice directions. Details of these algorithms are presented in Section \ref{subsubsec:slice_sampling}. 
