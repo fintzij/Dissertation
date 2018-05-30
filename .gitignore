@@ -1,6 +1,9 @@
 ## papers
 papers/*
 
+## dissertation pdf
+fintzi_dissertation.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
