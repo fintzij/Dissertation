@@ -168,7 +168,7 @@ Note that the emission probabilities in (\ref{eqn:lna_approximate_posterior}) de
 
 To this point, we have discussed how to approximate transition densities of a MJP via the LNA. However, this is only half the battle since we must also address the computational aspects of sampling from the augmented approximate posterior, (\ref{eqn:lna_approximate_posterior}). A central computation challenge that plagues DA MCMC is that MCMC chains may suffer from severe autocorrelation when the algorithm alternately updates the latent variables given the parameters, and parameters given the latent variables, see e.g., \cite{bernardo2003non,papaspiliopoulos2003noncentered,papaspiliopoulos2007general,yu2011center}. As we can see in Figure, a DA MCMC algorithm that alternates between updates LNA paths and model parameters is no exception.
 
-\begin{figure}
+\begin{figure}[!ht]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/lna_centered_traces}
 \caption{Posterior traceplots for parameters of interest sampled by a single MCMC chain of an SIR model fit to negative binomial distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating the non--restarting LNA for $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
@@ -184,7 +184,8 @@ We can improve the mixing of our MCMC chains by reparameterizing the log--incide
 \pi(\btheta,\bZ|\bY) &\propto L(\bY|\doLNA(\bZ,\btheta,\mcI))\ind{\bN(\bZ,\btheta,\mcI)\in\mcS_N^R}\ind{\bX(\bZ,\btheta,\mcI)\in\mcS_X^R}\pi(\bZ)\pi(\btheta).
 \end{align}
 We will denote by $ \bN(\bZ,\btheta,\mcI) $ and $ \bX(\bZ,\btheta,\mcI) $ the incidence and prevalence sample paths that are output by the \doLNA\ procedure. The procedure for this mapping, denoted \doLNA, is presented in Algorithm (\ref{alg:doLNA}). 
-\begin{algorithm}[h!]
+
+\begin{algorithm}
 	\caption{Mapping standard normal draws onto LNA sample paths.}
 	\label{alg:doLNA}
 	\begin{algorithmic}[1]
@@ -203,9 +204,9 @@ We will denote by $ \bN(\bZ,\btheta,\mcI) $ and $ \bX(\bZ,\btheta,\mcI) $ the in
 	\end{algorithmic}
 \end{algorithm}
 
-The NCP of the log--incidence process substantially improves the mixing of MCMC chains that alternate between updates to $ \bZ|\btheta,\bY $ and $ \btheta|\bZ,\bY $. Figure \ref{fig:lna_centered_traces} shows traceplots of model parameters for one of MCMC chains for an SIR model fit to Poisson distributed incidence data using the centered parameterization (CP) of the LNA transition density. MCMC was run for 2.5 million iterations, following a tuning run of equal length, but each chain only manages to yield a effective sample sizes for $ R_0 $ and the infectious period duration in the low double digits. In contrast, the NCP yields effective sample sizes per--chain of between 500--700 for each of the model parameters in only 50,000 iterations, following a short tuning run of equal length. Figure \ref{fig:lna_noncentered_traces} shows the traceplot for one of the MCMC chains, which clearly mixes much better. 
+The NCP of the log--incidence process substantially improves the mixing of MCMC chains that alternate between updates to $ \bZ|\btheta,\bY $ and $ \btheta|\bZ,\bY $. Figure \ref{fig:lna_centered_traces} shows traceplots of model parameters for one of MCMC chains for an SIR model fit to Poisson distributed incidence data using the centered parameterization (CP) of the LNA transition density. MCMC was run for 2.5 million iterations, following a tuning run of equal length, but each chain only manages to yield a effective sample sizes for $ R_0 $ and the infectious period duration in the low double digits. In contrast, the NCP yields effective sample sizes per--chain of between 500--700 for each of the model parameters in only 50,000 iterations, following a short tuning run of equal length. Figure \ref{fig:lna_noncentered_traces} shows the traceplot for one of the MCMC chains, which clearly mixes better. 
 
-\begin{figure}
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/lna_noncentered_traces}
 	\caption{Posterior traceplots for parameters of interest sampled by a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_noncentered_posterior}, alternately updating $ \bZ|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bZ,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
@@ -214,7 +215,7 @@ The NCP of the log--incidence process substantially improves the mixing of MCMC 
 
 In each iteration of a DA MCMC algorithm, we alternate between updates to the latent path, conditional on the model parameters, and updates to the parameters, conditional on the latent path. Figure \ref{fig:lna_sampling_diagram}, which depicts the CP and NCP representations of an LNA path, provides some insight into why the NCP improves MCMC mixing. Under the CP (top plot), updates to $ \btheta|\bNtil,\bY $ are made conditionally on a \textit{fixed} LNA path. Therefore, proposed parameter values are accepted depending on whether they are concordant with the data \textit{and} the current path. Even small perturbations to model parameters can result in shifts of the LNA distributions (grey densities) that would render the current path (red points) unlikely under the proposal. In contrast, perturbations to parameters implicitly perturb an LNA path defined using the NCP, even as the LNA draws, $ \bZ $, are clamped to their current values. 
 
-\begin{figure}
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/lna_sampling_diagram}
 	\caption{Centered (top) and non--centered (bottom) parameterizations of an LNA incidence path. In the CP, the log--incidence is normally distributed with mean and covariance obtained by solving the LNA ODEs, (\ref{eqn:lna_ode_drift}) and (\ref{eqn:lna_ode_diffusion}). In the NCP, the log--incidence is a draw from a standard normal distribution that is deterministically mapped to a sample path via the $ \doLNA $ algorithm. In both the CP and NCP, state at the end of each interval determines the initial conditions of the LNA ODEs for the next interval. Plots of CP LNA transition densities are rescaled for clarity.}
@@ -228,7 +229,7 @@ The NCP of the LNA also plays an important role in facilitating efficient update
 \end{equation}
 The target posterior under the LNA NCP, (\ref{eqn:lna_noncentered_posterior}), is of this form, regardless of whether the LNA is restarted at the beginning of each inter--observation interval, as in \cite{fearnhead2014}, or the non--restarting version is used as in \cite{komorowski2009}. Note that the CP cannot be expressed as a jointly Gaussian collection of random variables with complete data likelihood of the form (\ref{eqn:eliptss_posterior_decomp}) when we use the restarting version of the LNA. Although each transition density, (\ref{eqn:lna_transition_density}), is itself Gaussian, the joint LNA path, $ \bN $, is not \textit{a priori} Gaussian when the LNA ODEs are restarted since the mean of $ \bN(t_\ell) $ depends non--linearly on the value of $ \bN(t_{\ell-1}) $. The quality of the LNA approximation is known to degenerate over long time intervals. Restarting the LNA ODEs has been established to improve the approximation when analyzing time series data of non--negligible length \cite{fearnhead2014,giagos2010inference}. Hence, use of the NCP is critical to enabling the use of ElliptSS for jointly updating of $ \bZ|\btheta,\bY $ when using the restarting version of the LNA. 
 
-\begin{algorithm}[h!]
+\begin{algorithm}[!ht]
 	\caption{Sampling LNA draws via elliptical slice sampling.}
 	\label{alg:elliptss_lna}
 	\begin{algorithmic}[1]
@@ -274,4 +275,36 @@ We have found it advantageous to transform the model parameters to reflect how t
 
 The LNA is by no means the only approximation of the transition density of the MJP representation of a SEM. In the following subsection, we will illustrate why the LNA is an attractive choice, balancing computational cost with fidelity of the MJP approximation. We benchmark the LNA against two commonly used approximations of the MJP: the deterministic approximation given by a system of deterministic ODEs that are the functional infinite population limit of the MJP \cite{fuchs2013inference}, and a discrete--time approximation of the MJP using a multinomial modification of the $ \tau $--leaping algorithm (MMTL) \cite{breto2011compound} to simulate epidemic paths within a particle marginal Metropolis--Hastings (PMMH) framework \cite{andrieu2010particle}. The ODE approximation was chosen because of its ubiquity in the study of epidemic modeling, while the MMTL approximation in combination with PMMH was chosen because of a straightforward and general implementation in the popular \texttt{pomp} package in \texttt{R} \cite{pompjss}. 
 
-The validity of each approximation is depends on the population size and the epidemic dynamics. Outbreaks with explosive dynamics in large populations will tend to deviate less, relatively, from their infinite population deterministic limits than outbreaks that occur in small populations, that are less contagious, or that are characterized by uncertainty in the probability and timing of a major outbreak. We will fit SIR models to outbreaks simulated from the MJP under a range of SIR dynamics. Each dataset is simulated by drawing the dynamics from a set of prior distributions, simulating an outbreak via Gillespie's direct algorithm \cite{gillespie1976general}, and finally simulating the dataset as a negative binomial sample of the true incidence. Datasets arising from outbreaks that died off immediately were discarded and re--simulated, while datasets arising from outbreaks lasting longer than 50 epochs were truncated at 50 observations. SIR models are then fit via the LNA, ODE, and MMTL approximations under the priors used in the data generating process. The simulation is repeated under three different regimes for the population size and the initial number of infected individuals, reflecting different levels of stochasticity of epidemics in the population. The population sizes, initial conditions, and priors are laid out in Table (((((insert table number here))))). Finally, the population size and initial conditions are assumed to be known. Therefore, the only misspecification is in the approximation used for the latent epidemic process. 
+The validity of each approximation is depends on the population size and the epidemic dynamics. Outbreaks with explosive dynamics in large populations will tend to deviate less, relatively, from their infinite population deterministic limits than outbreaks that occur in small populations, that are less contagious, or that are characterized by uncertainty in the probability and timing of a major outbreak. We fit SIR models to 500 incidence datasets simulated under a range of SIR dynamics. Each dataset is simulated by drawing the dynamics from a set of prior distributions, simulating an outbreak via Gillespie's direct algorithm \cite{gillespie1976general}, and finally simulating the dataset as a negative binomial sample of the true incidence. Datasets arising from outbreaks that died off immediately were discarded and re--simulated, while datasets arising from outbreaks lasting longer than 50 epochs were truncated at 50 observations. SIR models are then fit via the LNA, ODE, and MMTL approximations under the priors used in the data generating process. The simulation is repeated under three different regimes for the population size and the initial number of infected individuals, reflecting different levels of inherent stochasticity in the epidemic behavior and chosen because they reflect typical population sizes in which the three methods might be applied without being so large that the MJP path would be essentially deterministic. All individuals who were not initially infected were susceptible at the start of each outbreak (i.e., no individuals with pre-existing immunity). The population sizes, initial conditions, and priors are given in Table \ref{tab:lna_coverage_sim}. The population size and initial conditions for each run are assumed to be known. Therefore, the only model misspecification is in the approximation used for the latent epidemic process. Additional details regarding the MCMC implementations used to fit each of the model types are provided in Section (((((insert reference))))).
+
+\begin{table}[!ht]
+	\label{tab:lna_coverage_sim}
+	\caption{Population sizes, initial conditions, and priors under which datasets were simulated. Five hundred datasets were simulated for each of the population size regimesEach outbreak was simulated from a MJP with SIR dynamics. The observed incidence was a negative binomial sample of the true incidence in each inter--observation interval.}\small
+	\centering
+	\begin{tabular}{lccc}
+		
+		& \textbf{Regime 1} & \textbf{Regime 2} & \textbf{Regime 3} \\\hline
+		\textbf{Population size ($ N $)} & 10,000 & 50,000 & 250,000 \\ 
+		\textbf{Initial infecteds ($ I_0 $)} & 1 & 5 & 25 \\
+		\hline
+		&&&
+	\end{tabular} 
+
+	\begin{tabular}{cllc}
+		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
+		$ R0-1 $ & Basic reproduction \# - 1 & LogNormal(0, 0.25) & $ \implies R0 = $ 2.00 (1.38, 3.66) \\ 
+		$ 1/\mu $ & Mean infectious period & LogNormal(0.7, 0.13)& 2.01 (1.01, 4.00) \\
+		$ \rho / (1-\rho) $ & Odds of case detection & LogNormal(0, 1) & $ \implies \rho =$ 0.5 (0.12, 0.88) \\
+		$ \phi $ & Neg.Binom. overdispersion & Exponential(0.1) & 6.93 (0.25, 36.89)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Results}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=\textwidth]{figures/lna_coverage_plots_main}
+	\caption{Comparison of SIR models fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). Summary statistics are computed for meaningful functionals of model parameters. $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. From the top, the rows correspond to the proportion of runs where the 95\% Bayesian credible interval covered the true parameter value, the median absolute deviation (MAD), the width of the 95\% Bayesian credible interval, and the geometric mean effective sample size (ESS) per CPU time (of the five chains per run).}
+	\label{fig:lna_coverage_main}
+\end{figure}
