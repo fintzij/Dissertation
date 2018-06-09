@@ -8,6 +8,7 @@
 \usepackage{dsfont}        % for indicator function
 \usepackage{graphicx}      % includegraphic
 \usepackage{kbordermatrix} % matrix with element labels
+\usepackage{mathtools}     % shortintertext
 \usepackage{natbib}
 \def\bibpreamble{\protect\addcontentsline{toc}{chapter}{Bibliography}}
 
@@ -60,7 +61,7 @@
 \newcommand{\pdiv}[2]{\frac{\partial#1}{\partial#2}}
 \newcommand{\doLNA}{\texttt{doLNA}}
 \newcommand{\doElliptSS}{\texttt{doElliptSS}}
-\newcommand{\ind}[1]{\mathds{1}_{\lbrace#1\rbrace}}
+\newcommand{\ind}[1]{\mathds{1}_{\left \lbrace#1\right \rbrace}}
 
 
 \renewcommand{\kbldelim}{(}
