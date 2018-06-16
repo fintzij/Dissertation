@@ -1,1 +1,22 @@
-\chapter{Appendix A}
+\chapter{Appendix to Chapter 4}
+\label{chap:appendix_ch4}
+
+\section{Detailed Coverage Simulation Setup and Results}
+\label{sec:lna_coverage_supplement}
+
+\subsection{Simulation Setup and MCMC Details}
+\label{subsec:lna_coverage_setup_details}
+
+In this simulation, repeated for each of the three different regimes of population size and initial conditions given in Table \ref{tab:lna_coverage_sim}, we simulated 500 datasets according to the following procedure:
+\begin{enumerate}
+	\item Draw $ \log(R0 - 1),\ 1/\mu,\ \logit(\rho),\ \log(\phi) $ from the priors given in Table \ref{tab:lna_coverage_sim}.
+	\item Simulate an outbreak, $ \bN|\btheta $, under SIR dynamics from the MJP via Gillespie's direct algorithm \cite{gillespie1976general}. If there were fewer than 15 cases, simulate another outbreak. 
+	\item Simulate the observed incidence, $ \bY|\bN,\btheta $, as a negative binomial sample of the true incidence in each epoch, i.e., $ Y_\ell\sim\mr{Neg.Binomial(\rho(N_{SI}(t_\ell) - N_{SI}(t_{\ell-1})), \phi)} $. If the outbreak died off before epoch 15, the dataset was truncated at 15 observations (i.e., the dataset consisted of a series of case counts accrued during the outbreak along with a series of trailing zeros accrued after the outbreak died off). If the outbreak lasted longer than 50 epochs, the dataset was truncated at 50 observations
+\end{enumerate}
+
+
+\subsection{Simulation Setup and MCMC Details}
+\label{subsec:lna_coverage_additional_results}
+
+\section{Supplementary Coverage Simulations with Fixed Parameters}
+\label{sec:lna_fixedpar_coverage}
