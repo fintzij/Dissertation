@@ -32,6 +32,93 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 \subsection{Additional Results}
 \label{subsec:lna_coverage_additional_results}
 
+\begin{sidewaystable}[ht]
+	\small
+	\centering
+	\begin{tabular}{lcccccc}
+		\hline
+		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+		\hline
+		LNA & log(R0) & 0.93 & 0 (-0.51, 0.55) & 1.04 (0.83, 1.36) & 1340 (274, 4029) & 0.63 (0.13, 3.4) \\ 
+		LNA & log($\mu$) & 0.95 & -0.01 (-0.5, 0.48) & 0.93 (0.74, 1.13) & 1024 (199, 3988) & 0.48 (0.1, 2.91) \\ 
+		LNA & logit($\rho$) & 0.93 & -0.05 (-1.44, 0.56) & 1.18 (0.54, 2.86) & 1225 (316, 3941) & 0.62 (0.17, 4.05) \\ 
+		LNA & log($\phi$) & 0.96 & 0 (-0.66, 0.71) & 1.35 (0.92, 2.22) & 2021 (687, 4535) & 1 (0.31, 3.53) \\ 
+		MMTL & log(R0) & 0.95 & 0.03 (-0.48, 0.55) & 1.09 (0.88, 1.39) & 7483 (5453, 9197) & --- \\ 
+		MMTL & log($\mu$) & 0.95 & -0.03 (-0.51, 0.45) & 0.92 (0.75, 1.09) & 7481 (5442, 9197) & --- \\ 
+		MMTL & logit($\rho$) & 0.94 & -0.03 (-1, 0.61) & 1.17 (0.51, 2.98) & 6725 (4328, 8506) & --- \\ 
+		MMTL & log($\phi$) & 0.96 & -0.02 (-0.69, 0.71) & 1.33 (0.91, 2.21) & 7486 (5405, 9215) & --- \\ 
+		ODE & log(R0) & 0.89 & -0.03 (-0.76, 0.56) & 1.03 (0.65, 1.38) & 6438 (4956, 7650) & 185.35 (104.95, 339.85) \\ 
+		ODE & log($\mu$) & 0.86 & 0.05 (-0.51, 0.79) & 0.91 (0.53, 1.2) & 6420 (4908, 7663) & 184.06 (102.83, 344.37) \\ 
+		ODE & logit($\rho$) & 0.72 & 0.12 (-1.03, 1.37) & 1.25 (0.48, 2.94) & 6237 (4346, 7556) & 203.34 (111.11, 401.43) \\ 
+		ODE & log($\phi$) & 0.75 & -0.25 (-1.64, 0.54) & 1.25 (0.88, 2.11) & 6529 (5459, 7778) & 188.88 (115.58, 339.91) \\ 
+		\hline
+	\end{tabular}
+	\caption{Detailed large population (N = 250,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+\end{sidewaystable}	
+
+\begin{sidewaystable}[ht]
+	\small
+	\centering
+	\begin{tabular}{lcccccc}
+		\hline
+		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+		\hline
+		LNA & log(R0) & 0.93 & -0.03 (-0.5, 0.49) & 0.93 (0.66, 1.28) & 2158 (397, 4981) & 0.67 (0.16, 3) \\ 
+		LNA & log($\mu$) & 0.93 & 0.01 (-0.43, 0.41) & 0.83 (0.58, 1.07) & 1919 (307, 5276) & 0.63 (0.12, 3.05) \\ 
+		LNA & logit($\rho$) & 0.95 & -0.01 (-1, 0.5) & 1.13 (0.47, 2.81) & 1704 (439, 4636) & 0.61 (0.18, 3.49) \\ 
+		LNA & log($\phi$) & 0.94 & 0.01 (-0.57, 0.7) & 1.1 (0.79, 1.86) & 2916 (1179, 5442) & 1.02 (0.38, 3.1) \\ 
+		MMTL & log(R0) & 0.95 & -0.01 (-0.46, 0.51) & 0.98 (0.67, 1.32) & 7284 (4713, 9107) & --- \\ 
+		MMTL & log($\mu$) & 0.93 & -0.01 (-0.47, 0.37) & 0.82 (0.58, 1.05) & 7167 (4488, 8912) & --- \\ 
+		MMTL & logit($\rho$) & 0.95 & -0.03 (-0.98, 0.56) & 1.09 (0.43, 2.96) & 6452 (3999, 8318) & --- \\ 
+		MMTL & log($\phi$) & 0.94 & -0.02 (-0.59, 0.65) & 1.1 (0.79, 1.84) & 7096 (4640, 8999) & --- \\ 
+		ODE & log(R0) & 0.86 & -0.02 (-0.56, 0.59) & 0.84 (0.52, 1.27) & 6592 (5213, 7771) & 186.37 (87.62, 353.84) \\ 
+		ODE & log($\mu$) & 0.82 & -0.01 (-0.66, 0.47) & 0.73 (0.44, 1.07) & 6558 (5129, 7664) & 190.07 (87.2, 359.29) \\ 
+		ODE & logit($\rho$) & 0.75 & -0.03 (-1.13, 0.85) & 0.88 (0.37, 2.75) & 6421 (5017, 7643) & 208.9 (107.22, 409.97) \\ 
+		ODE & log($\phi$) & 0.82 & -0.17 (-1.36, 0.57) & 1.04 (0.78, 1.7) & 6637 (5452, 7755) & 192.83 (102.16, 365.3) \\ 
+		\hline
+	\end{tabular}
+	\caption{Detailed medium population (N = 50,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+\end{sidewaystable}	
+
+\begin{sidewaystable}[ht]
+	\small
+	\centering
+	\begin{tabular}{lcccccc}
+		\hline
+		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+		\hline
+		LNA & log(R0) & 0.95 & -0.01 (-0.38, 0.51) & 0.77 (0.47, 1.24) & 3248 (638, 6127) & 1.13 (0.22, 3.99) \\ 
+		LNA & log($\mu$) & 0.95 & 0.01 (-0.44, 0.33) & 0.67 (0.4, 1.02) & 3134 (499, 6038) & 1.12 (0.18, 3.95) \\ 
+		LNA & logit($\rho$) & 0.93 & 0.01 (-0.8, 0.57) & 0.99 (0.35, 2.66) & 2514 (572, 5905) & 1.03 (0.24, 4.71) \\ 
+		LNA & log($\phi$) & 0.95 & 0 (-0.44, 0.54) & 0.94 (0.67, 1.5) & 3987 (2201, 6184) & 1.63 (0.71, 3.95) \\ 
+		MMTL & log(R0) & 0.93 & 0.03 (-0.38, 1.04) & 0.8 (0.31, 1.27) & 7030 (3789, 8915) & --- \\ 
+		MMTL & log($\mu$) & 0.94 & -0.02 (-0.46, 0.32) & 0.65 (0.38, 0.98) & 6858 (3602, 8871) & --- \\ 
+		MMTL & logit($\rho$) & 0.92 & 0.01 (-0.7, 0.65) & 0.95 (0.34, 2.64) & 6166 (3282, 7906) & --- \\ 
+		MMTL & log($\phi$) & 0.95 & -0.03 (-0.51, 0.52) & 0.94 (0.66, 1.5) & 6266 (3735, 8960) & --- \\ 
+		ODE & log(R0) & 0.89 & -0.01 (-0.37, 0.55) & 0.65 (0.36, 1.22) & 6828 (5566, 8025) & 192.97 (103.96, 417.42) \\ 
+		ODE & log($\mu$) & 0.89 & 0 (-0.49, 0.34) & 0.55 (0.3, 1) & 6815 (5520, 7877) & 198.4 (104.92, 428.18) \\ 
+		ODE & logit($\rho$) & 0.84 & -0.01 (-0.78, 0.68) & 0.74 (0.27, 2.62) & 6575 (5219, 7838) & 209.81 (117.64, 486.14) \\ 
+		ODE & log($\phi$) & 0.91 & -0.08 (-0.59, 0.46) & 0.9 (0.64, 1.44) & 6721 (5571, 7683) & 208.67 (116.72, 412.52) \\ 
+		\hline
+	\end{tabular}
+	\caption{Detailed large population (N = 250,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+\end{sidewaystable}	
+
+\newpage
+\begin{table}[ht]
+	\small
+	\centering
+	\begin{tabular}{lccc}
+		Population size & ODE & LNA & MMTL \\ 
+		\hline
+		10,000 & 0.39 (0.21, 0.62) & 21.73 (10.83, 37.74) & 85.23 (42.31, 152.48) \\ 
+		50,000& 0.42 (0.23, 0.62) & 32.27 (13.4, 55.8) & 88.36 (38.63, 153.54) \\ 
+		250,000 & 0.45 (0.25, 0.78) & 33.08 (12.56, 70.86) & 87.4 (39.8, 166.87) \\
+		\hline
+	\end{tabular}
+	\caption{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in the the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE).}
+\end{table}	
+
 \section{Supplementary Coverage Simulations with Fixed Parameters}
 \label{sec:lna_fixedpar_coverage}
 
