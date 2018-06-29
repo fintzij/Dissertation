@@ -1,7 +1,16 @@
 \chapter{Appendix to Chapter 4}
 \label{chap:appendix_ch4}
 
-\section{Detailed Coverage Simulation Setup and Results}
+\section{Tuning the Initial Elliptical Slice Sampling Bracket Width}
+\label{sec:lna_init_bracket_width}
+
+\section{Choice of Estimation Scale and Implications for Mixing and Convergence}
+\label{sec:est_scale_discussion}
+
+\section{Specification of Initial Compartment Volumes}
+\label{sec:lna_init_volumes}
+
+\section{Simulation Details and Additional Results for Section \ref{subsec:lna_coverage}}
 \label{sec:lna_coverage_supplement}
 
 \subsection{Simulation Setup and MCMC Details}
@@ -14,9 +23,17 @@ In this simulation, repeated for each of the three different regimes of populati
 	\item Simulate the observed incidence, $ \bY|\bN,\btheta $, as a negative binomial sample of the true incidence in each epoch, i.e., $ Y_\ell\sim\mr{Neg.Binomial(\rho(N_{SI}(t_\ell) - N_{SI}(t_{\ell-1})), \phi)} $. If the outbreak died off before epoch 15, the dataset was truncated at 15 observations (i.e., the dataset consisted of a series of case counts accrued during the outbreak along with a series of trailing zeros accrued after the outbreak died off). If the outbreak lasted longer than 50 epochs, the dataset was truncated at 50 observations
 \end{enumerate}
 
+We proceed to fit SIR models using the LNA, ODE, and MMTL approximations. Priors for model parameters were assigned as in Table \ref{tab:lna_coverage_sim}. Five MCMC chains per model were initialized at random values near the true parameters and run for 35,000 iterations per chain. The first 10,000 iterations used to warm up each chain and adaptively estimate the empirical covariance matrix to be used in the multivariate Gaussian random walk Metropolis--Hastings proposals for parameters. The empirical covariance matrix was initialized as 0.01 times an identity matrix. After the warm--up period, the empirical covariance matrix was frozen and the final 25,000 iterations from each chain were combined to form the final MCMC sample. Convergence was assessed using potential scale reduction factors (PSRFs) \cite{brooks1998general}, computed via the \texttt{coda} R package \cite{codapackage}. PSRFs were less than 1.05 in cases.
 
-\subsection{Simulation Setup and MCMC Details}
+For models fit via the LNA and ODE approximations, the covariance matrix was adapted as in algorithm 4 of \cite{andrieu2008tutorial}. The gain factor sequence was $\gamma_n = 0.25(1 + 0.05n)^{0.50001}$, and a small nugget variance, equal to 0.00001 times an identity matrix, was added during the adaptation phase. The target acceptance rate used in the adaptation was 0.234. The models were implemented using the \text{stemr} R package \cite{stemr}.
+
+Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp} R package \cite{pompjss}. We used 500 particles in the PMMH algorithm. This choice was made to mitigate issues of particle degeneracy that occurred with fewer particles for some datasets. The time step for MMTL was set to 1/7, which, for example, corresponds to $ \tau $--leaping over one day increments given weekly incidence data. The MCMC was initialized in the same way as LNA and ODE models, but the empirical covariance matrix was adapted according to a different cooling schedule. The gain factor sequence provided by the package is $ \gamma_n = n^\alpha $, where the cooling term, $ \alpha $, was set to 0.999. For some of the datasets, the PMMH algorithm degenerated during the adaptive phase of the MCMC. If this was the case, the MCMC was restarted at a different set of random initial conditions. The posterior sample consisted of the combined samples from all five MCMC chains after discarding the initial samples from the adaptation phase.
+
+\subsection{Additional Results}
 \label{subsec:lna_coverage_additional_results}
 
 \section{Supplementary Coverage Simulations with Fixed Parameters}
 \label{sec:lna_fixedpar_coverage}
+
+\section{LNA Implementation Details and LNA Model Vignettes}
+\label{sec:lna_implementation_vignettes}
