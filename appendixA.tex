@@ -4,11 +4,163 @@
 \section{Tuning the Initial Elliptical Slice Sampling Bracket Width}
 \label{sec:lna_init_bracket_width}
 
+When fitting SEMs with complex dynamics, e.g., when there are many strata or when the dynamics are time varying, we will be able improve the computational efficiency of our MCMC by initialing the ElliptSS bracket width at $ \omega < 2\pi $. This choice is motivated by the observation that when the model dynamics are complex, the ElliptSS bracket will typically need to be shrunk many times before the sampler reaches a range of acceptable angles in the proposal. Each time we propose a new angle in the ElliptSS algorithm we must solve the LNA ODEs in order to compute the observed data likelihood. Thus, if we can reduce the number of ElliptSS steps, we will be able to shorten the time required to complete our MCMC runs. 
+
+In models where it is advantageous to shring the initial bracket width, we will typically set the initial bracket width to a constant times the standard deviation of the accepted angles in a tuning phase. Since we do not step out the ElliptSS bracket, the initial width should not be so small as to induce additional autocorrelation in the latent process, and should also not be so wide that the bracket is contracted needlessly. We have found a bracket width of $ \omega = 2\sqrt{2\log(10)}\sigma $, corresponding to the full width at one tenth maximum for a Gaussian with standard deviation $ \sigma $, to work well in practice. Figure \ref{fig:esstuning} presents histograms of the number of contractions per ElliptSS update and the accepted angles before and after contracting the initial ElliptSS bracket width for the joint Ebola model of Section \ref{sec:lna_ebola}. In this instance, we were able to substantially reduce the number of contractions, and hence likelihood evaluations, per ElliptSS update while leaving the distribution of accepted angles essentially unchanged. We like to call this a "free lunch".
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/ess_tuning}
+	\caption{Distributions of the numbers of contractions per ElliptSS update and the accepted angles for an MCMC chain for the joint Ebola model of Section \ref{sec:lna_ebola} . An initial bracket width of $ 2\pi $ was used for the first 5,000 iterations (top row), after which the initial bracket width was set to $ 2\sqrt{2\log(10)}\sigma_{ElliptSS} $, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles from the initial run (bottom row).} 
+	\label{fig:esstuning}
+\end{figure}
+
+We mentioned in Section \ref{subsubsec:noncentered_parameterization} that our ElliptSS algorithm was modified slightly from that presented in \cite{murray2010} in order to facilitate tuning of the initial ElliptSS bracket width. In both cases, the distribution of proposed states, $ \bZ_{prop} $, is centered at the current state $ \bZ_{cur} $. However, the distribution of angles of accepted states using our algorithm will be centered around 0, whereas the distribution of angles for accepted proposals using the algorithm in \cite{murray2010} will be bimodal with peaks at 0 and $ 2\pi $. The algorithms are nevertheless equivalent due to the rotational symmetry of the proposals (a proposal made using an angle $ \phi $ is equivalent to a proposal using $ \phi+2\pi $). It is more natural to compute the standard deviation of the accepted angles if the distribution of angles is symmetric about zero than if it is bimodal (and would thus require a rotation).
+
+\section{Inference for Initial Compartment Volumes}
+\label{sec:lna_init_volumes}
+
+When the initial compartment volumes are included as initial parameters in the model instead of being treated as fixed, we will model them as arising from the following truncated multivariate normal distribution: \begin{equation}
+\label{eqn:lna_initdist_prior}
+\bX_0 \sim TMVN_{\mcS_X^R}(N\bp,N(\bP - \bp\bp^T)),
+\end{equation} 
+where $ \bp $ is a vector of subject--level initial state probabilities, $ \bP = \diag(\bp) $, $ N $ is the population size, and the subscript $ \mcS_X^R $ specifies the state space of $ \bX $ (so that the compartment volumes add up to $ N $ and each compartment volume is non--negative and less than the total population size at time $ t_0 $). Thus, the initial distribution is specified as the truncated normal approximation of a multinomial distribution with size $ N $ and probability vector $ \bp $. In models with multiple strata, we will similarly model the initial compartment volumes as having independent truncated multivariate normal distributions that are each approximations of multinomial distributions over initial compartment counts within each stratum. Notation and details are completely analogous to the single stratum case, and are therefore omitted for the sake of clarity.
+
+Let $ \bV = N(\bP - \bp\bp^T) $, and $ \bV^{1/2} $ be the matrix square root of $ \bV $, which we will compute using the singular value decomposition $ \bV = \bU\bD\bU^T \implies \bV^{1/2} = \bU\bD^{1/2}$. Let $ \bZ^X $ denote the LNA draws as before, and let $ \bZ^{X_0}\sim\mr{MVN}(\bs{0},\mb{I}) $ denote the vector of draws that will be mapped to $ \bX_0 $. We will update the initial compartment volumes jointly with the LNA draws using elliptical slice sampling.
+
+\begin{algorithm}[!ht]
+	\caption{Sampling LNA draws and initial volumes via elliptical slice sampling.}
+	\label{alg:elliptss_lna_initvols}
+	\begin{algorithmic}[1]
+		\Procedure{\doElliptSS2}{$ \bZ^X_{cur}, \bZ^{X_0}_{cur},\btheta,\bY,\mcI,\omega = 2\pi $}
+		\State Sample ellipse: $ \bZ^X_{prop} \sim N(\bs{0}, \mb{I}),\ \bZ^{X_0}_{prop} \sim N(\bs{0}, \mb{I})$
+		\State Sample threshold: $ u|\bx \sim \mr{Unif}(0, L(\bY|\doLNA(\bZ_{cur},\btheta,\mcI))) $
+		\State Position the bracket and make initial proposal: \vspace{-0.1in}
+		\begin{align*}
+		\psi &\sim \mr{Unif}(0,\omega)\\
+		L_\psi &\leftarrow -\psi;\ R_\psi \leftarrow L_\psi + \psi\\
+		\phi &\sim \mr{Unif}(L_\psi,R_\psi)
+		\end{align*}
+		\State Set $ \bZ^{X'} \leftarrow \bZ^X_{cur}\cos(\phi) + \bZ^X_{prop}\sin(\phi) $, $ \bX_0^\prime = \bV^{1/2}\left (\bZ^{X_0}_{cur}\cos(\phi) + \bZ^{X_0}_{prop}\sin(\phi)\right ) $ 
+		\If{$ L(\bY|\doLNA(\bZ',\btheta^\prime,\mcI)) > u $}{ accept $ \bZ^{X^\prime},\bZ^{X_0^\prime} $}
+		\State\Return{ $ \bZ' $}
+		\Else
+		\State Shrink bracket and try a new angle:
+		\State{\textbf{If:} $ \phi < 0 $}{ \textbf{then: }$ L_\phi \leftarrow\phi $ }{ \textbf{else: }$ R_\phi \leftarrow \phi $}
+		\State $ \phi \sim \mr{Unif}(L_\phi, R_\phi) $
+		\State \textbf{GoTo:} 5
+		\EndIf
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
 \section{Choice of Estimation Scale and Implications for Mixing and Convergence}
 \label{sec:est_scale_discussion}
 
-\section{Specification of Initial Compartment Volumes}
-\label{sec:lna_init_volumes}
+The parameterization we use for the MCMC estimation scale is critically important to the computational performance of our algorithms. If we can identify transformations of the model parameters that minimize strong correlations and non--linear relationships on the estimation scale, we will be able to substantially improve MCMC mixing. In our context, it will often be relatively straightforward to identify such transformations (or at least intermediate transformations that can be used in combination) since the model parameters are readily interpretable. As a general approach, we will try to identify transformations that reflect the ways in which model parameters act on the model, and then a second set of transformations to remove any boundary conditions. 
+
+As an example, we will consider the single country SEIR model fit to the incidence data from Sierra Leone in Section \ref{sec:lna_ebola}. This model included parameters for the external force of infection and the effective population size, which add a bit of complexity to the usual formulation of the SEIR dynamics as being entirely driven by endogenous contacts within a closed homogeneously mixing population. The model parameters on their natural scales are provided in Table \ref{tab:seir_params_nat}. Each of the model parameters has a clear marginal interpretation, but upon examining the pairwise scatterplots of the posterior (Figure \ref{fig:slpairs1}) it becomes obvious that the parameters interact in highly non--linear ways. We would encounter a variety of pathological computational problems if we were to naively parameterize the MCMC estimation scale without considering the ways in which the parameters interact to affect the dynamics. For example, it would be extremely difficult for any sampler that does not account for the curvature in the posterior, e.g., Hamiltonian Monte Carlo (HMC), to explore the parameter space. (An aside: we experimented with implementing the LNA in \texttt{Stan} and using HMC to sample the posterior, but repeatedly integrating the LNA ODEs along with their augmented sensitivity equations was extremely slow for even simple models).  
+
+\begin{table}[!ht]
+	\label{tab:seir_params_nat}
+	\caption{SEIR model parameter and their interpretation on their natural scales.}
+	\footnotesize
+	\centering
+	\begin{tabular}{clc}
+		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Domain}\\
+		\hline
+		$\alpha$ & Rate of infectious contact from outside the population & $[ 0,\infty) $ \\
+		$ \beta $ & Per--contact rate of infection within the population & $[0,\infty) $\\
+		$ \omega $ & Rate of transition from $ E\rightarrow I $ & $[ 0,\infty) $\\
+		$ \mu $ & Rate of transition from $ I\rightarrow R $ & $[ 0,\infty) $\\
+		$ \rho $ & Mean case detection probability & $[ 0,1] $\\
+		$ \phi $ & Negative binomial overdispersion parameter & $[ 0,\infty) $ \\
+		$ N_{eff} $ & Effective population size & $[0,N]$\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sl_pairs_1}
+	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_nat}.} 
+	\label{fig:slpairs1}
+\end{figure}
+
+We can greatly mitigate the non--linear relationships and strong correlations between the parameters by parameterizing the estimation scale in terms of how the parameters jointly affect the model dynamics and then removing the boundary conditions. Table \ref{tab:seir_params_est2} provides a list of parameters on their estimation scale that are, perhaps, reflective of an initial first pass at how we would expect the parameters to interact. For example, the parameters governing the rates of infectious contact, $ \alpha$ and $\beta $, combine with the effective population size and the infectious period duration to produce the basic reproductive numbers given initially infected individuals outside and inside the population. Still, we can see that there are some residual non--linear relationships between the log effective population size, the logit case detection probability, and the effective reproductive number. If we were to use this parameterization, we might survive the computational difficulties that the previous parameterization presented, at least for this dataset. The analogous model fit to the data from Liberia using this parameterization would (and did) struggle mightily. We can see in Figure \ref{fig:libpairs2} that this parameterization would not completely remove the curvature in the posterior on the estimation scale. 
+
+\begin{table}[!ht]
+	\label{tab:seir_params_est2}
+	\caption{SEIR model parameter and their interpretation on a possible set of estimation scales.}
+	\footnotesize
+	\centering
+	\begin{tabular}{clc}
+		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Domain}\\
+		\hline
+		$\log(R_{eff}^{ext}) = \log(\alpha N_{eff} / \mu)$ & \makecell[l]{Log basic reproductive number given an infected \\outside the population} & $(-\infty,\infty) $ \\
+		$ \log(R_{eff} - 1) = \log(\beta N_{eff}/\mu - 1) $ & \makecell[l]{Log basic reproductive number given an infected\\ inside the population and $ R_{eff} > 1 $.} & $(-\infty,\infty) $\\
+		$ \log(1/\omega) $ & Log mean latent period duration & $(-\infty,\infty) $\\
+		$ \log(1/\mu) $ & Log mean infectious period duration & $ (-\infty,\infty) $\\
+		$ \logit(\rho) $ & Logit mean case detection probability & $(-\infty,\infty) $\\
+		$ \log(\phi) $ & Log negative binomial overdispersion parameter & $ (-\infty,\infty) $ \\
+		$ \log(N_{eff}) $ & Log effective population size & $(-\infty,\log(N))$\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sl_pairs_2}
+	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
+	\label{fig:slpairs2}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=\linewidth]{figures/lib_pairs_est2}
+	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Liberia Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est2}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
+	\label{fig:libpairs2}
+\end{figure}
+
+It behooves us to think a bit more about how these combinations of model parameters interact within the model. The effective population size in this model is essentially a nuisance parameter. However, we have good reason to suspect that $ N_{eff}\rho $ should be, more or less, on the same scale as the total number of observed cases modulo the fraction of the effective population to escape infection. To motivate this, we examine how the basic reproductive number acts on the outbreak size through the final size relation for the deterministic ODE analog to our model \cite{bauer2008compartmental}: 
+\begin{equation}
+\label{eqn:final_size_relation}
+\log\frac{S_0}{S_\infty} = R0\left (1 - \frac{S_\infty}{N}\right ).
+\end{equation}
+This equation relates the fraction of the population to become infected with the basic reproductive number. As $ R0 $ increases, a larger fraction of the population becomes infected. If the effective population size is large, and if the $ R0 $ is high, the mean case detection probability should be low in order to concord with the scale of the observed counts. This is all to suggest that the combination of parameters that jointly acts on the model is the effective reproductive number, offset by the expected number of observed cases, along with the expected number of observed cases. The other reparameterization we suggest is to use the infectious period duration and the ratio of the latent to infectious period durations. The new estimation scale is given in Table \ref{tab:seir_params_est3}. On this estimation scale, the posterior for Sierra Leone is much better behaved, with weaker pairwise correlations and very little in the way of non--linear relationships between the model parameters. Similarly, the posterior for Liberia is substantially less pathological. 
+
+\begin{table}[!ht]
+	\label{tab:seir_params_est2}
+	\caption{SEIR model parameter and their interpretation on a possible set of estimation scales.}
+	\footnotesize
+	\centering
+	\begin{tabular}{clc}
+		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Domain}\\
+		\hline
+		$\log(R_{eff}^{ext}) = \log(\alpha N_{eff} / \mu)$ & \makecell[l]{Log basic reproductive number given an infected \\outside the population} & $(-\infty,\infty) $ \\
+		$ \log(R_{eff} - 1) = \log(\beta N_{eff}/\mu - 1) $ & \makecell[l]{Log basic reproductive number given an infected\\ inside the population and $ R_{eff} > 1 $.} & $(-\infty,\infty) $\\
+		$ \log(1/\omega) $ & Log mean latent period duration & $(-\infty,\infty) $\\
+		$ \log(1/\mu) $ & Log mean infectious period duration & $ (-\infty,\infty) $\\
+		$ \logit(\rho) $ & Logit mean case detection probability & $(-\infty,\infty) $\\
+		$ \log(\phi) $ & Log negative binomial overdispersion parameter & $ (-\infty,\infty) $ \\
+		$ \log(N_{eff}) $ & Log effective population size & $(-\infty,\log(N))$\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sl_pairs_2}
+	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
+	\label{fig:slpairs2}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=\linewidth]{figures/lib_pairs_est3}
+	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Liberia Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est3}.} 
+	\label{fig:libpairs3}
+\end{figure}
 
 \section{Simulation Details and Additional Results for Section \ref{subsec:lna_coverage}}
 \label{sec:lna_coverage_supplement}
@@ -134,7 +286,7 @@ The simulations presented in this section supplement the results of Section \ref
 
 Coverage for credible intervals of ODE models tended to fall below nominal levels in spite of the bias towards wide intervals due to the diffusivity of the priors. This was particularly the case in parameter regimes 1 and 3, where the basic reproductive number was lower (and hence the simulated outbreak trajectories further from their thermodynamic limits). In these parameter regimes, coverage was particularly poor due as estimates of the outbreak dynamics tended to be farther from their true values and credible intervals were too tight and did not properly account for uncertainty about the parameter estimates, particularly those governing the measurement process. Coverage levels for models fit via the LNA and MMTL approximations exceeded their nominal levels as expected. 
 
-ODE models remained the most computationally performant. However, in this exercise, the LNA substantially outperformed the MMTL approximation within PMMH in terms of ESS and ESS per CPU time. We believe this is largely attributable to the diffusivity of the priors, which not only fail to regularize the posterior, but likely pull it towards unreasonable regions of the parameter space. As a general comment, we would strongly caution practitioners against adopting such priors more broadly. While it may seem appealing to adopt such diffuse priors in pursuit of being "agnostic" to the underlying outbreak dynamics, one of the very good reasons for working within the Bayesian paradigm in this context is that we have quite a bit of prior information regarding the outbreak dynamics and reasonable ranges for the case detection probability. For example, we often have historic examples of outbreaks in similar settings that we can look to in specifying priors about the basic reproductive number. We also know, e.g., that humans do not live for centuries, so it makes little sense to assign a prior distribution for the mean infectious period duration that has mass on the scale of eons. 
+ODE models remained the most computationally performant. However, in this exercise, the LNA substantially outperformed the MMTL approximation within PMMH in terms of ESS and ESS per CPU time. We believe this is largely attributable to the diffusivity of the priors, which not only fail to regularize the posterior, but likely pull it towards unreasonable regions of the parameter space. As a general comment, we would strongly caution practitioners against adopting such priors more broadly. While it may seem appealing to adopt such diffuse priors in pursuit of being "agnostic" to the underlying outbreak dynamics, one of the very good reasons for working within the Bayesian paradigm in this context is that we have quite a bit of prior information regarding the outbreak dynamics and reasonable ranges for the case detection probability. For example, we often have historic examples of outbreaks in similar settings that we can look to in specifying priors about the basic reproductive number.
 
 \begin{table}[!ht]
 	\label{tab:lna_supplementary_coverage_sim}
@@ -221,7 +373,7 @@ ODE models remained the most computationally performant. However, in this exerci
 		\hline
 		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
 		\hline
-		LNA & log(R0) & 0.96 & 0.26 (-0.22, 0.93) & 1.68 (1.01, 3.21) & 1354 (198, 3054) & 16 (1.6, 70.2) \\ 
+		LNA & log(R0) & 0.96 & 0.26 (-0.22, 0.93) & 1.68 (1.01, 3.21) & 1354 (198, 3054) & 16.0 (1.6, 70.2) \\ 
 		LNA & $\log(\mu)$ & 0.96 & -0.23 (-0.85, 0.16) & 1.49 (0.84, 3.23) & 1210 (191, 2931) & 25.1 (2.8, 83.6) \\ 
 		LNA & $\logit(\rho)$ & 0.99 & -0.2 (-0.96, 0.84) & 3.1 (1.61, 4.6) & 935 (393, 1893) & 6.9 (2.4, 18.7) \\ 
 		LNA & $\log(\phi)$ & 0.97 & 0.02 (-0.52, 0.67) & 1.25 (1.12, 1.52) & 2851 (1425, 4283) & 13.4 (4.3, 31.6) \\ 
