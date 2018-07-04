@@ -257,22 +257,30 @@ We note that the elliptical slice sampling Algorithm \ref{alg:elliptss_lna} diff
 	\end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Initializing the LNA draws}
+\subsubsection{Initializing the LNA Draws}
 \label{subsubsec:lna_init}
 In simple models, reasonable parameter values will generally lead to valid LNA paths for initial $ \bZ\sim MVN(\bs{0},\mb{I}) $, i.e., paths that satisfy the monotonicity and positivity conditions, and thus have non--zero likelihood. However, this is not necessarily the case for complex models with many types of transition events, or when the time--series of incidence counts is long. One option is to include a re--sampling step after line 6 in Algorithm \ref{alg:doLNA}, in which $ \bZ(t_\ell) $ is redrawn in place until the conditions for a valid path over the interval are met. It is important to note that such a procedure does not sample from the correct distribution since $ \bZ $ is not actually a truncated multivariate Gaussian. To correct for this, we will ``warm--up" the LNA path with an initial run of $ \doElliptSS $ iterations in which the likelihood only consists of the indicators for whether the path is valid. Finally, note that ElliptSS, or any valid MCMC algorithm for updating $ \bZ|\btheta,\bY $ for that matter, will never lead to an invalid LNA path being accepted if the current LNA draws and model parameters correspond to a valid path. Similarly, updates to model parameters conditional on the LNA draws will also preserve the validity of LNA paths.
 
-\subsubsection{Parameter updates}
+\subsubsection{Parameter Updates}
 \label{subsubsec:lna_param_updates}
 Each MCMC iteration will consist of a number of ElliptSS updates, typically one but possibly 2--3 for complex models, followed by a set of parameter updates. We will generally use either a global adaptive random walk Metropolis algorithm (Algorithm 4 in \cite{andrieu2008tutorial}) or the adaptive non--isotropic Gaussian slice sampler (GSS) presented in Section \ref{subsubsec:slice_sampling}. In models where the initial state, $ \bX_0 $, is not fixed, we will assign the prior $ \bX_0 \sim TMVN_{\mcS_X^R}\left (N\mb{p}, N(\diag(\mb{p}) - \mb{p}\mb{p}^T)\right ) $, which is a truncated multivariate normal approximation to a multinomial with initial state probabilities, $ \mb{p} $, constrained to the state space of compartment volumes. We update $ \bX_0 $ jointly with the LNA path via ElliptSS. Additional details are presented in Section \ref{sec:lna_init_volumes}.
 
 We have found it helpful, for the purpose of assigning sensible priors to model parameters and for improving MCMC mixing and convergence, to parameterize the estimation scale on which the MCMC explores the parameter space in terms of how the parameters directly affect the model dynamics. For the SIR model, this might mean re-expressing the model parameters in terms of the basic reproductive number of an outbreak, $ R0 = \beta N /\mu $, and the recovery rate, $ \mu $. Additionally, we would like our estimation scale to be unconstrained and therefore sample (and either accept or reject) values for $ \log(R0) $ and $ \log(\mu) $. The importance of appropriately parameterizing the estimation scale is discussed at length in Section \ref{sec:est_scale_discussion}. 
 
-\subsection{Assessing model fit}
+\subsection{Assessing Model Fit}
 \label{subsec:lna_model_diags}
+
+Although model diagnostics are not the focus of this work, we briefly present two potentially useful diagnostics that are byproducts of the way in which we constructed the LNA approximation in the previous sections. We highlight these diagnostics because they are easily implemented and require little additional effort beyond caching random quantities that are generated throughout the MCMC. These diagnostics complement standard tools, such as posterior predictive checks, that can be used to diagnose model misspecification. 
+
+The first diagnostic, motivated by ideas presented in \cite{lau2014new}, leverages the structure of LNA draws as i.i.d. standard normal variates to identify time intervals over which the posterior distributions of the LNA draws deviate systematically from the prior. 
+
+can be used to locally describe the adequacy of the SEM dynamics and LNA approximation over each time interval, and that can be used as a qualitative description of the relative magnitude of the 
+
+ first diagnostic, motivated by ideas presented in \cite{lau2014new}, leverages the structure of LNA draws as i.i.d. standard normal random variables to identify time intervals over which the LNA transition densities are not a good fit for the data under the observation model. The second diagnostic compares the 
 
 \subsection{Implementation}
 \label{subsec:lna_implementation}
-The algorithms for approximate inference via the LNA and ODE models are implemented in the \texttt{stemr} $ \R $ package, which can be available, along with vignettes for reproducing our results, from the following stable GitHub repository: \texttt{https://github.com/fintzij/stemr}. The implementation is flexible and provides facilities for specification of arbitrary SEM dynamics, a variety of emission probability distributions, and capabilities for accommodating time--varying covariates, time--varying parameters, and deterministic forcings. Computationally intensive operations are implemented in \texttt{C++} via \texttt{Rcpp} and \texttt{RcppArmadillo} \cite{rcpp,rcpparmadillo}. ODE integration functions are dynamically compiled in \texttt{C++} with the help of the \texttt{odeintr} R package \cite{odeintr} and ODEs can be integrated using a variety of methods available in the \texttt{Odeint C++} library \cite{ahnert2011odeint}. Additional aspects of the implementation are discussed in Section \ref{sec:lna_implementation_vignettes}
+The algorithms for approximate inference via the LNA and ODE models are implemented in the \texttt{stemr} $ \R $ package, which can be available, along with vignettes for reproducing our results, from the following stable GitHub repository: \texttt{https://github.com/fintzij/stemr}. The implementation is flexible and provides facilities for specification of arbitrary SEM dynamics, a variety of emission probability distributions, and capabilities for accommodating time--varying covariates, time--varying parameters, and deterministic forcings. Computationally intensive operations are implemented in \texttt{C++} via \texttt{Rcpp} and \texttt{RcppArmadillo} \cite{rcpp,rcpparmadillo}. ODE integration functions are dynamically compiled in \texttt{C++} with the help of the \texttt{odeintr} R package \cite{odeintr} and ODEs can be integrated using a variety of methods available in the \texttt{Odeint C++} library \cite{ahnert2011odeint}. Additional aspects of the implementation are discussed in Section \ref{sec:lna_implementation_vignettes}.
 
 \section{Simulations}
 \label{sec:lna_simulations}
