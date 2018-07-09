@@ -11,7 +11,7 @@ In models where it is advantageous to shring the initial bracket width, we will 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/ess_tuning}
-	\caption{Distributions of the numbers of contractions per ElliptSS update and the accepted angles for an MCMC chain for the joint Ebola model of Section \ref{sec:lna_ebola} . An initial bracket width of $ 2\pi $ was used for the first 5,000 iterations (top row), after which the initial bracket width was set to $ 2\sqrt{2\log(10)}\sigma_{ElliptSS} $, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles from the initial run (bottom row).} 
+	\caption[Distributions of numbers of contractions and accepted for elliptical slice sampling.]{Distributions of the numbers of contractions per ElliptSS update and the accepted angles for an MCMC chain for the joint Ebola model of Section \ref{sec:lna_ebola} . An initial bracket width of $ 2\pi $ was used for the first 5,000 iterations (top row), after which the initial bracket width was set to $ 2\sqrt{2\log(10)}\sigma_{ElliptSS} $, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles from the initial run (bottom row).} 
 	\label{fig:esstuning}
 \end{figure}
 
@@ -83,7 +83,7 @@ As an example, consider the single country SEIR model fit to the incidence data 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_pairs_nat}
-	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_nat}.} 
+	\caption[Posterior scatterplots for Sierra Leone SEIR model parameters on their natural scales.]{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_nat}.} 
 	\label{fig:slpairs1}
 \end{figure}
 
@@ -111,7 +111,7 @@ We can mitigate the problems caused by non--linear relationships and strong corr
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_pairs_t1}
-	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
+	\caption[Posterior scatterplots for transformed Sierra Leone SEIR model parameters.]{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
 	\label{fig:slpairs2}
 \end{figure}
 
@@ -144,7 +144,7 @@ This equation relates the fraction of the population that eventually becomes inf
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_pairs_t2}
-	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est3}.} 
+	\caption[Posterior scatterplots for linear combinations of transformed Sierra Leone SEIR model parameters.]{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est3}.} 
 	\label{fig:slpairs3}
 \end{figure}
 
@@ -192,7 +192,7 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 		ODE & log($\phi$) & 0.75 & -0.25 (-1.64, 0.54) & 1.25 (0.88, 2.11) & 6529 (5459, 7778) & 189 (116, 340) \\ 
 		\hline
 	\end{tabular}
-	\caption{Detailed small population (N = 10,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\caption[Small population coverage results for SIR models fit via the LNA, ODE, and MMTL approximations.]{Detailed small population (N = 10,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
 \end{sidewaystable}	
 
 \begin{sidewaystable}[!ht]
@@ -216,7 +216,7 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 		ODE & log($\phi$) & 0.82 & -0.17 (-1.36, 0.57) & 1.04 (0.78, 1.7) & 6637 (5452, 7755) & 193 (102, 365) \\ 
 		\hline
 	\end{tabular}
-	\caption{Detailed medium population (N = 50,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\caption[Medium population coverage results for SIR models fit via the LNA, ODE, and MMTL approximations.]{Detailed medium population (N = 50,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
 \end{sidewaystable}	
 
 \begin{sidewaystable}[!ht]
@@ -240,7 +240,7 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 		ODE & log($\phi$) & 0.91 & -0.08 (-0.59, 0.46) & 0.9 (0.64, 1.44) & 6721 (5571, 7683) & 209 (117, 413) \\ 
 		\hline
 	\end{tabular}
-	\caption{Detailed large population (N = 250,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\caption[Large population coverage results for SIR models fit via the LNA, ODE, and MMTL approximations.]{Detailed large population (N = 250,000) regime results for the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
 \end{sidewaystable}	
 
 \newpage
@@ -255,7 +255,7 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 		250,000 & 0.45 (0.25, 0.78) & 33.08 (12.56, 70.86) & 87.4 (39.8, 166.87) \\
 		\hline
 	\end{tabular}
-	\caption{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE).}
+	\caption[Run times for coverage simulation SIR models fit via the LNA, ODE, and MMTL approximations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE).}
 \end{table}	
 
 \newpage
@@ -277,7 +277,7 @@ ODE models remained the most computationally performant. However, in this exerci
 
 \begin{table}[!ht]
 	\label{tab:lna_supplementary_coverage_sim}
-	\caption{Parameter regimes under which datasets were simulated and priors used to fit SIR models. Five hundred datasets were simulated for each of the parameter regimes  from a MJP with SIR dynamics. $ R0 = \beta N / \mu $ is the basic reproductive number and $ \mu $ is the recovery rate. The observed incidence was a negative binomial sample of the true incidence in each inter--observation interval with case detection probability $ \rho $ and overdispersion parameter $ \phi $.}\footnotesize
+	\caption[Fixed parameter coverage simulation setup.]{Parameter regimes under which datasets were simulated and priors used to fit SIR models. Five hundred datasets were simulated for each of the parameter regimes  from a MJP with SIR dynamics. $ R0 = \beta N / \mu $ is the basic reproductive number and $ \mu $ is the recovery rate. The observed incidence was a negative binomial sample of the true incidence in each inter--observation interval with case detection probability $ \rho $ and overdispersion parameter $ \phi $.}\footnotesize
 	\centering
 	\begin{tabular}{lcccc}
 		& \textbf{Regime 1} & \textbf{Regime 2} & \textbf{Regime 3} & \textbf{Regime 4} \\
@@ -326,7 +326,7 @@ ODE models remained the most computationally performant. However, in this exerci
 		ODE & $\log(\phi)$ & 0.94 & -0.1 (-0.73, 0.57) & 1.26 (1.14, 1.54) & 5702 (2768, 6991) & 1451 (532, 3117) \\ 
 		\hline
 	\end{tabular}
-	\caption{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 1, characterized by slow outbreak dynamics (R0 = 1.75) and low mean case detection probability ($ \rho=0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\caption[Slow dynamics, low detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 1, characterized by slow outbreak dynamics (R0 = 1.75) and low mean case detection probability ($ \rho=0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
 \end{sidewaystable}
 
 \begin{sidewaystable}[ht]
@@ -350,7 +350,7 @@ ODE models remained the most computationally performant. However, in this exerci
 		ODE & $\log(\phi)$ & 0.95 & -0.03 (-0.64, 0.67) & 1.33 (1.23, 1.6) & 5634 (4377, 6661) & 2027 (995, 4479) \\ 
 		\hline
 	\end{tabular}
-	\caption{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 2, characterized by fast outbreak dynamics (R0 = 3.25) and low mean case detection probability ($ \rho = 0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\caption[Fast dynamics, low detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 2, characterized by fast outbreak dynamics (R0 = 3.25) and low mean case detection probability ($ \rho = 0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
 \end{sidewaystable}
 
 \begin{sidewaystable}[ht]
@@ -374,7 +374,7 @@ ODE models remained the most computationally performant. However, in this exerci
 		ODE & $\log(\phi)$ & 0.91 & -0.15 (-0.75, 0.48) & 1.16 (1.08, 1.34) & 5787 (2679, 7035) & 1754 (640, 4124) \\ 
 		\hline
 	\end{tabular}
-	\caption{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 3, characterized by slow outbreak dynamics (R0 = 1.75) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\caption[Slow dynamics, high detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 3, characterized by slow outbreak dynamics (R0 = 1.75) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
 \end{sidewaystable}
 
 \begin{sidewaystable}[ht]
@@ -398,7 +398,7 @@ ODE models remained the most computationally performant. However, in this exerci
 		ODE & $\log(\phi)$ & 0.94 & -0.07 (-0.66, 0.62) & 1.26 (1.17, 1.48) & 5697 (4518, 6929) & 2490 (1211, 6558) \\ 
 		\hline
 	\end{tabular}
-	\caption{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 4, characterized by fast outbreak dynamics (R0 = 3.25) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\caption[Fast dynamics, high detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 4, characterized by fast outbreak dynamics (R0 = 3.25) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
 \end{sidewaystable}
 
 \begin{table}[ht]
@@ -413,7 +413,7 @@ ODE models remained the most computationally performant. However, in this exerci
 		Regime 4& 0.28 (0.17, 0.36) & 14.66 (11.43, 20.58) & 49.04 (35.72, 67.53) \\ 
 		\hline
 	\end{tabular}
-	\caption{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in fixed parameter coverage simulations. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). True parameter values are presented in Table \ref{tab:lna_supplementary_coverage_sim}. Parameter regimes 1 and 3 had slower outbreak dynamics (R0 = 1.75, vs. R0 = 3.25). Parameter regimes 3 and 4 had higher case detection rates ($ \rho = 0.75 $, vs $ \rho = 0.25 $).}
+	\caption[Run times for fixed parameter coverage simulations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in fixed parameter coverage simulations. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). True parameter values are presented in Table \ref{tab:lna_supplementary_coverage_sim}. Parameter regimes 1 and 3 had slower outbreak dynamics (R0 = 1.75, vs. R0 = 3.25). Parameter regimes 3 and 4 had higher case detection rates ($ \rho = 0.75 $, vs $ \rho = 0.25 $).}
 \end{table}
 
 \section{LNA Implementation Details and LNA Model Vignettes}

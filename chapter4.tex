@@ -171,7 +171,7 @@ To this point, we have discussed how to approximate transition densities of a MJ
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/lna_centered_traces}
-\caption{Posterior traceplots for parameters of interest for a single MCMC chain of an SIR model fit to negative binomial distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating the non--restarting LNA for $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
+\caption[Traceplots for an MCMC chain using a centered LNA parameterization.]{Posterior traceplots for parameters of interest for a single MCMC chain of an SIR model fit to negative binomial distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating the non--restarting LNA for $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
 \label{fig:lna_centered_traces}
 \end{figure}
 
@@ -212,7 +212,7 @@ The NCP of the log--incidence process substantially improves the mixing of MCMC 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/lna_noncentered_traces}
-	\caption{Posterior traceplots of parameters of interest sampled by a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_noncentered_posterior}, alternately updating $ \bZ|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bZ,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
+	\caption[Traceplots for an MCMC chain using a non--centered LNA parameterization.]{Posterior traceplots of parameters of interest sampled by a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_noncentered_posterior}, alternately updating $ \bZ|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bZ,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
 	\label{fig:lna_noncentered_traces}
 \end{figure}
 
@@ -221,7 +221,7 @@ In each iteration of a DA MCMC algorithm, we alternate between updates to the la
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/lna_sampling_diagram}
-	\caption{Centered (top) and non--centered (bottom) parameterizations of an LNA incidence path. In the CP, the log--incidence is normally distributed with mean and covariance obtained by solving the LNA ODEs, (\ref{eqn:lna_ode_drift}) and (\ref{eqn:lna_ode_diffusion}). In the NCP, the log--incidence is a draw from a standard normal distribution that is deterministically mapped to a sample path via the $ \doLNA $ algorithm. In both the CP and NCP, state at the end of each interval determines the initial conditions of the LNA ODEs for the next interval. Plots of CP LNA transition densities are rescaled for clarity.}
+	\caption[Centered and non--centered LNA paths.]{Centered (top) and non--centered (bottom) parameterizations of an LNA incidence path. In the CP, the log--incidence is normally distributed with mean and covariance obtained by solving the LNA ODEs, (\ref{eqn:lna_ode_drift}) and (\ref{eqn:lna_ode_diffusion}). In the NCP, the log--incidence is a draw from a standard normal distribution that is deterministically mapped to a sample path via the $ \doLNA $ algorithm. In both the CP and NCP, state at the end of each interval determines the initial conditions of the LNA ODEs for the next interval. Plots of CP LNA transition densities are rescaled for clarity.}
 	\label{fig:lna_sampling_diagram}
 \end{figure}
 
@@ -286,7 +286,7 @@ The fidelity of each approximation to the original MJP depends on the population
 
 \begin{table}[!ht]
 	\label{tab:lna_coverage_sim}
-	\caption{Population sizes, initial conditions, and priors under which datasets were simulated. Five hundred datasets were simulated for each of the population size regimesEach outbreak was simulated from a MJP with SIR dynamics. The observed incidence was a negative binomial sample of the true incidence in each inter--observation interval.}\small
+	\caption[LNA coverage simulation settings.]{Population sizes, initial conditions, and priors under which datasets were simulated. Five hundred datasets were simulated for each of the population size regimesEach outbreak was simulated from a MJP with SIR dynamics. The observed incidence was a negative binomial sample of the true incidence in each inter--observation interval.}\small
 	\centering
 	\begin{tabular}{lccc}
 		
@@ -314,7 +314,7 @@ This simulation was designed to be generous to the approximations that were used
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.95\textwidth]{figures/lna_coverage_plots_main}
-	\caption{Comparison of SIR models fit to 500 datasets simulated in populations of three different sizes. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. The rows correspond to the proportion of runs where the 95\% Bayesian credible interval covered the true parameter values, the posterior median deviation, and the widths of 95\% Bayesian credible intervals. The simulation was repeated for three regimes of population sizes and initially infected individuals (columns).}
+	\caption[Coverage simulation results for SIR models fit via the LNA, ODE, and MMTL approximations.]{Comparison of SIR models fit to 500 datasets simulated in populations of three different sizes. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. The rows correspond to the proportion of runs where the 95\% Bayesian credible interval covered the true parameter values, the posterior median deviation, and the widths of 95\% Bayesian credible intervals. The simulation was repeated for three regimes of population sizes and initially infected individuals (columns).}
 	\label{fig:lna_coverage_main}
 \end{figure}
 
@@ -324,7 +324,7 @@ We note that these results are not intended to suggest that there is no place fo
  
  \begin{table}[!h]
  	\label{tab:lna_coverage_compstats}
- 	\caption{Run times, effective sample sizes, and relative geometric mean (GM) log--posterior effective sample size (ESS) per CPU time for models fit via the ODE, LNA, and MMTL approximations. Run times and ESS are computed over all chains. The GM log--posterior ESS/CPU time was computed over the five chains for each model and divided by the corresponding GM ESS/CPU time for the MMTL model. We report 50\% (2.5\%, 97.5\%) quantiles of the CPU time, ESS, and relative GM ESS/CPU time.}\footnotesize
+ 	\caption[Computational performance of the ODE, LNA, and MMTL approximations.]{Run times, effective sample sizes, and relative geometric mean (GM) log--posterior effective sample size (ESS) per CPU time for models fit via the ODE, LNA, and MMTL approximations. Run times and ESS are computed over all chains. The GM log--posterior ESS/CPU time was computed over the five chains for each model and divided by the corresponding GM ESS/CPU time for the MMTL model. We report 50\% (2.5\%, 97.5\%) quantiles of the CPU time, ESS, and relative GM ESS/CPU time.}\footnotesize
  	\centering
  	\begin{tabular}{lccc}		
  		& \textbf{ODE} & \textbf{LNA} & \textbf{MMTL} \\\hline
@@ -361,7 +361,7 @@ The full posterior predictive distribution provides a diagnostic for whether the
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{figures/sir_diag_plots}
-	\caption{Estimated latent posterior (left), partial posterior predictive (middle), and full posterior predictive (right) distributions. The true path is the red line in the leftmost plot and the observed incidence counts are the solid green dots. The shaded bands, in order of lightest to darkest, correspond to pointwise posterior 95\%, 80\%, and 50\% credible intervals, with the pointwise posterior median given by the corresponding colored solid line.}
+	\caption[SIR model latent posterior, partial posterior predictive, and full posterior distributions.]{Estimated latent posterior (left), partial posterior predictive (middle), and full posterior predictive (right) distributions. The true path is the red line in the leftmost plot and the observed incidence counts are the solid green dots. The shaded bands, in order of lightest to darkest, correspond to pointwise posterior 95\%, 80\%, and 50\% credible intervals, with the pointwise posterior median given by the corresponding colored solid line.}
 	\label{fig:sirdiagplots}
 \end{figure}
 
@@ -370,7 +370,7 @@ The second diagnostic, motivated by ideas presented in \cite{lau2014new}, levera
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{figures/sir_residplots}
-	\caption{Posterior quantiles of latent recursive residuals for infections (left) and recoveries (right). Solid lines of varying shades correspond to the posterior quantiles, light horizontal lines in the background correspond to the theoretical quantiles under the prior.}
+	\caption[SIR model latent recursive residuals.]{Posterior quantiles of latent recursive residuals for infections (left) and recoveries (right). Solid lines of varying shades correspond to the posterior quantiles, light horizontal lines in the background correspond to the theoretical quantiles under the prior.}
 	\label{fig:sirresidplots}
 \end{figure}
 
