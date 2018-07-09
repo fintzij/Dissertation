@@ -82,12 +82,12 @@ As an example, consider the single country SEIR model fit to the incidence data 
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=\linewidth]{figures/sl_pairs_1}
+	\includegraphics[width=\linewidth]{figures/sln_pairs_nat}
 	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_nat}.} 
 	\label{fig:slpairs1}
 \end{figure}
 
-We can mitigate the problems caused by non--linear relationships and strong correlations among parameters by parameterizing the estimation scale in terms of how the parameters jointly affect the model dynamics and then removing the boundary conditions. Table \ref{tab:seir_params_est2} provides a list of parameters on their estimation scale that are reflective of an initial first pass at how we would expect the parameters to interact. For example, the parameters governing the rates of infectious contact, $ \alpha$ and $\beta $, combine with the effective population size and the infectious period duration to produce the basic reproductive numbers with respect to initially infected individuals outside and inside the population. Still, we can see that there are some residual non--linear relationships between the log effective population size, the logit case detection probability, and the effective reproductive number. If we were to use this parameterization, we might survive the computational difficulties that the previous parameterization presented, at least for this dataset. The analogous model fit to the data from Liberia using this parameterization would (and did) struggle mightily. We can see in Figure \ref{fig:libpairs2} that this parameterization still results in non--linear relationships in the posterior for the model fit to the Liberia dataset. 
+We can mitigate the problems caused by non--linear relationships and strong correlations among parameters by parameterizing the estimation scale in terms of how the parameters jointly affect the model dynamics and then removing the boundary conditions. Table \ref{tab:seir_params_est2} provides a list of parameters on their estimation scale that are reflective of an initial first pass at how we would expect the parameters to interact. For example, the parameters governing the rates of infectious contact, $ \alpha$ and $\beta $, combine with the effective population size and the infectious period duration to produce the basic reproductive numbers with respect to initially infected individuals outside and inside the population. Still, we can see that there are some residual non--linear relationships between the log effective population size, the logit case detection probability, and the effective reproductive number.
 
 \begin{table}[!ht]
 	\label{tab:seir_params_est2}
@@ -110,24 +110,17 @@ We can mitigate the problems caused by non--linear relationships and strong corr
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=\linewidth]{figures/sl_pairs_2}
+	\includegraphics[width=\linewidth]{figures/sln_pairs_t1}
 	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
 	\label{fig:slpairs2}
 \end{figure}
 
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=\linewidth]{figures/lib_pairs_est2}
-	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Liberia Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est2}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
-	\label{fig:libpairs2}
-\end{figure}
-
-It behooves us to consider how the previous functions of model parameters interact within the model. The effective population size, on its own, in this model is essentially a nuisance parameter. However, combined with the mean case detection probability, the mean case detection rate, $ \rho N_{eff} $ should be, more or less, on the same scale as the total number of observed cases modulo the fraction of the effective population to escape infection. We note that estimation of this quantity is stable even when the population size is misspecified, see, e.g., \cite{fintzi2017efficient, koepke2016predictive}. Moreover, we should suspect, \textit{a priori}, that the basic reproductive number interacts with the mean case detection rate. To understand this, we examine how the basic reproductive number acts on the outbreak size through the final size relation for the deterministic ODE analog to our model \cite{bauer2008compartmental}: 
+We should give additional consideration to how the previous functions of model parameters interact within the model. The effective population size, on its own, in this model is essentially a nuisance parameter. However, combined with the mean case detection probability, the mean case detection rate, $ \rho N_{eff} $ should be, more or less, on the same scale as the total number of observed cases modulo the fraction of the effective population to escape infection. We note that estimation of this quantity is stable even when the population size is misspecified, see, e.g., \cite{fintzi2017efficient, koepke2016predictive}. Moreover, we should suspect, \textit{a priori}, that the basic reproductive number interacts with the mean case detection rate. To understand this, we examine how the basic reproductive number acts on the outbreak size through the final size relation for the deterministic ODE analog to our model \cite{bauer2008compartmental}: 
 \begin{equation}
 \label{eqn:final_size_relation}
 \log\frac{S_0}{S_\infty} = R0\left (1 - \frac{S_\infty}{N}\right ).
 \end{equation}
-This equation relates the fraction of the population that eventually becomes infected with the basic reproductive number. As $ R0 $ increases, a larger fraction of the population becomes infected. If the effective population size is large, and if the $ R0 $ is high, the mean case detection probability should be low so that the mean case detection rate is concordant with the scale of the observed counts. This is all to suggest that the combination of parameters that jointly acts on the model is the effective reproductive number, offset by the mean case detection rate. The other reparameterization we suggest is to use the infectious period duration and the ratio of the latent to infectious period durations. The new estimation scale is given in Table \ref{tab:seir_params_est3}. On this estimation scale, the posterior for Sierra Leone is much better behaved, with weaker pairwise correlations and very little in the way of non--linear relationships between the model parameters. Similarly, the posterior for Liberia is substantially less pathological. 
+This equation relates the fraction of the population that eventually becomes infected with the basic reproductive number. As $ R0 $ increases, a larger fraction of the population becomes infected. If the effective population size is large, and if the $ R0 $ is high, the mean case detection probability should be low so that the mean case detection rate is concordant with the scale of the observed counts. This is all to suggest that the combination of parameters that jointly acts on the model is the effective reproductive number, offset by the mean case detection rate. The other reparameterization we suggest is to use the infectious period duration and the ratio of the latent to infectious period durations. The new estimation scale is given in Table \ref{tab:seir_params_est3}. On this estimation scale, the posterior for Sierra Leone is much better behaved, with weaker pairwise correlations and very little in the way of non--linear relationships between the model parameters.
 
 \begin{table}[!ht]
 	\label{tab:seir_params_est3}
@@ -150,17 +143,11 @@ This equation relates the fraction of the population that eventually becomes inf
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=\linewidth]{figures/sl_pairs_3}
+	\includegraphics[width=\linewidth]{figures/sln_pairs_t2}
 	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est3}.} 
 	\label{fig:slpairs3}
 \end{figure}
 
-\begin{figure}[!ht]
-	\centering
-%	\includegraphics[width=\linewidth]{figures/lib_pairs_est3}
-	\caption{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Liberia Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est3}.} 
-	\label{fig:libpairs3}
-\end{figure}
 
 \section{Simulation Details and Additional Results for Section \ref{subsec:lna_coverage}}
 \label{sec:lna_coverage_supplement}

@@ -171,14 +171,17 @@ To this point, we have discussed how to approximate transition densities of a MJ
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/lna_centered_traces}
-\caption{Posterior traceplots for parameters of interest sampled by a single MCMC chain of an SIR model fit to negative binomial distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating the non--restarting LNA for $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
+\caption{Posterior traceplots for parameters of interest for a single MCMC chain of an SIR model fit to negative binomial distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_approximate_posterior}, alternately updating the non--restarting LNA for $ \bNtil|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bNtil,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
 \label{fig:lna_centered_traces}
 \end{figure}
 
 \subsubsection{Non--centered Parameterization}
 \label{subsubsec:noncentered_parameterization}	
 
-We can improve the mixing of our MCMC chains by reparameterizing the log--incidence process as a deterministic mapping of standard normal random variables, $ \bZ\sim MVN(\bs{0},\mb{I}) $, which are \textit{a priori} independent of the model parameters. This NCP is obtained by noting that if $ \bNtil(t_\ell)\sim MVN(\bmu(t\ell),\bSigma(t_\ell) $ and $ \bZ(t_\ell)\sim MVN(\bs{0},\mb{I}) $, then $ \bNtil \overset{\mcL}{=}\widetilde{\bW}(t_\ell),\ \widetilde{\bW}(t_\ell) = \bmu(t_\ell) + \bSigma(t_\ell)^{1/2}\bZ(t_\ell) $. We now target the joint posterior of the model parameters and the non--centered LNA draws,
+We can improve the mixing of our MCMC chains by reparameterizing the log--incidence process as a deterministic mapping of standard normal random variables, $ \bZ\sim MVN(\bs{0},\mb{I}) $, which are \textit{a priori} independent of the model parameters. Let $ \bNtil(t_\ell)\sim MVN(\bmu(t_\ell),\bSigma(t_\ell) $ and $ \bZ(t_\ell)\sim MVN(\bs{0},\mb{I}) $. Then the NCP is given by $ (\btheta,\bZ) $ and maps onto the CP via \begin{align}
+\label{eqn:lna_ncp}
+ \bNtil(t_\ell) \overset{\mcL}{=}\widetilde{\bW}(t_\ell),\ \widetilde{\bW}(t_\ell) = \bmu(t_\ell) + \bSigma(t_\ell)^{1/2}\bZ(t_\ell).
+\end{align} We now target the joint posterior of the model parameters and the non--centered LNA draws,
 \begin{align}
 \label{eqn:lna_noncentered_posterior}
 \pi(\btheta,\bZ|\bY) &\propto L(\bY|\doLNA(\bZ,\btheta,\mcI))\ind{\bN(\bZ,\btheta,\mcI)\in\mcS_N^R}\ind{\bX(\bZ,\btheta,\mcI)\in\mcS_X^R}\pi(\bZ)\pi(\btheta).
@@ -209,7 +212,7 @@ The NCP of the log--incidence process substantially improves the mixing of MCMC 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/lna_noncentered_traces}
-	\caption{Posterior traceplots for parameters of interest sampled by a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_noncentered_posterior}, alternately updating $ \bZ|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bZ,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
+	\caption{Posterior traceplots of parameters of interest sampled by a single MCMC chain of an SIR model fit to Poisson distributed incidence data. MCMC targeted the posterior, \ref{eqn:lna_noncentered_posterior}, alternately updating $ \bZ|\btheta,\bY $ via elliptical slice sampling, and $ \btheta|\bZ,\bY $ via a multivariate random walk Metropolis algorithm. $ R_0 = \beta N / \mu$ is the basic reproductive number, $ 1/\mu $ is the mean infectious period duration, and $ \rho $ is the mean case detection rate. The true values of $ R_0,\ 1/\mu,$ and $ \rho $ were 3.5, 7, and 0.5, respectively.}
 	\label{fig:lna_noncentered_traces}
 \end{figure}
 
@@ -267,17 +270,6 @@ Each MCMC iteration will consist of a number of ElliptSS updates, typically one 
 
 We have found it helpful, for the purpose of assigning sensible priors to model parameters and for improving MCMC mixing and convergence, to parameterize the estimation scale on which the MCMC explores the parameter space in terms of how the parameters directly affect the model dynamics. For the SIR model, this might mean re-expressing the model parameters in terms of the basic reproductive number of an outbreak, $ R0 = \beta N /\mu $, and the recovery rate, $ \mu $. Additionally, we would like our estimation scale to be unconstrained and therefore sample (and either accept or reject) values for $ \log(R0) $ and $ \log(\mu) $. The importance of appropriately parameterizing the estimation scale is discussed at length in Section \ref{sec:est_scale_discussion}. 
 
-\subsection{Assessing Model Fit}
-\label{subsec:lna_model_diags}
-
-Although model diagnostics are not the focus of this work, we briefly present two potentially useful diagnostics that are byproducts of the way in which we constructed the LNA approximation in the previous sections. We highlight these diagnostics because they are easily implemented and require little additional effort beyond caching random quantities that are generated throughout the MCMC. These diagnostics complement standard tools, such as posterior predictive checks, that can be used to diagnose model misspecification. 
-
-The first diagnostic, motivated by ideas presented in \cite{lau2014new}, leverages the structure of LNA draws as i.i.d. standard normal variates to identify time intervals over which the posterior distributions of the LNA draws deviate systematically from the prior. 
-
-can be used to locally describe the adequacy of the SEM dynamics and LNA approximation over each time interval, and that can be used as a qualitative description of the relative magnitude of the 
-
- first diagnostic, motivated by ideas presented in \cite{lau2014new}, leverages the structure of LNA draws as i.i.d. standard normal random variables to identify time intervals over which the LNA transition densities are not a good fit for the data under the observation model. The second diagnostic compares the 
-
 \subsection{Implementation}
 \label{subsec:lna_implementation}
 The algorithms for approximate inference via the LNA and ODE models are implemented in the \texttt{stemr} $ \R $ package, which can be available, along with vignettes for reproducing our results, from the following stable GitHub repository: \texttt{https://github.com/fintzij/stemr}. The implementation is flexible and provides facilities for specification of arbitrary SEM dynamics, a variety of emission probability distributions, and capabilities for accommodating time--varying covariates, time--varying parameters, and deterministic forcings. Computationally intensive operations are implemented in \texttt{C++} via \texttt{Rcpp} and \texttt{RcppArmadillo} \cite{rcpp,rcpparmadillo}. ODE integration functions are dynamically compiled in \texttt{C++} with the help of the \texttt{odeintr} R package \cite{odeintr} and ODEs can be integrated using a variety of methods available in the \texttt{Odeint C++} library \cite{ahnert2011odeint}. Additional aspects of the implementation are discussed in Section \ref{sec:lna_implementation_vignettes}.
@@ -319,7 +311,7 @@ The fidelity of each approximation to the original MJP depends on the population
 
 This simulation was designed to be generous to the approximations that were used in fitting SEMs to the simulated data. The initial compartment counts and true population sizes were known, and there was no misspecification with respect to either the sampling model or the epidemic dynamics. Despite this, the ODE models struggle to reliably recover the true parameters, particularly those governing the sampling process. As shown in Figure \ref{fig:lna_coverage_main}, coverage of credible intervals for ODE models was low for all model parameters, and this was only somewhat mitigated as the population size increased. Coverage of credible intervals for models fit via the LNA and via MMTL was close to the nominal 95\% level for all model parameters in all three population size regimes. Further inspection of the posterior median errors (middle row of Figure \ref{fig:lna_coverage_main}) and the widths of 95\% credible intervals (bottom row of Figure \ref{fig:lna_coverage_main}) provides intuition for why the ODE performs so poorly. Estimates of the case detection probability tend to be high and estimates of the negative binomial over--dispersion parameter are low (corresponding to large variances in the conditional distribution of observed incidence). Furthermore, credible intervals for the basic reproductive number and recovery rate obtained via the ODE approximation tend to be narrower than LNA and MMTL credible intervals. This is in agreement with findings by other authors who have found that ODE models tend to underestimate uncertainty in epidemic dynamics (see e.g., \cite{king2015avoidable}). Taken together, these results suggest that the LNA is, at least in this simple example, about as good at approximating the original MJP as is the more exact MMTL. 
 
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.95\textwidth]{figures/lna_coverage_plots_main}
 	\caption{Comparison of SIR models fit to 500 datasets simulated in populations of three different sizes. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. The rows correspond to the proportion of runs where the 95\% Bayesian credible interval covered the true parameter values, the posterior median deviation, and the widths of 95\% Bayesian credible intervals. The simulation was repeated for three regimes of population sizes and initially infected individuals (columns).}
@@ -343,6 +335,60 @@ We note that these results are not intended to suggest that there is no place fo
  		&&&
  	\end{tabular} 
  \end{table}
+
+
+\subsection{Assessing Model Fit}
+\label{subsec:lna_model_diags}
+
+Although model assessment is not the focus of this work, we emphasize the importance of diagnostics and briefly present several tools that can be used to interrogate SEMs fit via the LNA. We highlight the following diagnostics because they are easily implemented post-hoc and require little additional effort beyond caching random quantities throughout the MCMC run. 
+
+One of the central objectives in infectious disease modeling is to estimate the severity and duration of an outbreak \cite{lofgren2014opinion}. However, the discrete and partial nature of the data makes it difficult to ascertain whether our estimates of the latent epidemic process reconstruct the true path of the outbreak (left plot, Figure \ref{fig:sirdiagplots}). A standard alternative is to check whether the observed incidence is captured in the posterior predictive distribution. 
+
+The partial posterior predictive distribution, shown in the middle plot of Figure \ref{fig:sirdiagplots}, is the predicted observed incidence, conditional on the outbreak being distributed according to the epidemic paths that we believe to be likely given the data at hand (i.e. the latent posterior). Here, new data are sampled using the posterior distribution of the observation model conditionally on the paths in the latent posterior sample. Hence, for replication $ j $, we simulate \begin{equation}
+\label{eqn:lna_partial_postpred}
+Y_\ell^{(j)}|\bN_{post}^{(j)},\btheta_{post}^{(j)} \sim \mr{Neg.Binom.}\left (\mu = \rho^{(j)}\left (N_{SI}^{(j)}(t_\ell) - N_{SI}^{(j)}(t_{\ell-1})\right ),\sigma^2 = \mu + \mu^2 / \phi^{(j)} \right ),
+\end{equation} 
+where $ \bN_{post}^{(j)} $ and $ \btheta_{post} $ are the $ j^{th} $ posterior samples for the latent path and model parameters. 
+
+The full posterior predictive distribution, shown in the right plot of Figure \ref{fig:sirdiagplots}, is the predicted observed incidence, integrated over the predicted latent incidence given the current data. Under the full posterior predictive distribution, new data are sampled by simulating a new latent path under the posterior distribution of the epidemic model parameters, and then simulating a new dataset conditionally on the simulated path. So, for replication $ j $, we simulate \begin{align}
+\label{eqn:lna_full_postpred}
+\bZ^{(j)}_{rep} &\overset{i.i.d.}{\sim} N(0,1),\ \bN^{(j)}_{rep} = \doLNA(\bZ^{(j)}_{rep},\btheta_{post}^{(j)},\mcI), \\ 
+Y_\ell^{(j)}|\bN_{rep}^{(j)},\btheta_{post}^{(j)} &\sim \mr{Neg.Binom.}\left (\mu = \rho^{(j)}\left (N_{SI}^{(j)}(t_\ell) - N_{SI}^{(j)}(t_{\ell-1})\right ),\sigma^2 = \mu + \mu^2 / \phi^{(j)} \right ),
+\end{align} 
+where $ \bZ_{rep}^{(j)} $ is a new vector of LNA draws. 
+
+The full posterior predictive distribution provides a diagnostic for whether the joint model for the latent epidemic process and the observation process is reasonable as a data generating mechanism. In contrast, the partial posterior predictive distribution is useful for qualitatively assessing the adequacy of the emission distribution. Note that, when simulating from the full posterior predictive distribution, the replicated paths must still satisfy the constraints on the state space of $ \bN $ and $ \bX $. We can sample from the approximate posterior predictive distribution using the procedure described in Section \ref{subsubsec:lna_init} to avoid rejection sampling. 
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figures/sir_diag_plots}
+	\caption{Estimated latent posterior (left), partial posterior predictive (middle), and full posterior predictive (right) distributions. The true path is the red line in the leftmost plot and the observed incidence counts are the solid green dots. The shaded bands, in order of lightest to darkest, correspond to pointwise posterior 95\%, 80\%, and 50\% credible intervals, with the pointwise posterior median given by the corresponding colored solid line.}
+	\label{fig:sirdiagplots}
+\end{figure}
+
+The second diagnostic, motivated by ideas presented in \cite{lau2014new}, leverages the structure of LNA draws as i.i.d. standard normal variates to identify time intervals over which the observed incidence suggests that dynamics of the latent process are not well approximated by the LNA prior. The normal CDF values of the LNA draws, $ \bU_\bZ \equiv \Phi(\bZ) \overset{i.i.d.}{\sim} \mr{Unif}(0,1) $, can be understood as latent recursive residuals in the sense of \cite{cox1968general} since each LNA increment is a deterministic function of the model parameters and the LNA draws, $ \bZ $. Suppose that the emission distribution reasonably describes the sampling mechanism by which we the observed incidence is related to the true incidence. Then, the latent residuals for intervals where the latent process is well approximated by the LNA will be approximately uniformly distributed, whereas we would expect to see systematic deviations from uniformity when the LNA is a poor approximation. This is clearly the case in Figure \ref{fig:sirresidplots}, where quantiles of the latent residuals are clearly not uniform towards the start and end of the outbreak. This is not unexpected since the number of MJP transitions during these time periods are relatively low. The interpretation of this diagnostic as an indicator for misspecification in the latent epidemic process depends on the sampling model being approximately correct, and it is thus most useful in conjunction with other model diagnostics. Still, even when the emission distribution is unreasonable, e.g., if the case detection probability varies over time, we might be able to use the latent residuals to identify time intervals where the joint model is misspecified.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figures/sir_residplots}
+	\caption{Posterior quantiles of latent recursive residuals for infections (left) and recoveries (right). Solid lines of varying shades correspond to the posterior quantiles, light horizontal lines in the background correspond to the theoretical quantiles under the prior.}
+	\label{fig:sirresidplots}
+\end{figure}
+
+Finally, we can interrogate the validity of the SEM and whether it reflects the temporal dependencies in the data by computing summary statistics for the observed incidence and posterior predictive incidence. A variety of summary statistics are presented in the supplement of \cite{king2015avoidable}, which are computed and compared for the observed and predicted data. These include the lag 1 autocorrelation (ACF) and the detrended autocorrelations at lags 1, 2, and 3. We will also consider the partial autocorrelation function (PACF) \cite{brockwell2013time} of the log--transformed data. We compute the PACF of $ \bYtil = \log(\bY + 0.5) $ at lag $ k $ as 
+\begin{align}
+\label{eqn:lna_pacf}
+\alpha(1)& =  \Cor\left (\bYtil_{(t)}, \bYtil_{(t+1)}\right ), \\
+\alpha(k) &= \Cor\left (\bYtil_{(t+k)} - \Proj_{(t,k)}\left (\bYtil_{(t+k)}\right ),\ \bYtil_{(t)} - \Proj_{(t,k)}\left (\bYtil_{(t)}\right )\right ),
+\end{align}
+where the constant 0.5 is added to stabilize the logarithm for zero counts and $ \Proj_{(t,k)}(\bYtil_{(j)}) $ is the projection of $ \bYtil_{(j)} $ onto the span of $ \bYtil_{(t+1)},\dots,\bY_{(t+k-1)} $ (N.B. this is equivalent to regressing $ \bYtil_{(j)} $ on $ \bYtil_{(t+1)},\dots,\bY_{(t+k-1)} $). The PACF is a measure of the residual autocorrelation at a particular lag, adjusting for the linear dependencies on the intermediate variables. We should expect the PACF of the predicted data in the full posterior predictive distribution to be distributed around zero for lags greater than one since the SEM is a first order Markov process. If the distributions of PACFs for predicted datasets in the partial predictive distribution are pulled away from zero for higher order lags, this may be indicative of long range correlation in the latent process that is unaccounted for by the SEM dynamics. Furthermore, we can compare the PACF for the observed and predicted data to see whether the model reflects the observed temporal dependence. Plots of the observed and predicted PACFs in Figure \ref{fig:sirpacfplots} do not suggest any model misspecification (as expected, since there was none). 
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/sir_pacf_plots}
+	\caption[Posterior predictive distributions of partial autocorrelations at various lags.]{Distributions of partial autocorrelations at lags 1, 2, and 3 for datasets generated under the full and partial posterior predictive distributions. Vertical red lines are the partial autocorrelations for the observed incidence data at the respective lags.}
+	\label{fig:sirpacfplots}
+\end{figure}
+
 
 \section{Application: Modeling the Spread of Ebola}
 \label{sec:lna_ebola}
