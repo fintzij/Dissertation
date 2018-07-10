@@ -389,6 +389,13 @@ where the constant 0.5 is added to stabilize the logarithm for zero counts and $
 	\label{fig:sirpacfplots}
 \end{figure}
 
+\subsection{A Stratified SEIR Model for a Simulated Outbreak}
+\label{subsec:ebola_synth}
+
+In the next section, we will jointly model the spread of Ebola in Guinea, Liberia, and Sierra Leone during the 2014--2015 outbreak. To do so, we will fit a stratified SEIR model allowing for country specific epidemic dynamics as well as interactions between the countries. It goes without saying that the model, despite being fully stochastic in all aspects of the measurement and epidemic process, is still an overly simplistic abstraction of the outbreak with respect to some obvious and potentially important complexities, e.g., spatial heterogeneity and time varying dynamics. However, it is a good starting point from a modeling perspective, and is highly non--trivial to fit due to the number of parameters and size of the latent space. Due to the myriad challenges involved in fitting the model, we will first assess its performance in recovering the true parameters and latent path for a simulated outbreak.
+
+With an eye on jointly modeling 
+
 
 \section{Application: Modeling the Spread of Ebola}
 \label{sec:lna_ebola}
