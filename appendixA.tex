@@ -306,99 +306,107 @@ ODE models remained the most computationally performant. However, in this exerci
 
 
 \begin{sidewaystable}[ht]
-	\small
-	\centering
-	\begin{tabular}{lcccccc}
-		\hline
-		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
-		\hline
-		LNA & log(R0) & 0.99 & 0.23 (-0.33, 0.85) & 1.9 (1.2, 3.49) & 1200 (251, 2508) & 19.1 (2.7, 76.4) \\ 
-		LNA & $\log(\mu)$ & 0.98 & -0.21 (-0.81, 0.28) & 1.73 (1.04, 3.42) & 1086 (228, 2295) & 27.9 (3.7, 100.5) \\ 
-		LNA & $\logit(\rho)$ & 0.98 & -0.06 (-0.46, 0.4) & 1.07 (0.73, 1.67) & 1233 (360, 2180) & 8.22 (2.03, 21.4) \\ 
-		LNA & $\log(\phi)$ & 0.98 & 0.01 (-0.51, 0.74) & 1.32 (1.17, 1.71) & 2950 (1145, 4334) & 10.8 (2.1, 30.0) \\ 
-		MMTL & log(R0) & 0.99 & 0.22 (-0.86, 0.87) & 4.4 (1.92, 53.26) & 232 (110, 445) & --- \\ 
-		MMTL & $\log(\mu)$ & 1.00 & -0.22 (-0.79, 0.52) & 2.02 (1.26, 3.63) & 125 (58, 283) & --- \\ 
-		MMTL & $\logit(\rho)$ & 0.99 & -0.06 (-0.47, 0.48) & 1.21 (0.83, 1.72) & 492 (258, 874) & --- \\ 
-		MMTL & $\log(\phi)$ & 0.97 & -0.01 (-0.54, 0.71) & 1.32 (1.16, 1.72) & 942 (541, 1791) & --- \\ 
-		ODE & log(R0) & 0.84 & 0.3 (-0.77, 2.43) & 1.78 (1.12, 5.93) & 3364 (252, 6513) & 3894 (169, 13949) \\ 
-		ODE & $\log(\mu)$ & 0.78 & -0.24 (-2.57, 0.7) & 1.56 (0.93, 5.81) & 3307 (243, 6489) & 6454 (277.52, 15693) \\ 
-		ODE & $\logit(\rho)$ & 0.78 & -0.08 (-0.67, 0.79) & 0.77 (0.51, 1.52) & 5225 (2398, 6933) & 2500 (869, 5719) \\ 
-		ODE & $\log(\phi)$ & 0.94 & -0.1 (-0.73, 0.57) & 1.26 (1.14, 1.54) & 5702 (2768, 6991) & 1451 (532, 3117) \\ 
-		\hline
-	\end{tabular}
-	\caption[Slow dynamics, low detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 1, characterized by slow outbreak dynamics (R0 = 1.75) and low mean case detection probability ($ \rho=0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\begin{fullpage}
+		\small
+		\centering
+		\begin{tabular}{lcccccc}
+			\hline
+			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\hline
+			LNA & log(R0) & 0.99 & 0.23 (-0.33, 0.85) & 1.9 (1.2, 3.49) & 1200 (251, 2508) & 19.1 (2.7, 76.4) \\ 
+			LNA & $\log(\mu)$ & 0.98 & -0.21 (-0.81, 0.28) & 1.73 (1.04, 3.42) & 1086 (228, 2295) & 27.9 (3.7, 100.5) \\ 
+			LNA & $\logit(\rho)$ & 0.98 & -0.06 (-0.46, 0.4) & 1.07 (0.73, 1.67) & 1233 (360, 2180) & 8.22 (2.03, 21.4) \\ 
+			LNA & $\log(\phi)$ & 0.98 & 0.01 (-0.51, 0.74) & 1.32 (1.17, 1.71) & 2950 (1145, 4334) & 10.8 (2.1, 30.0) \\ 
+			MMTL & log(R0) & 0.99 & 0.22 (-0.86, 0.87) & 4.4 (1.92, 53.26) & 232 (110, 445) & --- \\ 
+			MMTL & $\log(\mu)$ & 1.00 & -0.22 (-0.79, 0.52) & 2.02 (1.26, 3.63) & 125 (58, 283) & --- \\ 
+			MMTL & $\logit(\rho)$ & 0.99 & -0.06 (-0.47, 0.48) & 1.21 (0.83, 1.72) & 492 (258, 874) & --- \\ 
+			MMTL & $\log(\phi)$ & 0.97 & -0.01 (-0.54, 0.71) & 1.32 (1.16, 1.72) & 942 (541, 1791) & --- \\ 
+			ODE & log(R0) & 0.84 & 0.3 (-0.77, 2.43) & 1.78 (1.12, 5.93) & 3364 (252, 6513) & 3894 (169, 13949) \\ 
+			ODE & $\log(\mu)$ & 0.78 & -0.24 (-2.57, 0.7) & 1.56 (0.93, 5.81) & 3307 (243, 6489) & 6454 (277.52, 15693) \\ 
+			ODE & $\logit(\rho)$ & 0.78 & -0.08 (-0.67, 0.79) & 0.77 (0.51, 1.52) & 5225 (2398, 6933) & 2500 (869, 5719) \\ 
+			ODE & $\log(\phi)$ & 0.94 & -0.1 (-0.73, 0.57) & 1.26 (1.14, 1.54) & 5702 (2768, 6991) & 1451 (532, 3117) \\ 
+			\hline
+		\end{tabular}
+		\caption[Slow dynamics, low detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 1, characterized by slow outbreak dynamics (R0 = 1.75) and low mean case detection probability ($ \rho=0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\end{fullpage}
 \end{sidewaystable}
 
 \begin{sidewaystable}[ht]
-	\small
-	\centering
-	\begin{tabular}{lcccccc}
-		\hline
-		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
-		\hline
-		LNA & log(R0) & 0.99 & -0.35 (-0.87, -0.05) & 2.01 (1.42, 3.03) & 1551 (399, 3065) & 64.2 (10.3, 265.1) \\ 
-		LNA & $\log(\mu)$ & 0.99 & 0.34 (0.09, 0.8) & 1.9 (1.34, 2.92) & 1431 (368, 2865) & 23.8 (5.0, 101.7) \\ 
-		LNA & $\logit(\rho)$ & 0.94 & 0.12 (-0.23, 0.55) & 1.02 (0.73, 1.71) & 1354 (509, 2357) & 13.1 (3.2, 40.6) \\ 
-		LNA & $\log(\phi)$ & 0.96 & 0.02 (-0.53, 0.81) & 1.38 (1.25, 1.76) & 3286 (1756, 4442) & 19.5 (6.3, 50.5) \\ 
-		MMTL & log(R0) & 0.99 & -0.41 (-1.11, -0.08) & 13.94 (2.95, 55.97) & 132 (31, 314) & --- \\ 
-		MMTL & $\log(\mu)$ & 0.99 & 0.4 (0.12, 0.99) & 2.74 (2.13, 3.69) & 213 (90, 1944) & --- \\ 
-		MMTL & $\logit(\rho)$ & 0.90 & 0.18 (-0.18, 0.64) & 1.78 (1.1, 2.73) & 375 (171, 737) & --- \\ 
-		MMTL & $\log(\phi)$ & 0.97 & -0.03 (-0.59, 0.78) & 1.42 (1.25, 2) & 586 (315, 993) & --- \\ 
-		ODE & log(R0) & 0.99 & -0.22 (-0.84, 0.65) & 1.85 (1.31, 3.58) & 3979 (1875, 5747) & 9412 (2368, 34873) \\ 
-		ODE & $\log(\mu)$ & 0.98 & 0.21 (-0.78, 0.8) & 1.72 (1.21, 3.53) & 3976 (1851, 5752) & 3824 (9812, 12367) \\ 
-		ODE & $\logit(\rho)$ & 0.85 & 0.05 (-0.34, 0.52) & 0.71 (0.5, 1.08) & 5024 (2846, 6390) & 2753 (1205, 6858) \\ 
-		ODE & $\log(\phi)$ & 0.95 & -0.03 (-0.64, 0.67) & 1.33 (1.23, 1.6) & 5634 (4377, 6661) & 2027 (995, 4479) \\ 
-		\hline
-	\end{tabular}
-	\caption[Fast dynamics, low detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 2, characterized by fast outbreak dynamics (R0 = 3.25) and low mean case detection probability ($ \rho = 0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\begin{fullpage}
+		\small
+		\centering
+		\begin{tabular}{lcccccc}
+			\hline
+			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\hline
+			LNA & log(R0) & 0.99 & -0.35 (-0.87, -0.05) & 2.01 (1.42, 3.03) & 1551 (399, 3065) & 64.2 (10.3, 265.1) \\ 
+			LNA & $\log(\mu)$ & 0.99 & 0.34 (0.09, 0.8) & 1.9 (1.34, 2.92) & 1431 (368, 2865) & 23.8 (5.0, 101.7) \\ 
+			LNA & $\logit(\rho)$ & 0.94 & 0.12 (-0.23, 0.55) & 1.02 (0.73, 1.71) & 1354 (509, 2357) & 13.1 (3.2, 40.6) \\ 
+			LNA & $\log(\phi)$ & 0.96 & 0.02 (-0.53, 0.81) & 1.38 (1.25, 1.76) & 3286 (1756, 4442) & 19.5 (6.3, 50.5) \\ 
+			MMTL & log(R0) & 0.99 & -0.41 (-1.11, -0.08) & 13.94 (2.95, 55.97) & 132 (31, 314) & --- \\ 
+			MMTL & $\log(\mu)$ & 0.99 & 0.4 (0.12, 0.99) & 2.74 (2.13, 3.69) & 213 (90, 1944) & --- \\ 
+			MMTL & $\logit(\rho)$ & 0.90 & 0.18 (-0.18, 0.64) & 1.78 (1.1, 2.73) & 375 (171, 737) & --- \\ 
+			MMTL & $\log(\phi)$ & 0.97 & -0.03 (-0.59, 0.78) & 1.42 (1.25, 2) & 586 (315, 993) & --- \\ 
+			ODE & log(R0) & 0.99 & -0.22 (-0.84, 0.65) & 1.85 (1.31, 3.58) & 3979 (1875, 5747) & 9412 (2368, 34873) \\ 
+			ODE & $\log(\mu)$ & 0.98 & 0.21 (-0.78, 0.8) & 1.72 (1.21, 3.53) & 3976 (1851, 5752) & 3824 (9812, 12367) \\ 
+			ODE & $\logit(\rho)$ & 0.85 & 0.05 (-0.34, 0.52) & 0.71 (0.5, 1.08) & 5024 (2846, 6390) & 2753 (1205, 6858) \\ 
+			ODE & $\log(\phi)$ & 0.95 & -0.03 (-0.64, 0.67) & 1.33 (1.23, 1.6) & 5634 (4377, 6661) & 2027 (995, 4479) \\ 
+			\hline
+		\end{tabular}
+		\caption[Fast dynamics, low detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 2, characterized by fast outbreak dynamics (R0 = 3.25) and low mean case detection probability ($ \rho = 0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\end{fullpage}
 \end{sidewaystable}
 
 \begin{sidewaystable}[ht]
-	\small
-	\centering
-	\begin{tabular}{lcccccc}
-		\hline
-		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
-		\hline
-		LNA & log(R0) & 0.96 & 0.26 (-0.22, 0.93) & 1.68 (1.01, 3.21) & 1354 (198, 3054) & 16.0 (1.6, 70.2) \\ 
-		LNA & $\log(\mu)$ & 0.96 & -0.23 (-0.85, 0.16) & 1.49 (0.84, 3.23) & 1210 (191, 2931) & 25.1 (2.8, 83.6) \\ 
-		LNA & $\logit(\rho)$ & 0.99 & -0.2 (-0.96, 0.84) & 3.1 (1.61, 4.6) & 935 (393, 1893) & 6.9 (2.4, 18.7) \\ 
-		LNA & $\log(\phi)$ & 0.97 & 0.02 (-0.52, 0.67) & 1.25 (1.12, 1.52) & 2851 (1425, 4283) & 13.4 (4.3, 31.6) \\ 
-		MMTL & log(R0) & 0.99 & 0.24 (-0.48, 0.96) & 2.49 (1.44, 36.95) & 313 (139, 634) & --- \\ 
-		MMTL & $\log(\mu)$ & 0.99 & -0.24 (-0.87, 0.24) & 1.75 (1, 3.44) & 141 (57, 359) & --- \\ 
-		MMTL & $\logit(\rho)$ & 1.00 & -0.2 (-0.93, 0.86) & 3.48 (2.04, 4.99) & 439 (244, 711) & --- \\ 
-		MMTL & $\log(\phi)$ & 0.97 & -0.02 (-0.53, 0.64) & 1.25 (1.12, 1.56) & 723 (372, 1376) & --- \\ 
-		ODE & log(R0) & 0.79 & 0.34 (-0.41, 2.6) & 1.52 (0.95, 5.73) & 3688 (285, 6453) & 2951 (127, 10756.39) \\ 
-		ODE & $\log(\mu)$ & 0.77 & -0.28 (-2.73, 0.36) & 1.31 (0.8, 5.69) & 3650 (263, 6457) & 5349 (177, 14237) \\ 
-		ODE & $\logit(\rho)$ & 0.80 & -0.19 (-1.41, 1.57) & 2.27 (0.9, 4.66) & 3418 (1896, 5721) & 1767 (704, 4279) \\ 
-		ODE & $\log(\phi)$ & 0.91 & -0.15 (-0.75, 0.48) & 1.16 (1.08, 1.34) & 5787 (2679, 7035) & 1754 (640, 4124) \\ 
-		\hline
-	\end{tabular}
-	\caption[Slow dynamics, high detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 3, characterized by slow outbreak dynamics (R0 = 1.75) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\begin{fullpage}
+		\small
+		\centering
+		\begin{tabular}{lcccccc}
+			\hline
+			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\hline
+			LNA & log(R0) & 0.96 & 0.26 (-0.22, 0.93) & 1.68 (1.01, 3.21) & 1354 (198, 3054) & 16.0 (1.6, 70.2) \\ 
+			LNA & $\log(\mu)$ & 0.96 & -0.23 (-0.85, 0.16) & 1.49 (0.84, 3.23) & 1210 (191, 2931) & 25.1 (2.8, 83.6) \\ 
+			LNA & $\logit(\rho)$ & 0.99 & -0.2 (-0.96, 0.84) & 3.1 (1.61, 4.6) & 935 (393, 1893) & 6.9 (2.4, 18.7) \\ 
+			LNA & $\log(\phi)$ & 0.97 & 0.02 (-0.52, 0.67) & 1.25 (1.12, 1.52) & 2851 (1425, 4283) & 13.4 (4.3, 31.6) \\ 
+			MMTL & log(R0) & 0.99 & 0.24 (-0.48, 0.96) & 2.49 (1.44, 36.95) & 313 (139, 634) & --- \\ 
+			MMTL & $\log(\mu)$ & 0.99 & -0.24 (-0.87, 0.24) & 1.75 (1, 3.44) & 141 (57, 359) & --- \\ 
+			MMTL & $\logit(\rho)$ & 1.00 & -0.2 (-0.93, 0.86) & 3.48 (2.04, 4.99) & 439 (244, 711) & --- \\ 
+			MMTL & $\log(\phi)$ & 0.97 & -0.02 (-0.53, 0.64) & 1.25 (1.12, 1.56) & 723 (372, 1376) & --- \\ 
+			ODE & log(R0) & 0.79 & 0.34 (-0.41, 2.6) & 1.52 (0.95, 5.73) & 3688 (285, 6453) & 2951 (127, 10756.39) \\ 
+			ODE & $\log(\mu)$ & 0.77 & -0.28 (-2.73, 0.36) & 1.31 (0.8, 5.69) & 3650 (263, 6457) & 5349 (177, 14237) \\ 
+			ODE & $\logit(\rho)$ & 0.80 & -0.19 (-1.41, 1.57) & 2.27 (0.9, 4.66) & 3418 (1896, 5721) & 1767 (704, 4279) \\ 
+			ODE & $\log(\phi)$ & 0.91 & -0.15 (-0.75, 0.48) & 1.16 (1.08, 1.34) & 5787 (2679, 7035) & 1754 (640, 4124) \\ 
+			\hline
+		\end{tabular}
+		\caption[Slow dynamics, high detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 3, characterized by slow outbreak dynamics (R0 = 1.75) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\end{fullpage}
 \end{sidewaystable}
 
 \begin{sidewaystable}[ht]
-	\small
-	\centering
-	\begin{tabular}{lcccccc}
-		\hline
-		Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
-		\hline
-		LNA & log(R0) & 1.00 & -0.27 (-0.68, 0.04) & 1.7 (1.24, 2.64) & 2217 (504, 4142) & 68.6 (10.0, 342.8) \\ 
-		LNA & $\log(\mu)$ & 1.00 & 0.25 (-0.01, 0.62) & 1.62 (1.18, 2.63) & 2014 (493, 3894) & 26.4 (4.7, 85.4) \\ 
-		LNA & $\logit(\rho)$ & 0.98 & 0.25 (-0.58, 1.35) & 3.49 (2.06, 4.63) & 1290 (563, 2572) & 14.8 (4.9, 59.9) \\ 
-		LNA & $\log(\phi)$ & 0.96 & 0.03 (-0.52, 0.76) & 1.31 (1.2, 1.62) & 3506 (1910, 4689) & 27.0 (11.2, 66.1) \\ 
-		MMTL & log(R0) & 1.00 & -0.35 (-0.93, -0.04) & 13.37 (1.83, 46.16) & 181 (48, 409) & --- \\ 
-		MMTL & $\log(\mu)$ & 1.00 & 0.33 (0.06, 0.83) & 2.65 (1.61, 3.72) & 272 (128, 1994) & --- \\ 
-		MMTL & $\logit(\rho)$ & 0.96 & 0.4 (-0.49, 1.57) & 4.49 (3.15, 7.21) & 309 (133, 545) & --- \\ 
-		MMTL & $\log(\phi)$ & 0.97 & -0.06 (-0.63, 0.64) & 1.62 (1.26, 2.61) & 457 (213, 848) & --- \\ 
-		ODE & log(R0) & 0.99 & -0.18 (-0.78, 0.84) & 1.67 (1.14, 3.73) & 4463 (1987, 6336) & 7879 (1915, 29567) \\ 
-		ODE & $\log(\mu)$ & 0.99 & 0.18 (-0.99, 0.73) & 1.56 (1.07, 3.67) & 4424 (1952, 6312) & 3254 (867, 8316) \\ 
-		ODE & $\logit(\rho)$ & 0.89 & 0.13 (-0.86, 1.71) & 2.59 (1.1, 4.57) & 3378 (1971, 5315) & 2271 (916, 7206) \\ 
-		ODE & $\log(\phi)$ & 0.94 & -0.07 (-0.66, 0.62) & 1.26 (1.17, 1.48) & 5697 (4518, 6929) & 2490 (1211, 6558) \\ 
-		\hline
-	\end{tabular}
-	\caption[Fast dynamics, high detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 4, characterized by fast outbreak dynamics (R0 = 3.25) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\begin{fullpage}
+		\small
+		\centering
+		\begin{tabular}{lcccccc}
+			\hline
+			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\hline
+			LNA & log(R0) & 1.00 & -0.27 (-0.68, 0.04) & 1.7 (1.24, 2.64) & 2217 (504, 4142) & 68.6 (10.0, 342.8) \\ 
+			LNA & $\log(\mu)$ & 1.00 & 0.25 (-0.01, 0.62) & 1.62 (1.18, 2.63) & 2014 (493, 3894) & 26.4 (4.7, 85.4) \\ 
+			LNA & $\logit(\rho)$ & 0.98 & 0.25 (-0.58, 1.35) & 3.49 (2.06, 4.63) & 1290 (563, 2572) & 14.8 (4.9, 59.9) \\ 
+			LNA & $\log(\phi)$ & 0.96 & 0.03 (-0.52, 0.76) & 1.31 (1.2, 1.62) & 3506 (1910, 4689) & 27.0 (11.2, 66.1) \\ 
+			MMTL & log(R0) & 1.00 & -0.35 (-0.93, -0.04) & 13.37 (1.83, 46.16) & 181 (48, 409) & --- \\ 
+			MMTL & $\log(\mu)$ & 1.00 & 0.33 (0.06, 0.83) & 2.65 (1.61, 3.72) & 272 (128, 1994) & --- \\ 
+			MMTL & $\logit(\rho)$ & 0.96 & 0.4 (-0.49, 1.57) & 4.49 (3.15, 7.21) & 309 (133, 545) & --- \\ 
+			MMTL & $\log(\phi)$ & 0.97 & -0.06 (-0.63, 0.64) & 1.62 (1.26, 2.61) & 457 (213, 848) & --- \\ 
+			ODE & log(R0) & 0.99 & -0.18 (-0.78, 0.84) & 1.67 (1.14, 3.73) & 4463 (1987, 6336) & 7879 (1915, 29567) \\ 
+			ODE & $\log(\mu)$ & 0.99 & 0.18 (-0.99, 0.73) & 1.56 (1.07, 3.67) & 4424 (1952, 6312) & 3254 (867, 8316) \\ 
+			ODE & $\logit(\rho)$ & 0.89 & 0.13 (-0.86, 1.71) & 2.59 (1.1, 4.57) & 3378 (1971, 5315) & 2271 (916, 7206) \\ 
+			ODE & $\log(\phi)$ & 0.94 & -0.07 (-0.66, 0.62) & 1.26 (1.17, 1.48) & 5697 (4518, 6929) & 2490 (1211, 6558) \\ 
+			\hline
+		\end{tabular}
+		\caption[Fast dynamics, high detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter simulation in which outbreaks and datasets were simulated under parameter regime 4, characterized by fast outbreak dynamics (R0 = 3.25) and high mean case detection probability ($ \rho = 0.75 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
+	\end{fullpage}
 \end{sidewaystable}
 
 \begin{table}[ht]
@@ -415,6 +423,59 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{tabular}
 	\caption[Run times for fixed parameter coverage simulations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in fixed parameter coverage simulations. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). True parameter values are presented in Table \ref{tab:lna_supplementary_coverage_sim}. Parameter regimes 1 and 3 had slower outbreak dynamics (R0 = 1.75, vs. R0 = 3.25). Parameter regimes 3 and 4 had higher case detection rates ($ \rho = 0.75 $, vs $ \rho = 0.25 $).}
 \end{table}
+
+\newpage 
+
+\section{Synthetic Ebola Outbreak --- Simulation Settings and Additional Results}
+\label{sec:ebola_synth_supp}
+
+\subsection{Simulation Details}
+\label{subsec:ebola_synth_setup}
+
+\begin{table}[!ht]
+	\label{tab:ebola_synth_consts}
+	\caption[Week zero, and true and effective population sizes for a simulated Ebola outbreak in West Africa.]{True and effective population sizes, and initial conditions for a simulated outbreak in Guinea, Liberia, and Sierra Leone. Week zero is one week before the first observation is accrued and the time at which within--country transmission was assumed to begin. }\footnotesize
+	\centering
+	\begin{tabular}{lccc}		
+		& \textbf{Guinea} & \textbf{Liberia} & \textbf{Sierra Leone} \\\hline
+		\textbf{True population size $ (N)$} & 11.8 million & 4.4 million & 7.1 million \\ 
+		\textbf{Effective population size $ (N_{eff}) $} & 15,000 & 35,000 & 25,000 \\
+		\textbf{Week zero $ (t_0) $} & 1 & 10 & 19 \\
+		\textbf{Initial state at $ t_0 $} $ (S_0,E_0,I_0,R_0) $ & (11.8$ \times 10^6$-7, 4, 3, 0) & (4.4$ \times 10^6$-5 3, 2, 0)& (7.1$ \times 10^6$-5, 3, 2, 0) \\
+		\hline
+		&&&
+	\end{tabular} 
+\end{table}
+
+\begin{sidewaystable}[!ht]
+	\begin{fullpage}
+	\label{tab:ebola_synth_pars}
+		\caption[Parameters and priors for a simulated Ebola outbreak in West Africa.]{Parameters under which the outbreak and data were simulated, prior distributions, and 95\% prior intervals. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}\footnotesize
+	\centering
+	\begin{tabular}{lclll}
+		\textbf{Parameter} & \textbf{Truth} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
+		$ R_{eff,G}^{(1)}(t),\ t<33 $ & 1.3 & Effective reproduction \#  & $ R_{eff,G}^{(2)} / R_G^{(1)}\sim $ LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) \\
+		$ R_{eff,G}^{(2)}(t),\ t\geq33 $ & 1.1 & Effective reproduction \# & $ R_{eff,G}^{(2)}-1\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,L} $ & 2.75 & Effective reproduction \# & $ R_{eff,L}\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,L}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,S} $ & 1.6 & Effective reproduction \# & $ R_{eff,S}\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,S}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
+		$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & 0.003 & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.25) & \makecell[l]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)}\\ 
+		$ \omega_G $ & 1.0 & Rate from $ E_G\rightarrow I_G $ & $ (1/\mu_G)\big/(1/\omega_G) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.38, 2.66) \\
+		$ \omega_L $ & 0.7 & Rate from $ E_L\rightarrow I_L $ & $ (1/\mu_L)\big/(1/\omega_L) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.38, 2.66) \\
+		$ \omega_S $ & 1.2 & Rate from $ E_S\rightarrow I_S $ & $ (1/\mu_S)\big/(1/\omega_S) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.00 (0.38, 2.66) \\
+		$ \mu_G $ & $ 0.95 $ & Rate from $ E_G\rightarrow I_G $ & $ 1/\mu_G\sim $ LogNormal(0.3, 0.25$ ^2 $) & $ 7/\mu_G = $ 9.45 (5.79, 15.42) \\
+		$ N_{eff,G} $ & 15,000 & Effective population size & $ N_{eff,G}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (4204,\ 2.95\times10^6) $ \\
+		$ N_{eff,L} $ & 35,000 & Effective population size & $ N_{eff,L}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (4605,\ 1.1\times10^6) $ \\
+		$ N_{eff,S} $ & 25,000 & Effective population size & $ N_{eff,S}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (9818,\ 1.775\times10^6) $ \\
+		$ \rho_G $ & 0.8 & Mean case detection prob. & $ \logit(\rho_G) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_G = 0.5, (0.06, 0.94)$ \\
+		$ \rho_L $ & 0.15 & Mean case detection prob. & $ \logit(\rho_L) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_L = 0.5, (0.06, 0.94)$ \\
+		$ \rho_S $ & 0.6 & Mean case detection prob. & $ \logit(\rho_S) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_S = 0.5, (0.06, 0.94)$ \\
+		$ \phi_G,\ \phi_L, \phi_S $ & 50 & Neg.Binomial overdispersion & $ \log(\phi) \sim $ LogNormal(0, 5$ ^2 $) & $ \implies \rho_G = 1, (5.5\times 10^-5, 1.8\times10^4)$ \\
+		\hline
+	\end{tabular}
+	\end{fullpage}
+\end{sidewaystable}
+
 
 \section{LNA Implementation Details and LNA Model Vignettes}
 \label{sec:lna_implementation_vignettes}

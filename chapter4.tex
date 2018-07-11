@@ -311,11 +311,13 @@ The fidelity of each approximation to the original MJP depends on the population
 
 This simulation was designed to be generous to the approximations that were used in fitting SEMs to the simulated data. The initial compartment counts and true population sizes were known, and there was no misspecification with respect to either the sampling model or the epidemic dynamics. Despite this, the ODE models struggle to reliably recover the true parameters, particularly those governing the sampling process. As shown in Figure \ref{fig:lna_coverage_main}, coverage of credible intervals for ODE models was low for all model parameters, and this was only somewhat mitigated as the population size increased. Coverage of credible intervals for models fit via the LNA and via MMTL was close to the nominal 95\% level for all model parameters in all three population size regimes. Further inspection of the posterior median errors (middle row of Figure \ref{fig:lna_coverage_main}) and the widths of 95\% credible intervals (bottom row of Figure \ref{fig:lna_coverage_main}) provides intuition for why the ODE performs so poorly. Estimates of the case detection probability tend to be high and estimates of the negative binomial over--dispersion parameter are low (corresponding to large variances in the conditional distribution of observed incidence). Furthermore, credible intervals for the basic reproductive number and recovery rate obtained via the ODE approximation tend to be narrower than LNA and MMTL credible intervals. This is in agreement with findings by other authors who have found that ODE models tend to underestimate uncertainty in epidemic dynamics (see e.g., \cite{king2015avoidable}). Taken together, these results suggest that the LNA is, at least in this simple example, about as good at approximating the original MJP as is the more exact MMTL. 
 
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.95\textwidth]{figures/lna_coverage_plots_main}
-	\caption[Coverage simulation results for SIR models fit via the LNA, ODE, and MMTL approximations.]{Comparison of SIR models fit to 500 datasets simulated in populations of three different sizes. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. The rows correspond to the proportion of runs where the 95\% Bayesian credible interval covered the true parameter values, the posterior median deviation, and the widths of 95\% Bayesian credible intervals. The simulation was repeated for three regimes of population sizes and initially infected individuals (columns).}
-	\label{fig:lna_coverage_main}
+\begin{figure}[p]
+	\begin{fullpage}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/lna_coverage_plots_main}
+		\caption[Coverage simulation results for SIR models fit via the LNA, ODE, and MMTL approximations.]{Comparison of SIR models fit to 500 datasets simulated in populations of three different sizes. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. The rows correspond to the proportion of runs where the 95\% Bayesian credible interval covered the true parameter values, the posterior median deviation, and the widths of 95\% Bayesian credible intervals. The simulation was repeated for three regimes of population sizes and initially infected individuals (columns).}
+		\label{fig:lna_coverage_main}
+	\end{fullpage}
 \end{figure}
 
 We note that these results are not intended to suggest that there is no place for ODE models in the computational toolbox of disease modelers. To the contrary, when time is of the essence, as in an outbreak setting, crude estimates via the ODE may be obtained quickly. Average ODE run times were substantially shorter than LNA and MMTL run times and required far less CPU time per effective sample (see Table \ref{tab:lna_coverage_compstats}). ODE models are also appealing because they lend themselves to analytic characterizations of various aspects of the outbreak dynamics, e.g., relating the final outbreak size to the basic reproductive number (see, e.g., \cite{andersson2000stochastic,britton2018,keeling2008}).
@@ -392,10 +394,109 @@ where the constant 0.5 is added to stabilize the logarithm for zero counts and $
 \subsection{A Stratified SEIR Model for a Simulated Outbreak}
 \label{subsec:ebola_synth}
 
-In the next section, we will jointly model the spread of Ebola in Guinea, Liberia, and Sierra Leone during the 2014--2015 outbreak. To do so, we will fit a stratified SEIR model allowing for country specific epidemic dynamics as well as interactions between the countries. It goes without saying that the model, despite being fully stochastic in all aspects of the measurement and epidemic process, is still an overly simplistic abstraction of the outbreak with respect to some obvious and potentially important complexities, e.g., spatial heterogeneity and time varying dynamics. However, it is a good starting point from a modeling perspective, and is highly non--trivial to fit due to the number of parameters and size of the latent space. Due to the myriad challenges involved in fitting the model, we will first assess its performance in recovering the true parameters and latent path for a simulated outbreak.
+In the next section, we will jointly model the spread of Ebola in Guinea, Liberia, and Sierra Leone during the 2014--2015 outbreak. To do so, we will fit a stratified SEIR model that allows for country specific epidemic dynamics, and transmission between the countries. The model used to simulate the data model is diagrammed in Figure \ref{fig:stratified_seir_diag} and described briefly below, with additional details in Section \ref{sec:ebola_synth_supp}. It should go without saying that this model (or any model), despite being fully stochastic in all aspects of the measurement and epidemic process, is still an overly simplistic abstraction of the outbreak with respect to some obvious and potentially important complexities, e.g., spatial heterogeneity and time varying dynamics. However, it is a good starting point and is non--trivial to fit due to the number of parameters and size of the latent space. Due to the myriad challenges involved in fitting the model, we will first assess its performance in recovering the true parameters and latent path for a simulated outbreak.
 
-With an eye on jointly modeling 
+\begin{figure}[!ht]
+     \resizebox {\linewidth} {!} {
+     	\begin{tikzpicture}
+     	\draw[thick,dotted] (0,-0.25) rectangle (7.5, 1.25);
+     	\node at (1, 1.1) [label=Guinea (G)] {};
+     	\draw (0.75, 0.5) circle(0.4) node (Sa) {$ S_G $};
+     	\draw (2.75, 0.5) circle(0.4) node (Ea) {$ E_G $};
+     	\draw (4.75, 0.5) circle(0.4) node (Ia) {$ I_G $};
+     	\draw (6.75, 0.5) circle(0.4) node (Ra) {$ R_G $};
+     	
+     	\draw[thick,dotted] (9.5,-0.25) rectangle (17, 1.25);
+     	\node at (16, 1.1) [label=Liberia (L)] {};	
+     	\draw (10.25, 0.5) circle(0.4) node (Sb) {$ S_L $};
+     	\draw (12.25, 0.5) circle(0.4) node (Eb) {$ E_L $};
+     	\draw (14.25, 0.5) circle(0.4) node (Ib) {$ I_L $};
+     	\draw (16.25, 0.5) circle(0.4) node (Rb) {$ R_L $};
+     	
+     	\draw[thick,dotted] (4.75,-3) rectangle (12.25, -4.5);
+     	\node at (6.25, -3.15) [label=Sierra Leone (S)] {};	
+     	\draw (5.5, -3.75) circle(0.4) node (Sc) {$ S_S $};
+     	\draw (7.5, -3.75) circle(0.4) node (Ec) {$ E_S $};
+     	\draw (9.5, -3.75) circle(0.4) node (Ic) {$ I_S $};
+     	\draw (11.5, -3.75) circle(0.4) node (Rc) {$ R_S $};
+     	
+     	\draw [thick,->] (Sa) -- (Ea) node[midway,above] {$ \lambda_{SE}^G(t) $};
+     	\draw [thick,->,shorten >=.6mm] (Ea) -- (Ia) node[midway,above] {$ \lambda_{EI}^G $};
+     	\draw [thick,->,shorten <=.5mm] (Ia) -- (Ra) node[midway,above] {$ \lambda_{IR}^G $};
+     	
+     	\draw [thick,->] (Sb) -- (Eb) node[midway,above] {$ \lambda_{SE}^L $};
+     	\draw [thick,->,shorten >=.6mm] (Eb) -- (Ib) node[midway,above] {$ \lambda_{EI}^L $};
+     	\draw [thick,->,shorten <=.5mm] (Ib) -- (Rb) node[midway,above] {$ \lambda_{IR}^L $};
+     	
+     	\draw [thick,->] (Sc) -- (Ec) node[midway,above] {$ \lambda_{SE}^S $};
+     	\draw [thick,->,shorten >=.6mm] (Ec) -- (Ic) node[midway,above] {$ \lambda_{EI}^S $};
+     	\draw [thick,->,shorten <=.5mm] (Ic) -- (Rc) node[midway,above] {$ \lambda_{IR}^S $};
+     	
+     	\path [thick, <-] ([yshift=-0.5mm,xshift=-2mm]Ia.south) edge [shorten >= 2mm, shorten <= 4mm] node [above,xshift=2.5mm,yshift=1.5mm] {$ \lambda_I^{GS} $} ([xshift=-1mm]Ic.north);
+     	\path [thick, ->] (Ia.south) edge [shorten >= 5mm, shorten <= 2mm] node [below,xshift=-9mm,yshift=2mm] {$ \lambda_I^{SG} $} ([xshift=1.5mm]Ic.north);
+     	
+     	\path [thick, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-2mm] {$ \lambda_I^{LS} $} ([xshift=1mm]Ic.north);
+     	\path [thick, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=5mm] {$ \lambda_I^{SL} $} ([xshift=-1.5mm]Ic.north);
+     	
+     	\path [thick, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG} $} ([]Ib.north);
+     	\path [thick, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL} $} ([]Ib.north);	
+     	\end{tikzpicture}
+     }
+	\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptible individuals in Guinea become infected is time varying with one changepoint at 33 weeks.}
+	\label{fig:stratified_seir_diag}
+\end{figure}
 
+We simulated data from a three country SEIR model with country--specific outbreak dynamics and cross--border transmission between countries. The simulation was designed to crudely reflect the setting of the Ebola outbreak in West Africa. Therefore, the countries differed in their true and effective population sizes, times at which transmission commenced, epidemic dynamics, and case detection probabilities. We also included a single changepoint for the basic reproductive number for Guinea at 33 weeks, coinciding roughly with the WHO declaration of a state of emergency in early August 2014 and the closures of country borders with Liberia and Sierra Leone \cite{coltart2017ebola}. The outbreak was simulated from a MJP via Gillespie's direct algorithm \cite{gillespie1976general} using the parameters in Table \ref{tab:ebola_synth_pars} and the rates in Table \ref{tab:ebola_synth_rates}. The observed incidence was a negative binomial sample of the true incidence with the case detection probability varying across countries, but with the same over--dispersion parameter. The data are displayed in Figure \ref{fig:ebola_synth_dat}.
+
+\begin{figure}[!ht]
+	\resizebox {\linewidth} {!} {
+		\begin{tikzpicture}
+		\draw[thick,dotted] (0,-0.25) rectangle (7.5, 1.25);
+		\node at (1, 1.1) [label=Guinea (G)] {};
+		\draw (0.75, 0.5) circle(0.4) node (Sa) {$ S_G $};
+		\draw (2.75, 0.5) circle(0.4) node (Ea) {$ E_G $};
+		\draw (4.75, 0.5) circle(0.4) node (Ia) {$ I_G $};
+		\draw (6.75, 0.5) circle(0.4) node (Ra) {$ R_G $};
+		
+		\draw[thick,dotted] (9.5,-0.25) rectangle (17, 1.25);
+		\node at (16, 1.1) [label=Liberia (L)] {};	
+		\draw (10.25, 0.5) circle(0.4) node (Sb) {$ S_L $};
+		\draw (12.25, 0.5) circle(0.4) node (Eb) {$ E_L $};
+		\draw (14.25, 0.5) circle(0.4) node (Ib) {$ I_L $};
+		\draw (16.25, 0.5) circle(0.4) node (Rb) {$ R_L $};
+		
+		\draw[thick,dotted] (4.75,-3) rectangle (12.25, -4.5);
+		\node at (6.25, -3.15) [label=Sierra Leone (S)] {};	
+		\draw (5.5, -3.75) circle(0.4) node (Sc) {$ S_S $};
+		\draw (7.5, -3.75) circle(0.4) node (Ec) {$ E_S $};
+		\draw (9.5, -3.75) circle(0.4) node (Ic) {$ I_S $};
+		\draw (11.5, -3.75) circle(0.4) node (Rc) {$ R_S $};
+		
+		\draw [thick,->] (Sa) -- (Ea) node[midway,above] {$ \lambda_{SE}^G(t) $};
+		\draw [thick,->,shorten >=.6mm] (Ea) -- (Ia) node[midway,above] {$ \lambda_{EI}^G $};
+		\draw [thick,->,shorten <=.5mm] (Ia) -- (Ra) node[midway,above] {$ \lambda_{IR}^G $};
+		
+		\draw [thick,->] (Sb) -- (Eb) node[midway,above] {$ \lambda_{SE}^L $};
+		\draw [thick,->,shorten >=.6mm] (Eb) -- (Ib) node[midway,above] {$ \lambda_{EI}^L $};
+		\draw [thick,->,shorten <=.5mm] (Ib) -- (Rb) node[midway,above] {$ \lambda_{IR}^L $};
+		
+		\draw [thick,->] (Sc) -- (Ec) node[midway,above] {$ \lambda_{SE}^S $};
+		\draw [thick,->,shorten >=.6mm] (Ec) -- (Ic) node[midway,above] {$ \lambda_{EI}^S $};
+		\draw [thick,->,shorten <=.5mm] (Ic) -- (Rc) node[midway,above] {$ \lambda_{IR}^S $};
+		
+		\path [thick, <-] ([yshift=-0.5mm,xshift=-2mm]Ia.south) edge [shorten >= 2mm, shorten <= 4mm] node [above,xshift=2.5mm,yshift=1.5mm] {$ \lambda_I^{GS} $} ([xshift=-1mm]Ic.north);
+		\path [thick, ->] (Ia.south) edge [shorten >= 5mm, shorten <= 2mm] node [below,xshift=-9mm,yshift=2mm] {$ \lambda_I^{SG} $} ([xshift=1.5mm]Ic.north);
+		
+		\path [thick, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-2mm] {$ \lambda_I^{LS} $} ([xshift=1mm]Ic.north);
+		\path [thick, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=5mm] {$ \lambda_I^{SL} $} ([xshift=-1.5mm]Ic.north);
+		
+		\path [thick, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG} $} ([]Ib.north);
+		\path [thick, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL} $} ([]Ib.north);	
+		\end{tikzpicture}
+	}
+	\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptible individuals in Guinea become infected is time varying with one changepoint at 33 weeks.}
+	\label{fig:stratified_seir_approx_diag}
+\end{figure}
 
 \section{Application: Modeling the Spread of Ebola}
 \label{sec:lna_ebola}
