@@ -456,14 +456,16 @@ ODE models remained the most computationally performant. However, in this exerci
 		\textbf{Parameter} & \textbf{Truth} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
 		$ R_{eff,G}^{(1)}(t),\ t<33 $ & 1.3 & Effective reproduction \#  & $ R_{eff,G}^{(2)} / R_G^{(1)}\sim $ LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) \\
 		$ R_{eff,G}^{(2)}(t),\ t\geq33 $ & 1.1 & Effective reproduction \# & $ R_{eff,G}^{(2)}-1\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.06, 5.32)$ \\
-		$ R_{eff,L} $ & 2.75 & Effective reproduction \# & $ R_{eff,L}\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,L}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,L} $ & 2.5 & Effective reproduction \# & $ R_{eff,L}\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,L}^{(2)} = 1.50 (1.06, 5.32)$ \\
 		$ R_{eff,S} $ & 1.6 & Effective reproduction \# & $ R_{eff,S}\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,S}^{(2)} = 1.50 (1.06, 5.32)$ \\
 		\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
 		$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & 0.003 & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.25) & \makecell[l]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)}\\ 
 		$ \omega_G $ & 1.0 & Rate from $ E_G\rightarrow I_G $ & $ (1/\mu_G)\big/(1/\omega_G) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.38, 2.66) \\
-		$ \omega_L $ & 0.7 & Rate from $ E_L\rightarrow I_L $ & $ (1/\mu_L)\big/(1/\omega_L) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.38, 2.66) \\
+		$ \omega_L $ & 0.6 & Rate from $ E_L\rightarrow I_L $ & $ (1/\mu_L)\big/(1/\omega_L) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.38, 2.66) \\
 		$ \omega_S $ & 1.2 & Rate from $ E_S\rightarrow I_S $ & $ (1/\mu_S)\big/(1/\omega_S) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.00 (0.38, 2.66) \\
 		$ \mu_G $ & $ 0.95 $ & Rate from $ E_G\rightarrow I_G $ & $ 1/\mu_G\sim $ LogNormal(0.3, 0.25$ ^2 $) & $ 7/\mu_G = $ 9.45 (5.79, 15.42) \\
+		$ \mu_L $ & $ 0.5 $ & Rate from $ E_L\rightarrow I_L $ & $ 1/\mu_L\sim $ LogNormal(0.3, 0.25$ ^2 $) & $ 7/\mu_L = $ 9.45 (5.79, 15.42) \\
+		$ \mu_S $ & $ 0.75 $ & Rate from $ E_S\rightarrow I_S $ & $ 1/\mu_S\sim $ LogNormal(0.3, 0.25$ ^2 $) & $ 7/\mu_S = $ 9.45 (5.79, 15.42) \\
 		$ N_{eff,G} $ & 15,000 & Effective population size & $ N_{eff,G}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (4204,\ 2.95\times10^6) $ \\
 		$ N_{eff,L} $ & 35,000 & Effective population size & $ N_{eff,L}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (4605,\ 1.1\times10^6) $ \\
 		$ N_{eff,S} $ & 25,000 & Effective population size & $ N_{eff,S}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (9818,\ 1.775\times10^6) $ \\

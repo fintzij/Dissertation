@@ -484,17 +484,17 @@ We simulated data from a three country SEIR model with country--specific outbrea
 		\draw [thick,->,shorten >=.6mm] (Ec) -- (Ic) node[midway,above] {$ \lambda_{EI}^S $};
 		\draw [thick,->,shorten <=.5mm] (Ic) -- (Rc) node[midway,above] {$ \lambda_{IR}^S $};
 		
-		\path [thick, <-] ([yshift=-0.5mm,xshift=-2mm]Ia.south) edge [shorten >= 2mm, shorten <= 4mm] node [above,xshift=2.5mm,yshift=1.5mm] {$ \lambda_I^{GS} $} ([xshift=-1mm]Ic.north);
-		\path [thick, ->] (Ia.south) edge [shorten >= 5mm, shorten <= 2mm] node [below,xshift=-9mm,yshift=2mm] {$ \lambda_I^{SG} $} ([xshift=1.5mm]Ic.north);
+		\path [dashed, <-] ([yshift=-0.5mm,xshift=-2mm]Ia.south) edge [shorten >= 2mm, shorten <= 4mm] node [above,xshift=2.5mm,yshift=1.5mm] {$ \lambda_I^{GS} $} ([xshift=-1mm]Ic.north);
+		\path [dashed, ->] (Ia.south) edge [shorten >= 5mm, shorten <= 2mm] node [below,xshift=-9mm,yshift=2mm] {$ \lambda_I^{SG} $} ([xshift=1.5mm]Ic.north);
 		
-		\path [thick, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-2mm] {$ \lambda_I^{LS} $} ([xshift=1mm]Ic.north);
-		\path [thick, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=5mm] {$ \lambda_I^{SL} $} ([xshift=-1.5mm]Ic.north);
+		\path [dashed, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-2mm] {$ \lambda_I^{LS} $} ([xshift=1mm]Ic.north);
+		\path [dashed, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=5mm] {$ \lambda_I^{SL} $} ([xshift=-1.5mm]Ic.north);
 		
-		\path [thick, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG} $} ([]Ib.north);
-		\path [thick, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL} $} ([]Ib.north);	
+		\path [dashed, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG} $} ([]Ib.north);
+		\path [dashed, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL} $} ([]Ib.north);	
 		\end{tikzpicture}
 	}
-	\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptible individuals in Guinea become infected is time varying with one changepoint at 33 weeks.}
+	\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country virtual transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Dashed lines indicate virtual transitions, where infected individuals in one country contribute to the force of infection in another country but do not migrate. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptible individuals in Guinea become infected is time varying with one changepoint at 33 weeks.}
 	\label{fig:stratified_seir_approx_diag}
 \end{figure}
 
