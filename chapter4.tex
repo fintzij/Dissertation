@@ -266,7 +266,7 @@ In simple models, reasonable parameter values will generally lead to valid LNA p
 
 \subsubsection{Parameter Updates}
 \label{subsubsec:lna_param_updates}
-Each MCMC iteration will consist of a number of ElliptSS updates, typically one but possibly 2--3 for complex models, followed by a set of parameter updates. We will generally use either a global adaptive random walk Metropolis algorithm (Algorithm 4 in \cite{andrieu2008tutorial}) or the adaptive non--isotropic Gaussian slice sampler (GSS) presented in Section \ref{subsubsec:slice_sampling}. In models where the initial state, $ \bX_0 $, is not fixed, we will assign the prior $ \bX_0 \sim TMVN_{\mcS_X^R}\left (N\mb{p}, N(\diag(\mb{p}) - \mb{p}\mb{p}^T)\right ) $, which is a truncated multivariate normal approximation to a multinomial with initial state probabilities, $ \mb{p} $, constrained to the state space of compartment volumes. We update $ \bX_0 $ jointly with the LNA path via ElliptSS. Additional details are presented in Section \ref{sec:lna_init_volumes}.
+Each MCMC iteration will consist of a number of ElliptSS updates, typically one but possibly 2--3 for complex models, followed by a set of parameter updates. We will generally use either a global adaptive random walk Metropolis algorithm (Algorithm 4 in \cite{andrieu2008tutorial}) or the adaptive non--isotropic multivariate normal slice sampler (MVNSS) presented in Section \ref{subsubsec:slice_sampling}. In models where the initial state, $ \bX_0 $, is not fixed, we will assign a strongly informative prior $ \bX_0 \sim TMVN_{\mcS_X^R}\left (N\mb{p}, N(\diag(\mb{p}) - \mb{p}\mb{p}^T)\right ) $, which is a truncated multivariate normal approximation to a multinomial with initial state probabilities, $ \mb{p} $, constrained to the state space of compartment volumes. We update $ \bX_0 $ jointly with the LNA path via ElliptSS. Additional details are presented in Section \ref{sec:lna_init_volumes}.
 
 We have found it helpful, for the purpose of assigning sensible priors to model parameters and for improving MCMC mixing and convergence, to parameterize the estimation scale on which the MCMC explores the parameter space in terms of how the parameters directly affect the model dynamics. For the SIR model, this might mean re-expressing the model parameters in terms of the basic reproductive number of an outbreak, $ R0 = \beta N /\mu $, and the recovery rate, $ \mu $. Additionally, we would like our estimation scale to be unconstrained and therefore sample (and either accept or reject) values for $ \log(R0) $ and $ \log(\mu) $. The importance of appropriately parameterizing the estimation scale is discussed at length in Section \ref{sec:est_scale_discussion}. 
 
@@ -290,7 +290,7 @@ The fidelity of each approximation to the original MJP depends on the population
 	\small
 	\centering
 	\begin{tabular}{lccc}
-		
+		\hline
 		& \textbf{Regime 1} & \textbf{Regime 2} & \textbf{Regime 3} \\\hline
 		\textbf{Population size ($ N $)} & 10,000 & 50,000 & 250,000 \\ 
 		\textbf{Initial infecteds ($ I_0 $)} & 1 & 5 & 25 \\
@@ -299,6 +299,7 @@ The fidelity of each approximation to the original MJP depends on the population
 	\end{tabular} 
 
 	\begin{tabular}{cllc}
+		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
 		$ R0-1 $ & Basic reproduction \# - 1 & LogNormal(0, 0.25) & $ \implies R0 = $ 2.00 (1.38, 3.66) \\ 
 		$ 1/\mu $ & Mean infectious period & LogNormal(-0.7, 0.35)& 1.43 (0.72, 2.84) \\
@@ -330,11 +331,12 @@ We note that these results are not intended to suggest that there is no place fo
  	\label{tab:lna_coverage_compstats}
  	\footnotesize
  	\centering
- 	\begin{tabular}{lccc}		
+ 	\begin{tabular}{lccc}	
+ 		\hline	
  		& \textbf{ODE} & \textbf{LNA} & \textbf{MMTL} \\\hline
- 		CPU time (minutes) &  0.42 (0.23, 0.64) & 27.78  (12.03, 56.25) & 86.96 (40.47, 159.68) \\ 
- 		Effective sample size & 5745 (4557, 6616) & 4067   (346, 11313) & 6834 (3764, 11879) \\
- 		GM ESS/CPU time vs. MMTL & 180 (90, 350) & 1.87 (0.14, 8.84) & --- \\
+ 		\textbf{CPU time (minutes)} &  0.42 (0.23, 0.64) & 27.78  (12.03, 56.25) & 86.96 (40.47, 159.68) \\ 
+ 		\textbf{Effective sample size} & 5745 (4557, 6616) & 4067   (346, 11313) & 6834 (3764, 11879) \\
+ 		\textbf{GM ESS/CPU time vs. MMTL} & 180 (90, 350) & 1.87 (0.14, 8.84) & --- \\
  		\hline
  		&&&
  	\end{tabular} 

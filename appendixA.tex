@@ -28,7 +28,7 @@ where $ \bp $ is a vector of subject--level initial state probabilities, $ \bP =
 
 Let $ \bV = N(\bP - \bp\bp^T) $, and $ \bV^{1/2} $ be the matrix square root of $ \bV $, which we will compute using the singular value decomposition $ \bV = \bU\bD\bU^T \implies \bV^{1/2} = \bU\bD^{1/2}$. Let $ \bZ^X $ denote the LNA draws as before, and let $ \bZ^{X_0}\sim\mr{MVN}(\bs{0},\mb{I}) $ denote the vector of draws that will be mapped to $ \bX_0 $. We will update the initial compartment volumes jointly with the LNA draws using elliptical slice sampling.
 
-\begin{algorithm}[!ht]
+\begin{algorithm}[htbp]
 	\caption{Sampling LNA draws and initial volumes via elliptical slice sampling.}
 	\label{alg:elliptss_lna_initvols}
 	\begin{algorithmic}[1]
@@ -58,15 +58,13 @@ Let $ \bV = N(\bP - \bp\bp^T) $, and $ \bV^{1/2} $ be the matrix square root of 
 \label{sec:est_scale_discussion}
 
 How we parameterize the MCMC estimation scale is critically important to its computational performance. If we can identify transformations of the model parameters that minimize strong correlations and non--linear relationships on the estimation scale, we will be able to substantially improve MCMC mixing. In our context, it will often be relatively straightforward to identify such transformations (or at least intermediate transformations that can be used in combination). As a general approach, we will try to identify transformations that reflect the ways in which model parameters jointly act on the model dynamics, and then a second set of transformations that remove any boundary conditions. 
-
-As an example, consider the single country SEIR model fit to the incidence data from Sierra Leone in Section \ref{sec:lna_ebola}. This model includes parameters for the external force of infection and the effective population size, which add complexity to the usual formulation of the SEIR dynamics as being entirely driven by endogenous contacts within a closed homogeneously mixing population. The model parameters on their natural scales are provided in Table \ref{tab:seir_params_nat}. Each of the model parameters has a clear marginal interpretation, but upon examining the pairwise scatterplots of the posterior (Figure \ref{fig:slpairs1}) it becomes obvious that the parameters interact in highly non--linear ways. We would encounter a variety of pathological computational problems if we were to naively parameterize the MCMC estimation scale without considering the ways in which the parameters interact to affect the dynamics. For example, it would be extremely difficult for any sampler that does not account for the curvature in the posterior, e.g., Hamiltonian Monte Carlo (HMC), to explore the parameter space. (An aside: we experimented with implementing the LNA in \texttt{Stan} and using HMC to sample the posterior, but repeatedly integrating the LNA ODEs along with their augmented sensitivity equations was prohibitively slow for even simple models).  
-
-\begin{table}[!ht]
+\begin{table}[htbp]
 	\caption{SEIR model parameter and their interpretation on their natural scales.}
 	\label{tab:seir_params_nat}
 	\footnotesize
 	\centering
 	\begin{tabular}{clc}
+		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Domain}\\
 		\hline
 		$\alpha$ & Rate of infectious contact from outside the population & $[ 0,\infty) $ \\
@@ -80,7 +78,9 @@ As an example, consider the single country SEIR model fit to the incidence data 
 	\end{tabular}
 \end{table}
 
-\begin{figure}[!ht]
+As an example, consider the single country SEIR model fit to the incidence data from Sierra Leone in Section \ref{sec:lna_ebola}. This model includes parameters for the external force of infection and the effective population size, which add complexity to the usual formulation of the SEIR dynamics as being entirely driven by endogenous contacts within a closed homogeneously mixing population. The model parameters on their natural scales are provided in Table \ref{tab:seir_params_nat}. Each of the model parameters has a clear marginal interpretation, but upon examining the pairwise scatterplots of the posterior (Figure \ref{fig:slpairs1}) it becomes obvious that the parameters interact in highly non--linear ways. We would encounter a variety of pathological computational problems if we were to naively parameterize the MCMC estimation scale without considering the ways in which the parameters interact to affect the dynamics. For example, it would be extremely difficult for any sampler that does not account for the curvature in the posterior, e.g., Hamiltonian Monte Carlo (HMC), to explore the parameter space. (An aside: we experimented with implementing the LNA in \texttt{Stan} and using HMC to sample the posterior, but repeatedly integrating the LNA ODEs along with their augmented sensitivity equations was prohibitively slow for even simple models).  
+
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_pairs_nat}
 	\caption[Posterior scatterplots for Sierra Leone SEIR model parameters on their natural scales.]{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_nat}.} 
@@ -89,12 +89,13 @@ As an example, consider the single country SEIR model fit to the incidence data 
 
 We can mitigate the problems caused by non--linear relationships and strong correlations among parameters by parameterizing the estimation scale in terms of how the parameters jointly affect the model dynamics and then removing the boundary conditions. Table \ref{tab:seir_params_est2} provides a list of parameters on their estimation scale that are reflective of an initial first pass at how we would expect the parameters to interact. For example, the parameters governing the rates of infectious contact, $ \alpha$ and $\beta $, combine with the effective population size and the infectious period duration to produce the basic reproductive numbers with respect to initially infected individuals outside and inside the population. Still, we can see that there are some residual non--linear relationships between the log effective population size, the logit case detection probability, and the effective reproductive number.
 
-\begin{table}[!ht]
+\begin{table}[htbp]
 	\caption{SEIR model parameter and their interpretation on a possible set of estimation scales.}
 	\label{tab:seir_params_est2}
 	\footnotesize
 	\centering
 	\begin{tabular}{clc}
+		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Domain}\\
 		\hline
 		$\log(R_{eff}^{ext}) = \log(\alpha N_{eff} / \mu)$ & \makecell[l]{Log basic reproductive number given an infected \\outside the population} & $(-\infty,\infty) $ \\
@@ -108,7 +109,7 @@ We can mitigate the problems caused by non--linear relationships and strong corr
 	\end{tabular}
 \end{table}
 
-\begin{figure}[!ht]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_pairs_t1}
 	\caption[Posterior scatterplots for transformed Sierra Leone SEIR model parameters.]{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est2}.} 
@@ -122,15 +123,16 @@ We should give additional consideration to how the previous functions of model p
 \end{equation}
 This equation relates the fraction of the population that eventually becomes infected with the basic reproductive number. As $ R0 $ increases, a larger fraction of the population becomes infected. If the effective population size is large, and if the $ R0 $ is high, the mean case detection probability should be low so that the mean case detection rate is concordant with the scale of the observed counts. This is all to suggest that the combination of parameters that jointly acts on the model is the effective reproductive number, offset by the mean case detection rate. The other reparameterization we suggest is to use the infectious period duration and the ratio of the latent to infectious period durations. The new estimation scale is given in Table \ref{tab:seir_params_est3}. On this estimation scale, the posterior for Sierra Leone is much better behaved, with weaker pairwise correlations and very little in the way of non--linear relationships between the model parameters.
 
-\begin{table}[!ht]
+\begin{table}[htbp]
 	\caption{SEIR model parameter and their interpretation on a possible set of estimation scales.}
 	\label{tab:seir_params_est3}
 	\footnotesize
 	\centering
 	\begin{tabular}{clc}
+		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Domain}\\
 		\hline
-		$\log(R_{eff}^{ext}) = \log(\alpha N_{eff} / \mu)$ & \makecell[l]{Log basic reproductive number given an infected \\outside the population} & $(-\infty,\infty) $ \\
+		$\log(1000\alpha)$ & \makecell[l]{Log effective number of additional infecteds per \\ 1000 infecteds outside the population} & $(-\infty,\infty) $ \\
 		$ \log(R_{eff} - 1) + \log(\rho N_{eff}) $ & \makecell[l]{Log basic reproductive number given an infected\\ inside the population and $ R_{eff} > 1 $, offset\\ by the mean case detection rate} & $(-\infty,\infty) $\\
 		$ \log(\omega/\mu) $ & Log ratio of mean latent to infectious period durations & $(-\infty,\infty) $\\
 		$ \log(1/\mu) $ & Log mean infectious period duration & $ (-\infty,\infty) $\\
@@ -141,14 +143,14 @@ This equation relates the fraction of the population that eventually becomes inf
 	\end{tabular}
 \end{table}
 
-\begin{figure}[!ht]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_pairs_t2}
 	\caption[Posterior scatterplots for linear combinations of transformed Sierra Leone SEIR model parameters.]{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est3}.} 
 	\label{fig:slpairs3}
 \end{figure}
 
-
+\newpage
 \section{Simulation Details and Additional Results for Section \ref{subsec:lna_coverage}}
 \label{sec:lna_coverage_supplement}
 
@@ -164,14 +166,15 @@ In this simulation, repeated for each of the three different regimes of populati
 
 We proceed to fit SIR models using the LNA, ODE, and MMTL approximations. Priors for model parameters were assigned as in Table \ref{tab:lna_coverage_sim}. Five MCMC chains per model were initialized at random values near the true parameters and run for 35,000 iterations per chain. The first 10,000 iterations used to warm up each chain and adaptively estimate the empirical covariance matrix to be used in the multivariate Gaussian random walk Metropolis--Hastings proposals for parameters. The empirical covariance matrix was initialized as 0.01 times an identity matrix. After the warm--up period, the empirical covariance matrix was frozen and the final 25,000 iterations from each chain were combined to form the final MCMC sample. Convergence was assessed using potential scale reduction factors (PSRFs) \cite{brooks1998general}, computed via the \texttt{coda} R package \cite{codapackage}. PSRFs were less than 1.05 in cases.
 
-For models fit via the LNA and ODE approximations, the covariance matrix was adapted as in algorithm 4 of \cite{andrieu2008tutorial}. The gain factor sequence was $\gamma_n = 0.25(1 + 0.05n)^{0.50001}$, and a small nugget variance, equal to 0.00001 times an identity matrix, was added during the adaptation phase. The target acceptance rate used in the adaptation was 0.234. The models were implemented using the \text{stemr} R package \cite{stemr}.
+For models fit via the LNA and ODE approximations, the covariance matrix was adapted as in algorithm 4 of \cite{andrieu2008tutorial}. The gain factor sequence was $\gamma_n = 0.25(1 + 0.05n)^{-0.50001}$, and a small nugget variance, equal to 0.00001 times an identity matrix, was added during the adaptation phase. The target acceptance rate used in the adaptation was 0.234. The models were implemented using the \text{stemr} R package \cite{stemr}.
 
-Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp} R package \cite{pompjss}. We used 500 particles in the PMMH algorithm. This choice was made to mitigate issues of particle degeneracy that occurred with fewer particles for some datasets. The time step for MMTL was set to 1/7, which, for example, corresponds to $ \tau $--leaping over one day increments given weekly incidence data. The MCMC was initialized in the same way as LNA and ODE models, but the empirical covariance matrix was adapted according to a different cooling schedule. The gain factor sequence provided by the package is $ \gamma_n = n^\alpha $, where the cooling term, $ \alpha $, was set to 0.999. For some of the datasets, the PMMH algorithm degenerated during the adaptive phase of the MCMC. If this was the case, the MCMC was restarted at a different set of random initial conditions. The posterior sample consisted of the combined samples from all five MCMC chains after discarding the initial samples from the adaptation phase.
+Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp} R package \cite{pompjss}. We used 500 particles in the PMMH algorithm. This choice was made to mitigate issues of particle degeneracy that occurred with fewer particles for some datasets. The time step for MMTL was set to 1/7, which, for example, corresponds to $ \tau $--leaping over one day increments given weekly incidence data. The MCMC was initialized in the same way as LNA and ODE models, but the empirical covariance matrix was adapted according to a different cooling schedule. The gain factor sequence provided by the package is of the form $ \gamma_n = n^\alpha $, where the cooling term, $ \alpha $, was set to 0.999. For some of the datasets, the PMMH algorithm degenerated during the adaptive phase of the MCMC. If this was the case, the MCMC was restarted at a different set of random initial conditions. The posterior sample consisted of the combined samples from all five MCMC chains after discarding the initial samples from the adaptation phase.
 
-\subsection{Additional Results}
+\newpage
+\subsection{Additional Coverage Simulation Results}
 \label{subsec:lna_coverage_additional_results}
 
-\begin{sidewaystable}[!ht]
+\begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\small
 		\centering
@@ -197,7 +200,7 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 	\end{fullpage}
 \end{sidewaystable}	
 
-\begin{sidewaystable}[!ht]
+\begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\small
 		\centering
@@ -223,7 +226,7 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 	\end{fullpage}
 \end{sidewaystable}	
 
-\begin{sidewaystable}[!ht]
+\begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\small
 		\centering
@@ -250,11 +253,12 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 \end{sidewaystable}	
 
 \newpage
-\begin{table}[!ht]
+\begin{table}[htbp]
 	\small
 	\centering
 	\begin{tabular}{lccc}
-		Population size & ODE & LNA & MMTL \\ 
+		\hline
+		\textbf{Population siz}e & \textbf{ODE} & \textbf{LNA} & \textbf{MMTL}\\ 
 		\hline
 		10,000 & 0.39 (0.21, 0.62) & 21.73 (10.83, 37.74) & 85.23 (42.31, 152.48) \\ 
 		50,000& 0.42 (0.23, 0.62) & 32.27 (13.4, 55.8) & 88.36 (38.63, 153.54) \\ 
@@ -266,32 +270,33 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 
 \newpage
 
-\section{Supplementary Simulations with Fixed Parameters}
+\section{Supplementary Coverage Simulations with Fixed Parameters}
 \label{sec:lna_fixedpar_coverage}
 
 \subsection{Simulation Setup}
 \label{subsec:lna_fixedpar_setup}
 
 The simulations presented in this section supplement the results of Section \ref{subsec:lna_coverage} in assessing the statistical and computation performance of the LNA approximation vis--a--vis the ODE and MMTL approximations. In contrast to the previous coverage simulation, here we will fix the model parameters to one of four regimes, presented in Table \ref{tab:lna_supplementary_coverage_sim}, that are characterized by either fast or moderate outbreak dynamics, and high or low detection probability. In each setting, we simulated 500 outbreaks from a MJP with SIR dynamics in a population of 50,000 individuals, five of whom were initially infected and the rest of whom were susceptible. The observed incidence in each epoch was a negative binomial sample of the true incidence. Outbreaks for which the number of observed cases was less than 25 were re--simulated. MCMC chains were tuned and SIR models were fit via the LNA, ODE, and MMTL approximations as described in Section \ref{subsec:lna_coverage_setup_details}. The initial comparment volumes were fixed at the true values. The models were fit using diffuse priors, also presented in Table \ref{tab:lna_supplementary_coverage_sim}. We caution that the priors used in this exercise are perhaps unreasonably diffuse, particularly in the context of epidemic modeling where prior information is often available, and that we expect credible intervals will be overly wide as a result (we would still expect nominal coverage to be incorrect, even under tighter priors, since the datasets were simulated under fixed parameter regimes).
-
-\subsection{Results}
+\newpage
+\subsection{Fixed Parameter Coverage Results}
 \label{subsec:lna_fixedpar_sim_results}
 
 Coverage for credible intervals of ODE models tended to fall below nominal levels in spite of the bias towards wide intervals due to the diffusivity of the priors. This was particularly the case in parameter regimes 1 and 3, where the basic reproductive number was lower (and hence the simulated outbreak trajectories further from their thermodynamic limits). In these parameter regimes, coverage was particularly poor due as estimates of the outbreak dynamics tended to be farther from their true values and credible intervals were too tight and did not properly account for uncertainty about the parameter estimates, particularly those governing the measurement process. Coverage levels for models fit via the LNA and MMTL approximations exceeded their nominal levels as expected. 
 
 ODE models remained the most computationally performant. However, in this exercise, the LNA substantially outperformed the MMTL approximation within PMMH in terms of ESS and ESS per CPU time. We believe this is largely attributable to the diffusivity of the priors, which not only fail to regularize the posterior, but likely pull it towards unreasonable regions of the parameter space. As a general comment, we would strongly caution practitioners against adopting such priors more broadly. While it may seem appealing to adopt such diffuse priors in pursuit of being "agnostic" to the underlying outbreak dynamics, one of the very good reasons for working within the Bayesian paradigm in this context is that we have quite a bit of prior information regarding the outbreak dynamics and reasonable ranges for the case detection probability. For example, we often have historic examples of outbreaks in similar settings that we can look to in specifying priors about the basic reproductive number.
 
-\begin{table}[!ht]
+\begin{table}[htbp]
 	\caption[Fixed parameter coverage simulation setup.]{Parameter regimes under which datasets were simulated and priors used to fit SIR models. Five hundred datasets were simulated for each of the parameter regimes  from a MJP with SIR dynamics. $ R0 = \beta N / \mu $ is the basic reproductive number and $ \mu $ is the recovery rate. The observed incidence was a negative binomial sample of the true incidence in each inter--observation interval with case detection probability $ \rho $ and overdispersion parameter $ \phi $.}
 	\label{tab:lna_supplementary_coverage_sim}
 	\footnotesize
 	\centering
-	\begin{tabular}{lcccc}
+	\begin{tabular}{ccccc}
+		\hline
 		& \textbf{Regime 1} & \textbf{Regime 2} & \textbf{Regime 3} & \textbf{Regime 4} \\
 		& \makecell{Low R0/Low $ \rho $} & \makecell{High R0/Low $ \rho $} & \makecell{Low R0/High $ \rho $} & \makecell{High R0/High $ \rho $} \\
 		\hline
-		\textbf{R0} & 1.75 & 3.25 & 1.75 & 3.25 \\ 
-		$ \bs{\rho} $ & 0.25 & 0.25 & 0.75 & 0.75 \\
+		R0 & 1.75 & 3.25 & 1.75 & 3.25 \\ 
+		$ \rho $ & 0.25 & 0.25 & 0.75 & 0.75 \\
 		$ \mu $ & 1 & 0.4 & 1 & 0.4 \\
 		$ \phi $ & 5 & 5 & 5 & 5\\
 		\hline
@@ -299,6 +304,7 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{tabular} 
 	
 	\begin{tabular}{cllc}
+		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
 		$ R0-1 $ & Basic reproduction \# - 1 & LogCauchy(0.4, 1) & $ \implies R0 = $ 2.50 (1.00, 4.9$ \times 10^5$) \\ 
 		$ 1/\mu $ & Mean infectious period & LogCauchy(-0.7, 1)& 1.43 ($ 4.3\times 10^{-6},\ 4.7\times 10^5 $) \\
@@ -308,17 +314,14 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{tabular}
 \end{table}
 
-\subsection{Results}
+\subsection{Fixed Parameter Coverage Simulation Results}
 \label{subsec:lna_fixedpar_results}
-
-
-\begin{sidewaystable}[ht]
-	\begin{fullpage}
+\begin{sidewaystable}[htbp]
 		\small
 		\centering
 		\begin{tabular}{lcccccc}
 			\hline
-			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\textbf{Method} & \textbf{Parameter} & \textbf{Coverage} & \textbf{PMD} & \textbf{95\% CIW} & \textbf{ESS} & \textbf{Rel. GM ESS/CPU time} \\ 
 			\hline
 			LNA & log(R0) & 0.99 & 0.23 (-0.33, 0.85) & 1.9 (1.2, 3.49) & 1200 (251, 2508) & 19.1 (2.7, 76.4) \\ 
 			LNA & $\log(\mu)$ & 0.98 & -0.21 (-0.81, 0.28) & 1.73 (1.04, 3.42) & 1086 (228, 2295) & 27.9 (3.7, 100.5) \\ 
@@ -335,16 +338,15 @@ ODE models remained the most computationally performant. However, in this exerci
 			\hline
 		\end{tabular}
 		\caption[Slow dynamics, low detection probability regime fixed parameter coverage simulation results.]{Detailed results for the fixed parameter  simulation in which outbreaks and datasets were simulated under parameter regime 1, characterized by slow outbreak dynamics (R0 = 1.75) and low mean case detection probability ($ \rho=0.25 $). Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). $ R_0 $ is the basic reproductive number of an outbreak, $ \mu $ is the recovery rate, $ \rho $ is the negative binomial case detection probability, $ \phi $ is the negative binomial over--dispersion parameter. We report the coverage rates of 95\% Bayesian credible intervals along with 50\% (2.5\%, 97.5\%) quantiles of posterior median deviations (PMD), 95\% credible interval widths (CIW), effective sample size (ESS), and relative geometric mean effective sample size per CPU time (Rel. GM ESS/CPU time).}
-	\end{fullpage}
 \end{sidewaystable}
 
-\begin{sidewaystable}[ht]
+\begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\small
 		\centering
 		\begin{tabular}{lcccccc}
 			\hline
-			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\textbf{Method} & \textbf{Parameter} & \textbf{Coverage} & \textbf{PMD} & \textbf{95\% CIW} & \textbf{ESS} & \textbf{Rel. GM ESS/CPU time} \\ 
 			\hline
 			LNA & log(R0) & 0.99 & -0.35 (-0.87, -0.05) & 2.01 (1.42, 3.03) & 1551 (399, 3065) & 64.2 (10.3, 265.1) \\ 
 			LNA & $\log(\mu)$ & 0.99 & 0.34 (0.09, 0.8) & 1.9 (1.34, 2.92) & 1431 (368, 2865) & 23.8 (5.0, 101.7) \\ 
@@ -364,13 +366,13 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{fullpage}
 \end{sidewaystable}
 
-\begin{sidewaystable}[ht]
+\begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\small
 		\centering
 		\begin{tabular}{lcccccc}
 			\hline
-			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\textbf{Method} & \textbf{Parameter} & \textbf{Coverage} & \textbf{PMD} & \textbf{95\% CIW} & \textbf{ESS} & \textbf{Rel. GM ESS/CPU time} \\ 
 			\hline
 			LNA & log(R0) & 0.96 & 0.26 (-0.22, 0.93) & 1.68 (1.01, 3.21) & 1354 (198, 3054) & 16.0 (1.6, 70.2) \\ 
 			LNA & $\log(\mu)$ & 0.96 & -0.23 (-0.85, 0.16) & 1.49 (0.84, 3.23) & 1210 (191, 2931) & 25.1 (2.8, 83.6) \\ 
@@ -390,13 +392,13 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{fullpage}
 \end{sidewaystable}
 
-\begin{sidewaystable}[ht]
+\begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\small
 		\centering
 		\begin{tabular}{lcccccc}
 			\hline
-			Method & Parameter & Coverage & PMD & 95\% CIW & ESS & Rel. GM ESS/CPU time \\ 
+			\textbf{Method} & \textbf{Parameter} & \textbf{Coverage} & \textbf{PMD} & \textbf{95\% CIW} & \textbf{ESS} & \textbf{Rel. GM ESS/CPU time} \\ 
 			\hline
 			LNA & log(R0) & 1.00 & -0.27 (-0.68, 0.04) & 1.7 (1.24, 2.64) & 2217 (504, 4142) & 68.6 (10.0, 342.8) \\ 
 			LNA & $\log(\mu)$ & 1.00 & 0.25 (-0.01, 0.62) & 1.62 (1.18, 2.63) & 2014 (493, 3894) & 26.4 (4.7, 85.4) \\ 
@@ -416,11 +418,11 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{fullpage}
 \end{sidewaystable}
 
-\begin{table}[ht]
+\begin{table}[htbp]
 	\centering
 	\begin{tabular}{lccc}
 		\hline
-		Parameter Regime & ODE & LNA & MMTL \\ 
+		\textbf{Parameter Regime} & \textbf{ODE} & \textbf{LNA} & \textbf{MMTL}\\ 
 		\hline
 		Regime 1& 0.3 (0.21, 0.34) & 19.93 (14.96, 28.21) & 62.85 (54.16, 83.94) \\ 
 		Regime 2& 0.28 (0.17, 0.36) & 14.41 (11.33, 20.43) & 48.89 (35.47, 67.2) \\ 
@@ -430,16 +432,16 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{tabular}
 	\caption[Run times for fixed parameter coverage simulations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in fixed parameter coverage simulations. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). True parameter values are presented in Table \ref{tab:lna_supplementary_coverage_sim}. Parameter regimes 1 and 3 had slower outbreak dynamics (R0 = 1.75, vs. R0 = 3.25). Parameter regimes 3 and 4 had higher case detection rates ($ \rho = 0.75 $, vs $ \rho = 0.25 $).}
 \end{table}
-
 \newpage 
-
 \section{Synthetic Ebola Outbreak --- Simulation Settings and Additional Results}
 \label{sec:ebola_synth_supp}
 
 \subsection{Simulation Details}
 \label{subsec:ebola_synth_setup}
 
-\begin{figure}[!ht]
+We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{fig:stratified_seir_full_diag}, for the spread of Ebola in Guinea, Liberia, and Sierra Leone, via Gillespie's direct algorithm \cite{gillespie1976general}. Transmission was driven by contact with infected individuals within the country, and migration of infected individuals from other countries. The countries differed in their transmission dynamics, case detection probabilities, and effective population sizes. In addition, the times at which transmission commenced in each country were staggered. The outbreak began in Guinea with transmission initiating in Liberia in week 10, and in Sierra Leone in week 19. The rates of between country transmission, along with the other rates of state transition, for Liberia and Sierra Leone were set to zero prior to those times. The constants and parameters used in simulating the outbreak and data are given in Tables \ref{tab:ebola_synth_consts} and \ref{tab:ebola_synth_consts}. The priors used in fitting the models are given in Tables \ref{tab:ebola_synth_pars} and \ref{tab:ebola_synth_initdist_priors}. 
+
+\begin{figure}[htbp]
 	\resizebox {\linewidth} {!} {
 		\begin{tikzpicture}
 		\draw[thick,dotted] (0,-0.25) rectangle (7.5, 1.25);
@@ -489,12 +491,13 @@ ODE models remained the most computationally performant. However, in this exerci
 	\label{fig:stratified_seir_full_diag}
 \end{figure}
 
-\begin{table}[!ht]
+\begin{table}[htbp]
 	\caption[Week zero, and true and effective population sizes for a simulated Ebola outbreak in West Africa.]{True and effective population sizes, and initial conditions for a simulated outbreak in Guinea, Liberia, and Sierra Leone. Week zero is one week before the first observation is accrued and the time at which within--country transmission was assumed to begin. }
 	\label{tab:ebola_synth_consts}
 	\footnotesize
 	\centering
-	\begin{tabular}{lccc}		
+	\begin{tabular}{lccc}	
+		\hline	
 		& \textbf{Guinea} & \textbf{Liberia} & \textbf{Sierra Leone} \\\hline
 		\textbf{True population size $ (N)$} & 11.8 million & 4.4 million & 7.1 million \\ 
 		\textbf{Effective population size $ (N_{eff}) $} & 15,000 & 35,000 & 25,000 \\
@@ -505,13 +508,14 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{tabular} 
 \end{table}
 
-\begin{sidewaystable}[!ht]
+\begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\caption[Parameters and priors for a simulated Ebola outbreak in West Africa.]{Parameters under which the outbreak and data were simulated, prior distributions, and 95\% prior intervals. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
 		\label{tab:ebola_synth_pars}
-		\footnotesize
+		\scriptsize
 	\centering
 	\begin{tabular}{lclll}
+		\hline
 		\textbf{Parameter} & \textbf{Truth} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
 		$ R_{eff,G}^{(1)}(t),\ t<33 $ & 1.3 & Effective reproduction \#  & $ R_{eff,G}^{(2)} / R_G^{(1)}\sim $ LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) \\
 		$ R_{eff,G}^{(2)}(t),\ t\geq33 $ & 1.1 & Effective reproduction \# & $ R_{eff,G}^{(2)}-1\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.06, 5.32)$ \\
@@ -538,30 +542,69 @@ ODE models remained the most computationally performant. However, in this exerci
 \end{sidewaystable}
 
 \begin{table}
-	\caption[Transmission rates for the stratified SEIR model for Ebola in West Africa.]{Rates of transitions between compartments for the full stratified SEIR model with cross--country transmission for the spread of Ebola in Guinea, Liberia, and Sierra Leone. The model is diagrammed in Figure \ref{fig:stratified_seir_full_diag}. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks.}
-	\label{tab:ebola_synth_rates_full}
-	\centering\small
-	\begin{tabular}{llll}
+	\caption[Priors for initial compartment volumes for a simulated Ebola outbreak in West Africa]{Priors for the initial compartment volumes at the times when transmission commenced in each country for a simulated Ebola outbreak in West Africa. The initial compartment volumes for each country are assigned independent truncated multivariate normal priors that respect the boundary conditions on the state space of compartment volumes for that country (explained in Section \ref{sec:lna_init_volumes}). If he population size for country A is $ N_A $, and the initial state probability is denoted $ \bp_{0,A} = \bX_{0,A}/N_A  = (S_{0,A}, E_{0,A}, I_{0,A}, R_{0,A})/N_A$, the prior is a truncated multivariate normal approximation of a multinomial distribution with mean $ N_A\bp_{0,A}$ and covariance $ N_A(\bP_{0,A} - \bp_{0,A}\bp_{0,A}^T) $.} 
+	\label{tab:ebola_synth_initdist_priors}
+	\centering
+	\begin{tabular}{lc}
+		\hline \textbf{Country} & \textbf{Prior mean initial volumes} ($ \bX_0 $) \\
 		\hline
-		From & To & Country & Rate \\
-		\hline
-		Susceptible & Exposed & Guinea & $ \lambda_{SE}^G(t) = (\beta_G^{(1)} \ind{t<33} + \beta_G^{(2)}\ind{t\geq33})S_GI_G $ \\
-		Susceptible & Exposed & Liberia & $ \lambda_{SE}^L = \beta_LS_LI_L $\\
-		Susceptible & Exposed & Sierra Leone & $ \lambda_{SE}^S = \beta_SS_SI_S $ \\
-		Exposed & Infected & Guinea & $ \lambda_{EI}^G = \omega_GE_G $\\
-		Exposed & Infected & Liberia & $ \lambda_{EI}^L = \omega_LE_L $ \\
-		Exposed & Infected & Sierra Leone & $\lambda_{EI}^S = \omega_SE_S$ \\
-		Infected & Recovered & Guinea & $ \lambda_{IR}^G = \mu_GI_G $ \\
-		Infected & Recovered & Liberia & $ \lambda_{IR}^L = \mu_LI_L $ \\	
-		Infected & Recovered & Sierra Leone & $ \lambda_{IR}^S = \mu_SI_S $ \\
-		Infected (A) & Infected (B) & Countries A,B & $ \lambda_I ^{AB} = \alpha_{AB}I_A$\\
+		Guinea & ($ 11.8\times10^6 -7.1$, 4, 3, 0.1) \\
+		Liberia & ($ 4.4\times10^6 -5.1$, 3, 2, 0.1) \\
+		Sierra Leone & ($ 7.1\times10^6 -5.1$, 3, 2, 0.1) \\
 		\hline
 	\end{tabular}
 \end{table}
 
-\newpage
+\begin{table}
+	\caption[Transmission rates for the stratified SEIR model with migration of infecteds for Ebola in West Africa.]{Rates of transitions between compartments for the full stratified SEIR model for the spread of Ebola in Guinea, Liberia, and Sierra Leone with cross--country migration of infected individuals across country borders. These rates were used in simulating the outbreak and data, and in the supplementary model presented in Section \ref{subsec:ebola_synth_fullmod_res}. The model is diagrammed in Figure \ref{fig:stratified_seir_full_diag}. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times. Thus, all respective transition rates are set to zero prior to the times when transmission commenced in those countries.}
+	\label{tab:ebola_synth_rates_full}
+	\centering\footnotesize
+	\begin{tabular}{llll}
+		\hline
+		\textbf{From} & \textbf{To} & \textbf{Country} & \textbf{Rate} \\
+		\hline
+		Susceptible & Exposed & Guinea & $ \lambda_{SE}^G(t) = (\beta_G^{(1)} \ind{t<33} + \beta_G^{(2)}\ind{t\geq33})S_GI_G $ \\
+		Susceptible & Exposed & Liberia & $ \lambda_{SE}^L = \beta_L\ind{t\geq10}S_LI_L $\\
+		Susceptible & Exposed & Sierra Leone & $ \lambda_{SE}^S = \beta_S\ind{t\geq19}S_SI_S $ \\
+		Exposed & Infected & Guinea & $ \lambda_{EI}^G = \omega_GE_G $\\
+		Exposed & Infected & Liberia & $ \lambda_{EI}^L = \omega_L\ind{t\geq10}E_L $ \\
+		Exposed & Infected & Sierra Leone & $\lambda_{EI}^S = \omega_S\ind{t\geq19}E_S$ \\
+		Infected & Recovered & Guinea & $ \lambda_{IR}^G = \mu_GI_G $ \\
+		Infected & Recovered & Liberia & $ \lambda_{IR}^L = \mu_L\ind{t\geq10}I_L $ \\	
+		Infected & Recovered & Sierra Leone & $ \lambda_{IR}^S = \mu_S\ind{t\geq19}I_S $ \\
+		Infected (A) & Infected (B) & Countries A,B & $ \lambda_I ^{AB} = \alpha_{AB}\ind{t\geq{t_{0}^A}}\ind{t\geq t_{0}^B}I_A$\\
+		\hline
+	\end{tabular}
+\end{table}
 
-\subsection{Supplementary Analysis of the Simulated Ebola Outbreak with Modeling of Migration}
+\begin{table}
+	\caption[Transmission rates for the stratified SEIR model with virtual migration of infecteds for Ebola in West Africa.]{Approximate rates of transitions between compartments for the stratified SEIR model for the spread of Ebola in Guinea, Liberia, and Sierra Leone with cross--country transmission via virtual migration of infected individuals. These rates were used in the primary model presented in Section \ref{subsec:ebola_synth}. The model is diagrammed in Figure \ref{fig:stratified_seir_full_diag}. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times. Thus, all respective transition rates are set to zero prior to the times when transmission commenced in those countries.}
+	\label{tab:ebola_synth_rates_approx}
+	\centering\footnotesize
+	\begin{tabular}{llll}
+		\hline
+		\textbf{From} & \textbf{To} & \textbf{Country} & \textbf{Rate} \\
+		\hline
+		Susceptible & Exposed & Guinea & \hspace{-0.7in}\makecell{$ \lambda_{SE}^G(t) = (\beta_G^{(1)} \ind{t<33} + \beta_G^{(2)}\ind{t\geq33})\times $\\
+		\hspace{1.25in}$ (I_G + \alpha_{LG}\ind{t\geq10}I_L + \alpha_{SG}\ind{t\geq19}I_S)S_G $} \\
+		Susceptible & Exposed & Liberia & $ \lambda_{SE}^L = \beta_L\ind{t\geq10}(I_L + \alpha_{GL}I_G + \alpha_{SL}\ind{t\geq19}I_S)S_L $\\
+		Susceptible & Exposed & Sierra Leone & $ \lambda_{SE}^S = \beta_S\ind{t\geq19}(I_S + \alpha_{GS}I_G + \alpha_{LS}I_L)S_S $ \\
+		Exposed & Infected & Guinea & $ \lambda_{EI}^G = \omega_GE_G $\\
+		Exposed & Infected & Liberia & $ \lambda_{EI}^L = \omega_L\ind{t\geq10}E_L $ \\
+		Exposed & Infected & Sierra Leone & $\lambda_{EI}^S = \omega_S\ind{t\geq19}E_S$ \\
+		Infected & Recovered & Guinea & $ \lambda_{IR}^G = \mu_GI_G $ \\
+		Infected & Recovered & Liberia & $ \lambda_{IR}^L = \mu_L\ind{t\geq10}I_L $ \\	
+		Infected & Recovered & Sierra Leone & $ \lambda_{IR}^S = \mu_S\ind{t\geq19}I_S $ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsection{MCMC Details}
+\label{subsec:ebola_synth_mcmc}
+We fit two models to the simulated data, the true model where migration was modeled explicitly and the approximated model, described in Section \ref{subsec:ebola_synth}, where cross--border transmission was incorporated into the rate of infection via virtual migration. The model fitting procedure and priors were the same for both models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was update over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The covariance matrix was blocked by country with covariances for parameters belonging to different countries set to zero. Thus, country specific parameters were proposed jointly but were independent in the proposal. Migration parameters were blocked with parameters corresponding to the destination country. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between three ElliptSS and two MVNSS updates per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. 
+
+\newpage
+\subsection{Supplementary Results for the Simulated Ebola Outbreak with Modeling of Migration}
 \label{subsec:ebola_synth_fullmod_res}
 
 \section{LNA Implementation Details and LNA Model Vignettes}
