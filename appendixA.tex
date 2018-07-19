@@ -173,6 +173,20 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 \newpage
 \subsection{Additional Coverage Simulation Results}
 \label{subsec:lna_coverage_additional_results}
+\begin{table}[htbp]
+	\small
+	\centering
+	\begin{tabular}{lccc}
+		\hline
+		\textbf{Population siz}e & \textbf{ODE} & \textbf{LNA} & \textbf{MMTL}\\ 
+		\hline
+		10,000 & 0.39 (0.21, 0.62) & 21.73 (10.83, 37.74) & 85.23 (42.31, 152.48) \\ 
+		50,000& 0.42 (0.23, 0.62) & 32.27 (13.4, 55.8) & 88.36 (38.63, 153.54) \\ 
+		250,000 & 0.45 (0.25, 0.78) & 33.08 (12.56, 70.86) & 87.4 (39.8, 166.87) \\
+		\hline
+	\end{tabular}
+	\caption[Run times for coverage simulation SIR models fit via the LNA, ODE, and MMTL approximations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE).}
+\end{table}	
 
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
@@ -253,22 +267,6 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 \end{sidewaystable}	
 
 \newpage
-\begin{table}[htbp]
-	\small
-	\centering
-	\begin{tabular}{lccc}
-		\hline
-		\textbf{Population siz}e & \textbf{ODE} & \textbf{LNA} & \textbf{MMTL}\\ 
-		\hline
-		10,000 & 0.39 (0.21, 0.62) & 21.73 (10.83, 37.74) & 85.23 (42.31, 152.48) \\ 
-		50,000& 0.42 (0.23, 0.62) & 32.27 (13.4, 55.8) & 88.36 (38.63, 153.54) \\ 
-		250,000 & 0.45 (0.25, 0.78) & 33.08 (12.56, 70.86) & 87.4 (39.8, 166.87) \\
-		\hline
-	\end{tabular}
-	\caption[Run times for coverage simulation SIR models fit via the LNA, ODE, and MMTL approximations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in the coverage simulation presented in Section \ref{subsec:lna_coverage}. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE).}
-\end{table}	
-
-\newpage
 
 \section{Supplementary Coverage Simulations with Fixed Parameters}
 \label{sec:lna_fixedpar_coverage}
@@ -277,7 +275,9 @@ Inference via the MMTL approximation within PMMH were fit using the \texttt{pomp
 \label{subsec:lna_fixedpar_setup}
 
 The simulations presented in this section supplement the results of Section \ref{subsec:lna_coverage} in assessing the statistical and computation performance of the LNA approximation vis--a--vis the ODE and MMTL approximations. In contrast to the previous coverage simulation, here we will fix the model parameters to one of four regimes, presented in Table \ref{tab:lna_supplementary_coverage_sim}, that are characterized by either fast or moderate outbreak dynamics, and high or low detection probability. In each setting, we simulated 500 outbreaks from a MJP with SIR dynamics in a population of 50,000 individuals, five of whom were initially infected and the rest of whom were susceptible. The observed incidence in each epoch was a negative binomial sample of the true incidence. Outbreaks for which the number of observed cases was less than 25 were re--simulated. MCMC chains were tuned and SIR models were fit via the LNA, ODE, and MMTL approximations as described in Section \ref{subsec:lna_coverage_setup_details}. The initial comparment volumes were fixed at the true values. The models were fit using diffuse priors, also presented in Table \ref{tab:lna_supplementary_coverage_sim}. We caution that the priors used in this exercise are perhaps unreasonably diffuse, particularly in the context of epidemic modeling where prior information is often available, and that we expect credible intervals will be overly wide as a result (we would still expect nominal coverage to be incorrect, even under tighter priors, since the datasets were simulated under fixed parameter regimes).
+
 \newpage
+
 \subsection{Fixed Parameter Coverage Results}
 \label{subsec:lna_fixedpar_sim_results}
 
@@ -314,8 +314,26 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{tabular}
 \end{table}
 
+\newpage
+
 \subsection{Fixed Parameter Coverage Simulation Results}
 \label{subsec:lna_fixedpar_results}
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{lccc}
+		\hline
+		\textbf{Parameter Regime} & \textbf{ODE} & \textbf{LNA} & \textbf{MMTL}\\ 
+		\hline
+		Regime 1& 0.3 (0.21, 0.34) & 19.93 (14.96, 28.21) & 62.85 (54.16, 83.94) \\ 
+		Regime 2& 0.28 (0.17, 0.36) & 14.41 (11.33, 20.43) & 48.89 (35.47, 67.2) \\ 
+		Regime 3& 0.31 (0.2, 0.4) & 19.47 (15.57, 28.28) & 62.09 (55.75, 83.89) \\ 
+		Regime 4& 0.28 (0.17, 0.36) & 14.66 (11.43, 20.58) & 49.04 (35.72, 67.53) \\ 
+		\hline
+	\end{tabular}
+	\caption[Run times for fixed parameter coverage simulations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in fixed parameter coverage simulations. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). True parameter values are presented in Table \ref{tab:lna_supplementary_coverage_sim}. Parameter regimes 1 and 3 had slower outbreak dynamics (R0 = 1.75, vs. R0 = 3.25). Parameter regimes 3 and 4 had higher case detection rates ($ \rho = 0.75 $, vs $ \rho = 0.25 $).}
+\end{table}
+
 \begin{sidewaystable}[htbp]
 		\small
 		\centering
@@ -418,20 +436,6 @@ ODE models remained the most computationally performant. However, in this exerci
 	\end{fullpage}
 \end{sidewaystable}
 
-\begin{table}[htbp]
-	\centering
-	\begin{tabular}{lccc}
-		\hline
-		\textbf{Parameter Regime} & \textbf{ODE} & \textbf{LNA} & \textbf{MMTL}\\ 
-		\hline
-		Regime 1& 0.3 (0.21, 0.34) & 19.93 (14.96, 28.21) & 62.85 (54.16, 83.94) \\ 
-		Regime 2& 0.28 (0.17, 0.36) & 14.41 (11.33, 20.43) & 48.89 (35.47, 67.2) \\ 
-		Regime 3& 0.31 (0.2, 0.4) & 19.47 (15.57, 28.28) & 62.09 (55.75, 83.89) \\ 
-		Regime 4& 0.28 (0.17, 0.36) & 14.66 (11.43, 20.58) & 49.04 (35.72, 67.53) \\ 
-		\hline
-	\end{tabular}
-	\caption[Run times for fixed parameter coverage simulations.]{Median (2.5\%, 97.5\%) quantiles of run times, in minutes, for MCMC chains in fixed parameter coverage simulations. Models were fit via the linear noise approximation (LNA), multinomial modified $ \tau $--leaping (MMTL) within particle marginal Metropolis--Hastings, and deterministic ordinary differential equations (ODE). True parameter values are presented in Table \ref{tab:lna_supplementary_coverage_sim}. Parameter regimes 1 and 3 had slower outbreak dynamics (R0 = 1.75, vs. R0 = 3.25). Parameter regimes 3 and 4 had higher case detection rates ($ \rho = 0.75 $, vs $ \rho = 0.25 $).}
-\end{table}
 \newpage 
 \section{Synthetic Ebola Outbreak --- Simulation Settings and Additional Results}
 \label{sec:ebola_synth_supp}
@@ -439,7 +443,7 @@ ODE models remained the most computationally performant. However, in this exerci
 \subsection{Simulation Details}
 \label{subsec:ebola_synth_setup}
 
-We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{fig:stratified_seir_full_diag}, for the spread of Ebola in Guinea, Liberia, and Sierra Leone, via Gillespie's direct algorithm \cite{gillespie1976general}. Transmission was driven by contact with infected individuals within the country, and migration of infected individuals from other countries. The countries differed in their transmission dynamics, case detection probabilities, and effective population sizes. In addition, the times at which transmission commenced in each country were staggered. The outbreak began in Guinea with transmission initiating in Liberia in week 10, and in Sierra Leone in week 19. The rates of between country transmission, along with the other rates of state transition, for Liberia and Sierra Leone were set to zero prior to those times. The constants and parameters used in simulating the outbreak and data are given in Tables \ref{tab:ebola_synth_consts} and \ref{tab:ebola_synth_consts}. The priors used in fitting the models are given in Tables \ref{tab:ebola_synth_pars} and \ref{tab:ebola_synth_initdist_priors}. 
+We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{fig:stratified_seir_full_diag}, for the spread of Ebola in Guinea, Liberia, and Sierra Leone, via Gillespie's direct algorithm \cite{gillespie1976general}. Transmission was driven by contact with infected individuals within the country, and migration of infected individuals from other countries. The countries differed in their transmission dynamics, case detection probabilities, and effective population sizes. In addition, the times at which transmission commenced in each country were staggered. The outbreak began in Guinea with transmission beggining in Liberia at the start of week 10, and in Sierra Leone at the start of week 19. The rates of between country transmission, along with the other rates of state transition, for Liberia and Sierra Leone were set to zero prior to those times. The constants and parameters used in simulating the outbreak and data are given in Tables \ref{tab:ebola_synth_consts} and \ref{tab:ebola_synth_consts}. The priors used in fitting the models are given in Tables \ref{tab:ebola_synth_pars} and \ref{tab:ebola_synth_initdist_priors}. 
 
 \begin{figure}[htbp]
 	\resizebox {\linewidth} {!} {
@@ -501,7 +505,7 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 		& \textbf{Guinea} & \textbf{Liberia} & \textbf{Sierra Leone} \\\hline
 		\textbf{True population size $ (N)$} & 11.8 million & 4.4 million & 7.1 million \\ 
 		\textbf{Effective population size $ (N_{eff}) $} & 15,000 & 35,000 & 25,000 \\
-		\textbf{Week zero $ (t_0) $} & 1 & 10 & 19 \\
+		\textbf{Week zero $ (t_0) $} & 0 & 10 & 19 \\
 		\textbf{Initial state at $ t_0 $} $ (S_0,E_0,I_0,R_0) $ & (11.8$ \times 10^6$-7, 4, 3, 0) & (4.4$ \times 10^6$-5 3, 2, 0)& (7.1$ \times 10^6$-5, 3, 2, 0) \\
 		\hline
 		&&&
@@ -518,22 +522,22 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 		\hline
 		\textbf{Parameter} & \textbf{Truth} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
 		$ R_{eff,G}^{(1)}(t),\ t<33 $ & 1.3 & Effective reproduction \#  & $ R_{eff,G}^{(2)} / R_G^{(1)}\sim $ LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) \\
-		$ R_{eff,G}^{(2)}(t),\ t\geq33 $ & 1.1 & Effective reproduction \# & $ R_{eff,G}^{(2)}-1\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.06, 5.32)$ \\
-		$ R_{eff,L} $ & 2.5 & Effective reproduction \# & $ R_{eff,L}\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,L}^{(2)} = 1.50 (1.06, 5.32)$ \\
-		$ R_{eff,S} $ & 1.6 & Effective reproduction \# & $ R_{eff,S}\sim $ LogNormal(log(0.5), 1) & $ \implies R_{eff,S}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,G}^{(2)}(t),\ t\geq33 $ & 1.1 & Effective reproduction \# & $ R_{eff,G}^{(2)}-1\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,L} $ & 2.1 & Effective reproduction \# & $ R_{eff,L}\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,L}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,S} $ & 1.6 & Effective reproduction \# & $ R_{eff,S}\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,S}^{(2)} = 1.50 (1.06, 5.32)$ \\
 		\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
 		$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & 0.003 & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.25) & \makecell[l]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)}\\ 
-		$ \omega_G $ & 1.0 & Rate from $ E_G\rightarrow I_G $ & $ (1/\mu_G)\big/(1/\omega_G) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.38, 2.66) \\
-		$ \omega_L $ & 0.6 & Rate from $ E_L\rightarrow I_L $ & $ (1/\mu_L)\big/(1/\omega_L) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.38, 2.66) \\
-		$ \omega_S $ & 1.2 & Rate from $ E_S\rightarrow I_S $ & $ (1/\mu_S)\big/(1/\omega_S) \sim $ LogNormal(0, 0.5$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.00 (0.38, 2.66) \\
-		$ \mu_G $ & $ 0.95 $ & Rate from $ E_G\rightarrow I_G $ & $ 1/\mu_G\sim $ LogNormal(0.3, 0.25$ ^2 $) & $ 7/\mu_G = $ 9.45 (5.79, 15.42) \\
-		$ \mu_L $ & $ 0.5 $ & Rate from $ E_L\rightarrow I_L $ & $ 1/\mu_L\sim $ LogNormal(0.3, 0.25$ ^2 $) & $ 7/\mu_L = $ 9.45 (5.79, 15.42) \\
-		$ \mu_S $ & $ 0.75 $ & Rate from $ E_S\rightarrow I_S $ & $ 1/\mu_S\sim $ LogNormal(0.3, 0.25$ ^2 $) & $ 7/\mu_S = $ 9.45 (5.79, 15.42) \\
-		$ N_{eff,G} $ & 15,000 & Effective population size & $ N_{eff,G}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (4204,\ 2.95\times10^6) $ \\
-		$ N_{eff,L} $ & 35,000 & Effective population size & $ N_{eff,L}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (4605,\ 1.1\times10^6) $ \\
-		$ N_{eff,S} $ & 25,000 & Effective population size & $ N_{eff,S}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (9818,\ 1.775\times10^6) $ \\
-		$ \rho_G $ & 0.8 & Mean case detection prob. & $ \logit(\rho_G) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_G = 0.5, (0.06, 0.94)$ \\
-		$ \rho_L $ & 0.15 & Mean case detection prob. & $ \logit(\rho_L) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_L = 0.5, (0.06, 0.94)$ \\
+		$ \omega_G $ & 1.1 & Rate from $ E_G\rightarrow I_G $ & $ (1/\mu_G)\big/(1/\omega_G) \sim $ LogNormal(0.05, 0.35$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.05 (0.53, 2.08) \\
+		$ \omega_L $ & 0.8 & Rate from $ E_L\rightarrow I_L $ & $ (1/\mu_L)\big/(1/\omega_L) \sim $ LogNormal(0.05, 0.35$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.05 (0.53, 2.08) \\
+		$ \omega_S $ & 1.2 & Rate from $ E_S\rightarrow I_S $ & $ (1/\mu_S)\big/(1/\omega_S) \sim $ LogNormal(0.05, 0.35$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.05 (0.53, 2.08) \\
+		$ \mu_G $ & $ 1.1 $ & Rate from $ E_G\rightarrow I_G $ & $ 1/\mu_G\sim $ LogNormal(0, 0.5$ ^2 $) & $ 7/\mu_G = $ 7.0 (2.63, 18.65) \\
+		$ \mu_L $ & $ 0.8 $ & Rate from $ E_L\rightarrow I_L $ & $ 1/\mu_L\sim $ LogNormal(0, 0.5$ ^2 $) & $ 7/\mu_L = $ 7.0 (2.63, 18.65) \\
+		$ \mu_S $ & $ 1.2 $ & Rate from $ E_S\rightarrow I_S $ & $ 1/\mu_S\sim $ LogNormal(0, 0.5$ ^2 $) & $ 7/\mu_S = $ 7.0 (2.63, 18.65) \\
+		$ N_{eff,G} $ & 15,000 & Effective population size & $ N_{eff,G}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (4032,\ 2.95\times10^6) $ \\
+		$ N_{eff,L} $ & 35,000 & Effective population size & $ N_{eff,L}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (5945,\ 1.1\times10^6) $ \\
+		$ N_{eff,S} $ & 25,000 & Effective population size & $ N_{eff,S}\sim\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (9531,\ 1.775\times10^6) $ \\
+		$ \rho_G $ & 0.85 & Mean case detection prob. & $ \logit(\rho_G) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_G = 0.5, (0.06, 0.94)$ \\
+		$ \rho_L $ & 0.2 & Mean case detection prob. & $ \logit(\rho_L) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_L = 0.5, (0.06, 0.94)$ \\
 		$ \rho_S $ & 0.6 & Mean case detection prob. & $ \logit(\rho_S) \sim $ LogNormal(0, 1.4$ ^2 $) & $ \implies \rho_S = 0.5, (0.06, 0.94)$ \\
 		$ \phi_G,\ \phi_L, \phi_S $ & 50 & Neg.Binomial overdispersion & $ \log(\phi) \sim $ LogNormal(0, 5$ ^2 $) & $ \implies \rho_G = 1, (5.5\times 10^-5, 1.8\times10^4)$ \\
 		\hline
