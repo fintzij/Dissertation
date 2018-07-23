@@ -8,7 +8,7 @@ When fitting SEMs with complex dynamics, e.g., when there are many strata or whe
 
 In models where it is advantageous to shring the initial bracket width, we will typically set the initial bracket width to a constant times the standard deviation of the accepted angles in a tuning phase. Since we do not step out the ElliptSS bracket, the initial width should not be so small as to induce additional autocorrelation in the latent process, and should also not be so wide that the bracket is contracted needlessly. We have found a bracket width of $ \omega = 2\sqrt{2\log(10)}\sigma $, corresponding to the full width at one tenth maximum for a Gaussian with standard deviation $ \sigma $, to work well in practice. Figure \ref{fig:esstuning} presents histograms of the number of contractions per ElliptSS update and the accepted angles before and after contracting the initial ElliptSS bracket width for the joint Ebola model of Section \ref{sec:lna_ebola}. In this instance, we were able to substantially reduce the number of contractions, and hence likelihood evaluations, per ElliptSS update while leaving the distribution of accepted angles essentially unchanged. We like to call this a "free lunch".
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/ess_tuning}
 	\caption[Distributions of numbers of contractions and accepted for elliptical slice sampling.]{Distributions of the numbers of contractions per ElliptSS update and the accepted angles for an MCMC chain for the joint Ebola model of Section \ref{sec:lna_ebola} . An initial bracket width of $ 2\pi $ was used for the first 5,000 iterations (top row), after which the initial bracket width was set to $ 2\sqrt{2\log(10)}\sigma_{ElliptSS} $, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles from the initial run (bottom row).} 
@@ -78,7 +78,7 @@ How we parameterize the MCMC estimation scale is critically important to its com
 	\end{tabular}
 \end{table}
 
-As an example, consider the single country SEIR model fit to the incidence data from Sierra Leone in Section \ref{sec:lna_ebola}. This model includes parameters for the external force of infection and the effective population size, which add complexity to the usual formulation of the SEIR dynamics as being entirely driven by endogenous contacts within a closed homogeneously mixing population. The model parameters on their natural scales are provided in Table \ref{tab:seir_params_nat}. Each of the model parameters has a clear marginal interpretation, but upon examining the pairwise scatterplots of the posterior (Figure \ref{fig:slpairs1}) it becomes obvious that the parameters interact in highly non--linear ways. We would encounter a variety of pathological computational problems if we were to naively parameterize the MCMC estimation scale without considering the ways in which the parameters interact to affect the dynamics. For example, it would be extremely difficult for any sampler that does not account for the curvature in the posterior, e.g., Hamiltonian Monte Carlo (HMC), to explore the parameter space. (An aside: we experimented with implementing the LNA in \texttt{Stan} and using HMC to sample the posterior, but repeatedly integrating the LNA ODEs along with their augmented sensitivity equations was prohibitively slow for even simple models).  
+As an example, consider the single country SEIR model fit to the incidence data from Sierra Leone in Section \ref{sec:lna_ebola}. This model includes parameters for the external force of infection and the effective population size, which add complexity to the usual formulation of the SEIR dynamics as being entirely driven by endogenous contacts within a closed homogeneously mixing population. The effective population size is roughly the size of the initially susceptible population. The model parameters on their natural scales are provided in Table \ref{tab:seir_params_nat}. Each of the model parameters has a clear marginal interpretation, but upon examining the pairwise scatterplots of the posterior (Figure \ref{fig:slpairs1}) it becomes obvious that the parameters interact in highly non--linear ways. We would encounter a variety of pathological computational problems if we were to naively parameterize the MCMC estimation scale without considering the ways in which the parameters interact to affect the dynamics. For example, it would be extremely difficult for any sampler that does not account for the curvature in the posterior, e.g., Hamiltonian Monte Carlo (HMC), to explore the parameter space. (An aside: we experimented with implementing the LNA in \texttt{Stan} and using HMC to sample the posterior, but repeatedly integrating the LNA ODEs along with their augmented sensitivity equations was prohibitively slow for even simple models).  
 
 \begin{figure}[htbp]
 	\centering
@@ -116,12 +116,12 @@ We can mitigate the problems caused by non--linear relationships and strong corr
 	\label{fig:slpairs2}
 \end{figure}
 
-We should give additional consideration to how the previous functions of model parameters interact within the model. The effective population size, on its own, in this model is essentially a nuisance parameter. However, combined with the mean case detection probability, the mean case detection rate, $ \rho N_{eff} $ should be, more or less, on the same scale as the total number of observed cases modulo the fraction of the effective population to escape infection. We note that estimation of this quantity is stable even when the population size is misspecified, see, e.g., \cite{fintzi2017efficient, koepke2016predictive}. Moreover, we should suspect, \textit{a priori}, that the basic reproductive number interacts with the mean case detection rate. To understand this, we examine how the basic reproductive number acts on the outbreak size through the final size relation for the deterministic ODE analog to our model \cite{bauer2008compartmental}: 
+A heuristic argument for an estimation scale that further simplifies the posterior geometry proceeds by analogy with the analogous deterministic ODE model. In particular, we will consider how the functions of model parameters in Table \ref{tab:seir_params_est2} act on the model dynamics through the final size relation, and how they are informed by the data. The final size relation for the ODE model \cite{miller2012note} relates the fraction of the population that eventually becomes infected $ \pi $, with the basic reproductive number:
 \begin{equation}
 \label{eqn:final_size_relation}
-\log\frac{S_0}{S_\infty} = R0\left (1 - \frac{S_\infty}{N}\right ).
+\pi = 1 - \e^{-R0\pi}.
 \end{equation}
-This equation relates the fraction of the population that eventually becomes infected with the basic reproductive number. As $ R0 $ increases, a larger fraction of the population becomes infected. If the effective population size is large, and if the $ R0 $ is high, the mean case detection probability should be low so that the mean case detection rate is concordant with the scale of the observed counts. This is all to suggest that the combination of parameters that jointly acts on the model is the effective reproductive number, offset by the mean case detection rate. The other reparameterization we suggest is to use the infectious period duration and the ratio of the latent to infectious period durations. The new estimation scale is given in Table \ref{tab:seir_params_est3}. On this estimation scale, the posterior for Sierra Leone is much better behaved, with weaker pairwise correlations and very little in the way of non--linear relationships between the model parameters.
+As $ R0 $ increases, a larger fraction of the population becomes infected. As the effective population size, $ N_{eff}$, increases, so too does the absolute outbreak size, $ \pi \times N_{eff} $. The expected observed outbreak size is the absolute outbreak size multiplied by the mean case detection probability, $ \pi \times \rho \times N_{eff} $, which should be concordant with the total number of observed cases. We can interpret the product, $ \rho \times N_{eff} $, as a measure of the case detection rate. This is discussed further in the next section. Taken together, the combination of parameters that we would expect to jointly act on the model, \textit{a posteriori}, is the effective reproduction number offset by the case detection rate, $ R0\times\rho \times N_{eff} $, which will enter our estimation scale as $ \log(R0\times\rho\times N_{eff}) $. The other modification of the estimation scale in Table \ref{tab:seir_params_est2} replaces the log latent period with the log ratio of infectious to latent period durations. The new estimation scale is given in Table \ref{tab:seir_params_est3}. On this estimation scale, the posterior for Sierra Leone is much better behaved, with weaker pairwise correlations and little in the way of non--linear relationships between the model parameters. 
 
 \begin{table}[htbp]
 	\caption{SEIR model parameter and their interpretation on a possible set of estimation scales.}
@@ -149,6 +149,28 @@ This equation relates the fraction of the population that eventually becomes inf
 	\caption[Posterior scatterplots for linear combinations of transformed Sierra Leone SEIR model parameters.]{Marginal histograms and pairwise scatterplots of posterior samples for parameters for the SEIR model fit to the Sierra Leone Ebola dataset using the estimation scale in Table \ref{tab:seir_params_est3}. The parameters on the estimation scales in this figure and their interpretations are provided in Table \ref{tab:seir_params_est3}.} 
 	\label{fig:slpairs3}
 \end{figure}
+
+\newpage
+\section{Parameter Identifiability when Estimating the Effective Population Size}
+\label{sec:effpop_identifiability}
+When the scale of an outbreak is small relative to the population size, it may be unreasonable to assume that the entire population mixes homogeneously and participates in propagating the epidemic. A more reasonable, though arguably still dubious, abstraction of the outbreak setting involves splitting the population into two (or more) sub--populations, one that participates in the outbreak and another that is separated from the outbreak. For example, in the case of the SIR model, we might have two susceptible compartments, $ S^R $ and $ S^E $, where $ S^R $ is a susceptible subpopulation that is effectively removed since they experience no infectious contact, and $ S^E $ is a susceptible population that may become exposed. In this model, the \textit{effective population size} is $ N_{eff} = S^E + I + R $. 
+
+Absent prior information, the effective population size and the mean case detection probability are not separately identifiable parameters. Rather, we can only hope to estimate the mean case reporting rate, $ \rho\times N_{eff} $. To see why this is so, consider that the two parameters enter into the complete data likelihood, (\ref{eqn:lna_ncp}), through the priors and through the product of emission probabilities in the observed data likelihood. These emission probabilities could be, for example, negative binomial distributions as in (\ref{eqn:incidence_emitprob}). The key point to note is that the mean of the emission distribution is of the form, $ \rho\Delta N_{SI}(t_\ell) $. Recalling that the LNA (and the MJP on which it is based) is a density dependent process \cite{komorowski2009,wilkinson2011stochastic} scaled by the size of the system, here $ N_{eff} $, we should actually understand the mean observed incidence to be the mean case detection probability multiplied by a change in concentrations and the effective population size, $ \rho\left (N^\prime_{S^EI}(t_{\ell}) - N^\prime_{S^EI}(t_{\ell-1})\right )N_{eff} $, where $ \bN^\prime = \bN/N_{eff} $ is the equivalent representation of the LNA in terms of compartment concentrations. Absent constraints on $ \rho $ or $ N_{eff} $, either by artificially fixing one or via their priors, the parameters are unidentifiable. 
+
+We can check that $ \rho\times N_{eff} $ and the parameters governing the outbreak dynamics are identifiable via a simple simulation. We drew 500 sets of parameters from the priors given in Table (((insert ref))), and simulated an outbreak and a dataset for each set of parameters. The models were fit via the LNA under the same priors from which the parameters were drawn. The results are summarized in Table (((insert ref))). As we would expect, the basic reproductive number, infectious period duration, and case detection rate are well estimated, while the posterior median deviation and credible interval widths for the case detection probability and effective population size are quite large. 
+
+\begin{table}[htbp]
+	\small\centering
+	\begin{tabular}{cllc}
+		\hline
+		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
+		$ R0-1 $ & Basic reproduction \# - 1 & LogCauchy(0.4, 1) & $ \implies R0 = $ 2.50 (1.00, 4.9$ \times 10^5$) \\ 
+		$ 1/\mu $ & Mean infectious period & LogCauchy(-0.7, 1)& 1.43 ($ 4.3\times 10^{-6},\ 4.7\times 10^5 $) \\
+		$ \rho $ & Mean case detection prob. & Unif(0, 1) & 0.5 (0.025, 0.975) \\
+		$ \phi $ & Neg.Binom. overdispersion & LogCauchy(1.5,1) & 4.48 (1.4$ \times 10^{-5},\ 1.5\times10^6 $)\\
+		\hline
+	\end{tabular}
+\end{table}
 
 \newpage
 \section{Simulation Details and Additional Results for Section \ref{subsec:lna_coverage}}
@@ -545,7 +567,7 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 	\end{fullpage}
 \end{sidewaystable}
 
-\begin{table}
+\begin{table}[htbp]
 	\caption[Priors for initial compartment volumes for a simulated Ebola outbreak in West Africa]{Priors for the initial compartment volumes at the times when transmission commenced in each country for a simulated Ebola outbreak in West Africa. The initial compartment volumes for each country are assigned independent truncated multivariate normal priors that respect the boundary conditions on the state space of compartment volumes for that country (explained in Section \ref{sec:lna_init_volumes}). If he population size for country A is $ N_A $, and the initial state probability is denoted $ \bp_{0,A} = \bX_{0,A}/N_A  = (S_{0,A}, E_{0,A}, I_{0,A}, R_{0,A})/N_A$, the prior is a truncated multivariate normal approximation of a multinomial distribution with mean $ N_A\bp_{0,A}$ and covariance $ N_A(\bP_{0,A} - \bp_{0,A}\bp_{0,A}^T) $.} 
 	\label{tab:ebola_synth_initdist_priors}
 	\centering
@@ -559,7 +581,7 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 	\end{tabular}
 \end{table}
 
-\begin{table}
+\begin{table}[htbp]
 	\caption[Transmission rates for the stratified SEIR model with migration of infecteds for Ebola in West Africa.]{Rates of transitions between compartments for the full stratified SEIR model for the spread of Ebola in Guinea, Liberia, and Sierra Leone with cross--country migration of infected individuals across country borders. These rates were used in simulating the outbreak and data, and in the supplementary model presented in Section \ref{subsec:ebola_synth_fullmod_res}. The model is diagrammed in Figure \ref{fig:stratified_seir_full_diag}. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times. Thus, all respective transition rates are set to zero prior to the times when transmission commenced in those countries.}
 	\label{tab:ebola_synth_rates_full}
 	\centering\footnotesize
@@ -581,7 +603,7 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 	\end{tabular}
 \end{table}
 
-\begin{table}
+\begin{table}[htbp]
 	\caption[Transmission rates for the stratified SEIR model with virtual migration of infecteds for Ebola in West Africa.]{Approximate rates of transitions between compartments for the stratified SEIR model for the spread of Ebola in Guinea, Liberia, and Sierra Leone with cross--country transmission via virtual migration of infected individuals. These rates were used in the primary model presented in Section \ref{subsec:ebola_synth}. The model is diagrammed in Figure \ref{fig:stratified_seir_full_diag}. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times. Thus, all respective transition rates are set to zero prior to the times when transmission commenced in those countries.}
 	\label{tab:ebola_synth_rates_approx}
 	\centering\footnotesize
