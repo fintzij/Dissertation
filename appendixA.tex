@@ -124,7 +124,7 @@ A heuristic argument for an estimation scale that further simplifies the posteri
 As $ R0 $ increases, a larger fraction of the population becomes infected. As the effective population size, $ N_{eff}$, increases, so too does the absolute outbreak size, $ \pi \times N_{eff} $. The expected observed outbreak size is the absolute outbreak size multiplied by the mean case detection probability, $ \pi \times \rho \times N_{eff} $, which should be concordant with the total number of observed cases. We can interpret the product, $ \rho \times N_{eff} $, as a measure of the case detection rate. This is discussed further in the next section. Taken together, the combination of parameters that we would expect to jointly act on the model, \textit{a posteriori}, is the effective reproduction number offset by the case detection rate, $ R0\times\rho \times N_{eff} $, which will enter our estimation scale as $ \log(R0\times\rho\times N_{eff}) $. The other modification of the estimation scale in Table \ref{tab:seir_params_est2} replaces the log latent period with the log ratio of infectious to latent period durations. The new estimation scale is given in Table \ref{tab:seir_params_est3}. On this estimation scale, the posterior for Sierra Leone is much better behaved, with weaker pairwise correlations and little in the way of non--linear relationships between the model parameters. 
 
 \begin{table}[htbp]
-	\caption{SEIR model parameter and their interpretation on a possible set of estimation scales.}
+	\caption{SEIR model parameters and their interpretation on a possible set of estimation scales.}
 	\label{tab:seir_params_est3}
 	\footnotesize
 	\centering
@@ -151,23 +151,47 @@ As $ R0 $ increases, a larger fraction of the population becomes infected. As th
 \end{figure}
 
 \newpage
-\section{Parameter Identifiability when Estimating the Effective Population Size}
+\section{Identifiability when Estimating the Effective Population Size}
 \label{sec:effpop_identifiability}
-When the scale of an outbreak is small relative to the population size, it may be unreasonable to assume that the entire population mixes homogeneously and participates in propagating the epidemic. A more reasonable, though arguably still dubious, abstraction of the outbreak setting involves splitting the population into two (or more) sub--populations, one that participates in the outbreak and another that is separated from the outbreak. For example, in the case of the SIR model, we might have two susceptible compartments, $ S^R $ and $ S^E $, where $ S^R $ is a susceptible subpopulation that is effectively removed since they experience no infectious contact, and $ S^E $ is a susceptible population that may become exposed. In this model, the \textit{effective population size} is $ N_{eff} = S^E + I + R $. 
+When the scale of an outbreak is small relative to the population size, it may be unreasonable to assume that the entire population mixes homogeneously and participates in propagating the epidemic. A more reasonable, though arguably still dubious, abstraction of the outbreak setting involves splitting the population into two (or more) sub--populations, one that participates in the outbreak and another that is separated from the outbreak. For example, in the case of the SIR model, we might have two susceptible compartments, $ S^R $ and $ S^E $, where $ S^R $ is a susceptible subpopulation that is effectively removed since they experience no infectious contact, and $ S^E $ is a susceptible population that may become exposed. In this model, the \textit{effective population size} is $ N_{eff} = S^E + I + R $. The model is otherwise constructed in the same way as the SIR model, except with $ S^E $ replacing $ S $. 
 
 Absent prior information, the effective population size and the mean case detection probability are not separately identifiable parameters. Rather, we can only hope to estimate the mean case reporting rate, $ \rho\times N_{eff} $. To see why this is so, consider that the two parameters enter into the complete data likelihood, (\ref{eqn:lna_ncp}), through the priors and through the product of emission probabilities in the observed data likelihood. These emission probabilities could be, for example, negative binomial distributions as in (\ref{eqn:incidence_emitprob}). The key point to note is that the mean of the emission distribution is of the form, $ \rho\Delta N_{SI}(t_\ell) $. Recalling that the LNA (and the MJP on which it is based) is a density dependent process \cite{komorowski2009,wilkinson2011stochastic} scaled by the size of the system, here $ N_{eff} $, we should actually understand the mean observed incidence to be the mean case detection probability multiplied by a change in concentrations and the effective population size, $ \rho\left (N^\prime_{S^EI}(t_{\ell}) - N^\prime_{S^EI}(t_{\ell-1})\right )N_{eff} $, where $ \bN^\prime = \bN/N_{eff} $ is the equivalent representation of the LNA in terms of compartment concentrations. Absent constraints on $ \rho $ or $ N_{eff} $, either by artificially fixing one or via their priors, the parameters are unidentifiable. 
 
-We can check that $ \rho\times N_{eff} $ and the parameters governing the outbreak dynamics are identifiable via a simple simulation. We drew 500 sets of parameters from the priors given in Table (((insert ref))), and simulated an outbreak and a dataset for each set of parameters. The models were fit via the LNA under the same priors from which the parameters were drawn. The results are summarized in Table (((insert ref))). As we would expect, the basic reproductive number, infectious period duration, and case detection rate are well estimated, while the posterior median deviation and credible interval widths for the case detection probability and effective population size are quite large. 
+We can check that $ \rho\times N_{eff} $ and the parameters governing the outbreak dynamics are identifiable via a simple simulation. We drew 500 sets of parameters from the priors given in Table \ref{tab:effpop_coverage_settings}, and simulated an outbreak and a dataset for each set of parameters. The models were fit via the LNA under the same priors from which the parameters were drawn. The results are summarized in Table \ref{tab:effpop_coverage_results}. The nominal coverage rates for all model parameters is approximately correct. However,the relative widths of the posterior credible intervals for the case detection rate are substantially narrower than the relative widths of the credible intervals for $ \rho $ and $ N_{eff} $. This suggests that the data are informative about $ \rho\times N_{eff} $. Note that the priors are not completely flat, so we still expect, and observe, some shrinkage for $ \rho $ and $ N_{eff} $, individually.
+
+We conclude by pointing out the important, and perhaps obvious, implication of these results that estimates of the latent epidemic process is only weakly identifiable in models where the effective population size is unknown. We are rescued, somewhat, by the 
 
 \begin{table}[htbp]
+	\caption[Parameters and priors for a coverage simulation with a random effective population size.]{Parameters and priors used in simulating 500 SIR outbreaks where the effective population size was a parameter in the model. The true population size was 100,000. Each outbreak was simulated from a MJP with SIR dynamics. The observed incidence was a negative binomial sample of the true incidence. }
+	\label{tab:effpop_coverage_settings}
 	\small\centering
-	\begin{tabular}{cllc}
+	\begin{tabular}{cllr}
 		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
-		$ R0-1 $ & Basic reproduction \# - 1 & LogCauchy(0.4, 1) & $ \implies R0 = $ 2.50 (1.00, 4.9$ \times 10^5$) \\ 
-		$ 1/\mu $ & Mean infectious period & LogCauchy(-0.7, 1)& 1.43 ($ 4.3\times 10^{-6},\ 4.7\times 10^5 $) \\
-		$ \rho $ & Mean case detection prob. & Unif(0, 1) & 0.5 (0.025, 0.975) \\
-		$ \phi $ & Neg.Binom. overdispersion & LogCauchy(1.5,1) & 4.48 (1.4$ \times 10^{-5},\ 1.5\times10^6 $)\\
+		$ R0-1 $ & Basic reproduction \# - 1 & LogNormal(0, 0.5) & $ \implies R0 = $ 2.00 (1.38, 3.66) \\ 
+		$ 1/\mu $ & Mean infectious period & LogNormal(0.7, 0.35)& 2.01 (1.01, 4.00) \\
+		$ \rho / (1-\rho) $ & Odds of case detection & LogNormal(0, 1.4) & $ \implies \rho =$ 0.5 (0.06, 0.94) \\
+		$ \phi $ & Neg.Binom. overdispersion & Exponential(0.1) & 6.93 (0.25, 36.89)\\
+		$ N_{eff} $ & Effective population size & Unif(5000, 50000) & 27500 (6125, 48875)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption[Coverage simulation results when estimating the effective population size]{Results for the models fit to the outbreaks simulated under SIR dynamics with random effective population sizes. Reported are the nominal coverage rates of 95\% credible intervals, the median (95\% CI) of the posterior median deviations (PMD), credible interval widths (CIW), and credible interval widths relative to the 95\% prior interval widths (Rel.CIW).}
+	\label{tab:effpop_coverage_results}
+	\centering
+	\small
+	\begin{tabular}{ccccc}
+		\hline
+		\textbf{Parameter} & \textbf{Coverage} & \textbf{PMD} & \textbf{CIW} & \textbf{Rel.CIW} \\ 
+		 \hline
+		$ R0 $ & 0.94 & -0.02 (-0.9, 0.58) & 1.1 (0.47, 2.43) & 0.48 (0.21, 1.06) \\ 
+		$ \mu $ & 0.95 & 0 (-0.36, 0.21) & 0.49 (0.29, 0.85) & 0.66 (0.4, 1.16) \\ 
+		$ \rho $ & 0.95 & -0.01 (-0.36, 0.24) & 0.55 (0.14, 0.74) & 0.62 (0.16, 0.84) \\ 
+		$ N_{eff} $ & 0.96 & 800 (-18900, 16100) & 32200 (14600, 41100) & 0.75 (0.34, 0.96) \\ 
+		$ \rho\times N_{eff} $& 0.93 & 35 (-9000, 4200) & 6750 (640, 26750) & 0.18 (0.02, 0.72) \\ 
+		$ \phi $ & 0.95 & 0.04 (-13.49, 8.95) & 9.1 (0.31, 46.85) & 0.25 (0.01, 1.28) \\ 
 		\hline
 	\end{tabular}
 \end{table}
