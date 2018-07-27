@@ -287,7 +287,7 @@ The fidelity of each approximation to the original MJP depends on the population
 \begin{table}[htbp]
 	\caption[LNA coverage simulation settings.]{Population sizes, initial conditions, and priors under which datasets were simulated. Five hundred datasets were simulated for each of the population size regimes. Each outbreak was simulated from a MJP with SIR dynamics. The observed incidence was a negative binomial sample of the true incidence in each inter--observation interval.}
 	\label{tab:lna_coverage_sim}
-	\small
+	\footnotesize
 	\centering
 	\begin{tabular}{lccc}
 		\hline
@@ -341,7 +341,6 @@ In this simple simulation, the LNA and MMTL approximations had comparable comput
  		&&&
  	\end{tabular} 
  \end{table}
-
 
 \subsection{Assessing Model Fit}
 \label{subsec:lna_model_diags}
@@ -477,8 +476,36 @@ As we would expect, the model is able to recover the unobserved epidemic process
 \section{Application: Modeling the Spread of Ebola}
 \label{sec:lna_ebola}
 
-Beginning in December 2013, the West African countries of Guinea, Liberia, and Sierra Leone experienced an outbreak of Ebola that was unprecedented in its size and duration compared to previous Ebola outbreaks. At the time when the last cases were detected in June 2016, a total of 28,616 suspected, probable, and confirmed cases had been reported along with 11,310 deaths \cite{who2016situation}. The outbreak was exacerbated by a number of factors including insufficient outbreak response infrastructure, highly transient populations, and failures to engage with communities early on in the outbreak to implement infection prevention and control measures \cite{coltart2017ebola}. 
+Beginning in December 2013, the West African countries of Guinea, Liberia, and Sierra Leone experienced an outbreak of Ebola that was unprecedented in its size and duration compared to previous Ebola outbreaks. The first cases were thought to have occurred in December 2013 in the Gu\'{e}d\'{e}ckou prefecture in Guinea, while the first cases in Liberia and Sierra Leone were detected on March 30 and June 12, 2014, respectively. By March 2016, a total of 28,646 suspected, probable, and confirmed cases had been reported along with 11,323 deaths \cite{who2016situation}. The outbreak was exacerbated by a number of factors including insufficient outbreak response infrastructure, highly transient populations, and failures to engage with communities early on in the outbreak to implement infection prevention and control measures \cite{coltart2017ebola}. 
 
-Mathematical models were key tools in informing decisions about resource allocation and interventions throughout the West Africa Ebola outbreak \cite{coltart2017ebola}. A 2015 literature review of 66 modeling studies comprising 125 models for the population--level spread of the outbreak found that modelers typically relied on pre--existing publicly available epidemiological data, which most often consisted of aggregate count data such as Weekly incidence counts published by the WHO or national ministries of health \cite{chretien2015mathematical}. Modelers working with incidence data were most often interested in describing the transmission dynamics, particularly the basic reproductive number. Other objectives included forecasting the possible time--evolution of the outbreak, and constructing models to assess the effects of various interventions on the transmission dynamics. The importance of developing outbreak models during "peace time" has been emphasized as a critical exercise in preparing for future outbreaks \cite{viboud2018rapidd}.
+Mathematical models were key tools in informing decisions about resource allocation and interventions throughout the outbreak \cite{coltart2017ebola}. A 2015 literature review of 66 modeling studies comprising 125 models for the population--level spread of the outbreak found that modelers typically relied on pre--existing publicly available epidemiological data, which most often consisted of aggregate count data such as weekly incidence counts published by the WHO or national ministries of health \cite{chretien2015mathematical}. Modelers working with incidence data were most often interested in describing the transmission dynamics, particularly the basic reproductive number. Other objectives included forecasting the possible time--evolution of the outbreak, and constructing models to assess the effects of various interventions on the transmission dynamics. Although modeling teams working with publicly available data were not always involved in the policy--making process, the importance of developing outbreak models using real--world data, during what for those teams would be "peace time", has been emphasized as a critical exercise in preparing for future outbreaks \cite{viboud2018rapidd}.
 
-We now demonstrate how our methods may be applied to model the spread of Ebola in Guinea, Liberia, and Sierra Leone during the 2013--2016 Ebola outbreak. We will analyze national case counts published by the World Health Organization consisting of weekly confirmed and probable Ebola cases \cite{who2016eboladat}. 
+We now apply our methods to model the spread of Ebola in Guinea, Liberia, and Sierra Leone during the 2013--2016 Ebola outbreak. The data, shown in Figure \ref{fig:eboladat}, consist of national case counts from the World Health Organization patient database consisting of weekly confirmed and probable Ebola cases \cite{who2016eboladat}. Individuals were classified as suspected cases if they presented with Ebola--like symptoms and had contact with a suspected, probable, or confirmed case of a dead or sick animal. Probable cases consisted of suspected cases who were evaluated by a clinician, or who had died but were epidemiologically linked to confirmed cases. A confirmed case was defined as a suspected or probable case testing positive for Ebola virus RNA or IgM Ebola antibodies \cite{coltart2017ebola}. 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_dat}
+	\caption{Weekly incidence of confirmed and probable cases of Ebola in Guinea, Liberia, and Sierra Leone.}
+	\label{fig:eboladat}
+\end{figure}
+
+There are several reasons to believe \textit{a priori} that our dataset significantly under--counts the true incidence, and that reporting rates exhibit substantial variation from country--to--country. First, we have not included suspected cases, many of which were true cases, since they were not reported by the WHO in this dataset. Suspected cases accounted for sizable fractions of the total case counts (see Table \ref{tab:ebola_descriptives}) and may have been particularly important at the beginning and peak of the outbreak when health care systems were under--resourced.
+
+\begin{table}[htbp]
+	\caption{WHO cumulative Ebola incidence by country and case type through May 24, 2015 \cite{who2016eboladat}. Suspected cases were computed as the difference between the official CDC total \cite{cdc2016eboladat}, which included all three case types, and the WHO confirmed plus probable cases.}
+	\label{tab:ebola_descriptives}
+	\small
+	\centering
+	\begin{tabular}{lcccc}	
+		\hline	
+		& \textbf{Guinea} & \textbf{Liberia} & \textbf{Sierra Leone} & \textbf{Total} \\\hline
+		\textbf{Confirmed}$ ^1 $ & 3,210 & 3,342 & 9,494 & 16,044\\ 
+		\textbf{Probable}$ ^1 $ & 419 & 1,652 & 1,823 & 3,894 \\
+		\textbf{Suspected$ ^2 $} & 12 & 5,672 & 1,389 & 7,073 \\
+		\hline
+		\textbf{Total} & 3,641 & 10,666 & 12,706 & 27,013 \\
+		\hline
+		\multicolumn{5}{l}{\scriptsize $ ^1 $ Dataset used in the current analysis, cases through 05--24--2015.}\\
+		\multicolumn{5}{l}{\scriptsize $ ^2 $ Not available as part of the dataset for this analysis.}\\
+	\end{tabular} 
+\end{table}
