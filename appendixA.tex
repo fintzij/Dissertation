@@ -153,16 +153,18 @@ As $ R0 $ increases, a larger fraction of the population becomes infected. As th
 \newpage
 \section{Identifiability when Estimating the Effective Population Size}
 \label{sec:effpop_identifiability}
-When the scale of an outbreak is small relative to the population size, it may be unreasonable to assume that the entire population mixes homogeneously and participates in propagating the epidemic. A an alternative abstraction of the outbreak setting involves splitting the population into two (or more) sub--populations, one that participates in the outbreak and another that is separated from the outbreak. For example, in the case of the SIR model, we might have two susceptible compartments, $ S^R $ and $ S^E $, where $ S^R $ is a susceptible subpopulation that is effectively removed since they experience no infectious contact, and $ S^E $ is a susceptible population that may become exposed. In this model, the \textit{effective population size} is $ N_{eff} = S^E + I + R $. The model is otherwise constructed in the same way as the SIR model, except with $ S^E $ replacing $ S $. 
+When the scale of an outbreak is small relative to the population size, it may be unreasonable to assume that the entire population mixes homogeneously and participates in propagating the epidemic. One alternative is to split the population into two (or more) sub--populations, one that participates in the outbreak and another that is separated from the outbreak. For example, in the case of the SIR model, we might have two susceptible compartments, $ S^R $ and $ S^E $, where $ S^R $ is a susceptible subpopulation that is effectively removed since they experience no infectious contact, and $ S^E $ is a susceptible population that may become exposed. In this model, the \textit{effective population size} is $ N_{eff} = S^E + I + R $. The model is otherwise constructed in the same way as the SIR model, except with $ S^E $ replacing $ S $. 
 
-The effective population size and the mean case detection probability are weakly identifiable parameters, and we require prior information about their scales in order to fully disentangle their effects. In contrast estimate the mean case reporting rate, $ \rho\times N_{eff} $, is directly informed by the data. To see why this is so, note that $ \rho $ and $ N_{eff} $ enter into the complete data likelihood, (\ref{eqn:lna_ncp}), through the priors and through the product of emission probabilities in the observed data likelihood. These emission probabilities could be, for example, negative binomial distributions as in (\ref{eqn:incidence_emitprob}). The key point to note is that the mean of the emission distribution is of the form, $ \rho\Delta N_{SI}(t_\ell) $. Recalling that the LNA (and the MJP on which it is based) is a density dependent process \cite{komorowski2009,wilkinson2011stochastic} scaled by the size of the system, here $ N_{eff} $, we should actually understand the mean observed incidence to be the mean case detection probability multiplied by a change in concentrations and the effective population size, $ \rho\left (N^\prime_{S^EI}(t_{\ell}) - N^\prime_{S^EI}(t_{\ell-1})\right )N_{eff} $, where $ \bN^\prime = \bN/N_{eff} $ is the equivalent representation of the LNA in terms of compartment concentrations. Note that, although $ \rho $ and $ N_{eff} $ might seem to completely unidentifiable in light of this discussion, there are several points to support the assertion that they are weakly identifiable. First, certain stochastic aspects of the outbreak, such as the probability of a major outbreak and persistence of transmission, depend on the population size. Furthermore, the scale of the observed incidence and the observed outbreak duration are informative about the minimal effective population size. Therefore, the fact that we observe part of the outbreak is itself informative. Finally, a rough estimate the true population size is typically available, providing an upper bound on the effective population size.
+The effective population size and the mean case detection probability are weakly identifiable parameters in that we require prior information about their scales to disentangle their effects. To see why this is so, note that $ \rho $ and $ N_{eff} $ enter into the complete data likelihood, (\ref{eqn:lna_ncp}), through the priors and through emission distributions that have means of the form, $ \rho\Delta N_{SI}(t_\ell) $. The incidence here should be understood as an increment in compartment concentrations scaled by the effective population size, since the LNA is a density dependent process \cite{komorowski2009,wilkinson2011stochastic,fearnhead2014}. Thus, the emission densities have means of the form, $ \rho\left (N^\prime_{S^SI}(t_{\ell}) - N^\prime_{S^SI}(t_{\ell-1})\right )N_{eff} $, where $ \bN^\prime = \bN/N_{eff} $ is the equivalent representation of the LNA in terms of compartment concentrations. 
+
+In principle, absent prior information about the scales of $ \rho $ and $ N_{eff} $, we will have difficulty estimating the case detection probability and effective population size. In practice, there are a few reasons that $ \rho $ and $ N_{eff} $ might be weakly identifiable, rather than completely unidentifiable. First, certain stochastic aspects of the outbreak, such as the probability of a major outbreak and persistence of transmission, depend on the population size. Furthermore, the scale of the observed incidence and the observed outbreak duration are informative about the minimal effective population size. Therefore, the fact that we observe part of the outbreak is itself informative. Finally, a rough estimate the true population size is typically available, providing an upper bound on the effective population size. By extension, the latent epidemic process is also weakly identifiable in models where the effective population size and case detection probability are estimated.
+
+In contrast, the mean case reporting rate, $ \rho\times N_{eff} $, along with parameters governing the outbreak dynamics, are directly informed by the data and remain identifiable. It might seem paradoxical that we can infer the dynamics of an outbreak when we are unable to estimate the latent process. To understand why this is so, note that a SEM can be rewritten in terms of concentrations by dividing the compartment counts by the population size, yielding the so--called ``true mass--action model". The dynamics of this equivalent model, expressed, for example, by the basic reproductive number $ R0 $ and recovery rate for an SIR model, are known to be independent of the population size \cite{dejong1995does}. Combinations of model parameters yield latent paths, $ \bN^\prime $, expressed in terms of increments in concentrations, and are weighted in the posterior proportionally (modulo the prior) to the likelihood of scaled paths, $ \rho N_{eff}\bN^\prime $. The temporal nature of the data is important here because the curvature of the scaled paths should roughly match the shape of the data. Thus, we are leveraging the curvature in the data, not just the pointwise emission probabilities. 
 
 We can check that $ \rho\times N_{eff} $ and the parameters governing the outbreak dynamics are identifiable via a simple simulation. We drew 500 sets of parameters from the priors given in Table \ref{tab:effpop_coverage_settings}, and simulated an outbreak and a dataset for each set of parameters. The models were fit via the LNA under the same priors from which the parameters were drawn using the MCMC procedure used to fit models for the main coverage simulation (described in Section \ref{subsec:lna_coverage_setup_details}). The results are summarized in Table \ref{tab:effpop_coverage_results}. The nominal coverage rates for all model parameters is approximately correct. However, the relative widths of the posterior credible intervals for the case detection rate are substantially narrower than the relative widths of the credible intervals for $ \rho $ and $ N_{eff} $ vis--a--vis their prior intervals. This suggests that the data are informative about $ \rho\times N_{eff} $. The priors for $ \rho $ and $ N_{eff} $ are not completely flat, and the scale of the observed counts is itself informative about $ N_{eff} $. Therefore, we still expect, and observe, some shrinkage for $ \rho $ and $ N_{eff} $, individually.
 
-We conclude by pointing out the important implication that the latent epidemic process is only weakly identifiable in models where the effective population size is not known. Uncertainty in the latent posterior reflects the extent that we have (or lack) prior knowledge of the effective population size or reporting rate. On the other hand, the posterior predictive distributions are reliable since they depend on the mean case reporting rate. Thus, the standard tools for model validation and prediction are still available to us.
-
 \begin{table}[htbp]
-	\caption[Parameters and priors for a coverage simulation with a random effective population size.]{Parameters and priors used in simulating 500 SIR outbreaks where the effective population size was a parameter in the model. The true population size was 100,000. Each outbreak was simulated from a MJP with SIR dynamics. The observed incidence was a negative binomial sample of the true incidence. }
+	\caption[Parameters and priors for a coverage simulation when estimating the effective population size.]{Parameters and priors used in simulating 500 SIR outbreaks where the effective population size was a parameter in the model. The true population size was 100,000. Each outbreak was simulated from a MJP with SIR dynamics. The observed incidence was a negative binomial sample of the true incidence.}
 	\label{tab:effpop_coverage_settings}
 	\small\centering
 	\begin{tabular}{cllr}
@@ -568,9 +570,9 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 		\hline
 		\textbf{Parameter} & \textbf{Truth} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
 		$ R_{eff,G}^{(1)}(t),\ t<33 $ & 1.3 & Effective reproduction \#  & $ R_{eff,G}^{(2)} / R_G^{(1)}\sim $ LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) \\
-		$ R_{eff,G}^{(2)}(t),\ t\geq33 $ & 1.1 & Effective reproduction \# & $ R_{eff,G}^{(2)}-1\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.06, 5.32)$ \\
-		$ R_{eff,L} $ & 2.1 & Effective reproduction \# & $ R_{eff,L}\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,L} = 1.50 (1.06, 5.32)$ \\
-		$ R_{eff,S} $ & 1.6 & Effective reproduction \# & $ R_{eff,S}\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,S} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,G}^{(2)}(t),\ t\geq33 $ & 1.2 & Effective reproduction \# & $ R_{eff,G}^{(2)}-1\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,L} $ & 2.0 & Effective reproduction \# & $ R_{eff,L}\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,L} = 1.50 (1.06, 5.32)$ \\
+		$ R_{eff,S} $ & 1.55 & Effective reproduction \# & $ R_{eff,S}\sim $ LogNormal(log(0.5), 1.1) & $ \implies R_{eff,S} = 1.50 (1.06, 5.32)$ \\
 		\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
 		$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & 0.003 & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.25) & \makecell[r]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)}\\ 
 		$ \omega_G $ & 1.1 & Rate from $ E_G\rightarrow I_G $ & $ (1/\mu_G)\big/(1/\omega_G) \sim $ LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.56, 1.80) \\
@@ -651,10 +653,105 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 
 \subsection{MCMC Details}
 \label{subsec:ebola_synth_mcmc}
-We fit two models to the simulated data, the true model where migration was modeled explicitly and the approximated model, described in Section \ref{subsec:ebola_synth}, where cross--border transmission was incorporated into the rate of infection via virtual migration. The model fitting procedure and priors were the same for both models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was update over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The covariance matrix was blocked by country with covariances for parameters belonging to different countries set to zero. Thus, country specific parameters were proposed jointly but were independent in the proposal. Migration parameters were blocked with parameters corresponding to the destination country. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between three ElliptSS and two MVNSS updates per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually, by inspection of traceplots of posterior samples, using potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. 
+We fit two models to the simulated data, the true model where migration was modeled explicitly and the approximated model, described in Section \ref{subsec:ebola_synth}, where cross--border transmission was incorporated into the rate of infection via virtual migration. The model fitting procedure and priors were the same for both models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was update over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The covariance matrix was blocked by country with covariances for parameters belonging to different countries set to zero. Thus, country specific parameters were proposed jointly but were independent in the proposal. Migration parameters were blocked with parameters corresponding to the destination country. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between three ElliptSS and two MVNSS updates per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. 
 
-\subsection{Additional Results and Diagnostics}
+\subsection{Additional Results}
 \label{subsec:ebola_synth_supplement}
+
+\begin{table}[htbp]
+	\caption[Posterior parameter estimates for a stratified SEIR model fit to a simulated Ebola outbreak.]{Posterior medians (95\% Bayesian credible intervals) for parameters of a stratified SEIR model fit to a simulated Ebola outbreak. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $. Parameter interpretations and priors are given in Table \ref{tab:ebola_synth_pars}.}
+	\label{tab:ebola_synth_credints}
+	\centering
+	\begin{tabular}{ccc}
+		\hline
+		Parameter & Truth & Posterior median (95\% BCI) \\ 
+		\hline
+		$ R_{eff,G}^{(1)} $& 1.30 & 1.24 (1.12, 1.44) \\ 
+		$ R_{eff,G}^{(2)} $& 1.10 & 1.28 (1.1, 1.63) \\ 
+		$ R_{eff,L} $& 2.00 & 1.69 (1.37, 2.22) \\ 
+		$ R_{eff,S} $& 1.55 & 1.54 (1.31, 1.97) \\ 
+		$ 7/\omega_G $& 6.36 & 5.55 (2.92, 10.44) \\ 
+		$ 7/\omega_L $& 8.24 & 6 (2.78, 11.2) \\ 
+		$ 7/\omega_S $& 7.00 & 6.14 (3.26, 11.22) \\ 
+		$ 7/\mu_G $& 7.00 & 6.19 (4.06, 9.65) \\ 
+		$ 7/\mu_L $& 8.75 & 6.41 (4.05, 9.95) \\ 
+		$ 7/\mu_S $& 6.36 & 6.46 (4.17, 10.04) \\ 
+		$ 1000\alpha_{GL} $& 3.00 & 3.46 (0.13, 17.22) \\ 
+		$ 1000\alpha_{GS} $& 3.00 & 3.75 (0.14, 18.93) \\ 
+		$ 1000\alpha_{LG} $& 3.00 & 2.19 (0.12, 8.33) \\ 
+		$ 1000\alpha_{LS} $& 3.00 & 3.03 (0.22, 11.3) \\ 
+		$ 1000\alpha_{SG} $& 3.00 & 2.96 (0.16, 13.67) \\ 
+		$ 1000\alpha_{SL} $& 3.00 & 2.69 (0.12, 11.51) \\ 
+		$ \rho_GN_{eff,G} $& 12750 & 11570 (7750, 19320) \\ 
+		$ \rho_LN_{eff,L} $& 8750 & 10030 (8070, 14180) \\ 
+		$ \rho_SN_{eff,S} $& 15000 & 14860 (11510, 20580) \\ 
+		$ \phi_{G} $& 50.00 & 59.78 (27.36, 211.88) \\ 
+		$ \phi_{L} $& 50.00 & 46.61 (20.82, 105.31) \\ 
+		$ \phi_{S} $& 50.00 & 33.13 (17.76, 60.48) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption{Effective sample sizes and potential scale reduction factors for a stratified SEIR model fit to a simulated Ebola outbreak.}
+	\centering
+	\begin{tabular}{lrr}
+		\hline
+		\textbf{Parameter} & \textbf{ESS} & \textbf{PSRF} \\ 
+		\hline
+		$ \log\left (R_{eff,G}^{(2)} / R_{eff,G}^{(1)}\right ) $& 461 & 1.01 \\ 
+		$ \log\left (R_{eff,G}^{(2)}\right ) $& 367 & 1.01 \\ 
+		$ \log\left (R_{eff,L}\right ) $& 505 & 1.06 \\ 
+		$ \log\left (R_{eff,S}\right ) $& 759 & 1.02 \\ 
+		$ \log\left (\omega_G / \mu_G\right ) $& 1057 & 1.00 \\ 
+		$ \log\left (\omega_L / \mu_L\right ) $& 664 & 1.05 \\ 
+		$ \log\left (\omega_S / \mu_S\right ) $& 851 & 1.01 \\ 
+		$ \log\left (1/\mu_G\right ) $& 719 & 1.01 \\ 
+		$ \log\left (1/\mu_L\right ) $& 692 & 1.04 \\ 
+		$ \log\left (1/\mu_S\right ) $& 1038 & 1.01 \\ 
+		$ \log\left (1000\alpha_{GL}\right ) $& 712 & 1.03 \\ 
+		$ \log\left (1000\alpha_{GS}\right ) $& 813 & 1.04 \\ 
+		$ \log\left (1000\alpha_{LG}\right ) $& 344 & 1.13 \\ 
+		$ \log\left (1000\alpha_{LS}\right ) $& 539 & 1.09 \\ 
+		$ \log\left (1000\alpha_{SG}\right ) $& 494 & 1.03 \\ 
+		$ \log\left (1000\alpha_{SL}\right ) $& 641 & 1.10 \\ 
+		$ \log\left (\rho_GN_{eff,G}\right ) $& 525 & 1.00 \\ 
+		$ \log\left (\rho_LN_{eff,L}\right ) $& 603 & 1.08 \\ 
+		$ \log\left (\rho_SN_{eff,S}\right ) $& 1020 & 1.01 \\ 
+		$ \logit\left (\rho_G\right ) $& 445 & 1.01 \\ 
+		$ \logit\left (\rho_L\right ) $& 354 & 1.04 \\ 
+		$ \logit\left (\rho_S\right ) $& 540 & 1.03 \\ 
+		$ \log(\phi_G) $& 479 & 1.08 \\ 
+		$ \log(\phi_L) $& 999 & 1.00 \\ 
+		$ \log(\phi_S) $& 1012 & 1.01 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_synth_traces}
+	\caption{Posterior traceplots for a stratified SEIR model fit to a simulated Ebola outbreak.}
+	\label{fig:ebolasynthtraces}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_synth_pairs_guin}
+	\caption{Scatterplots of Guinea--specific parameters in a stratified SEIR model for a simulated Ebola outbreak.}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_synth_pairs_lib}
+	\caption{Scatterplots of Liberia--specific parameters in a stratified SEIR model for a simulated Ebola outbreak.}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_synth_pairs_sln}
+	\caption{Scatterplots of Sierra Leone--specific parameters in a stratified SEIR model for a simulated Ebola outbreak.}
+\end{figure}
 
 \newpage
 \subsection{Supplementary Results with Explicit Migration of Infected Individuals}

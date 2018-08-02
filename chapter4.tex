@@ -404,6 +404,58 @@ In the next section, we will jointly model the spread of Ebola in Guinea, Liberi
 
 We simulated data from a three country SEIR model, diagrammed in Figure \ref{fig:stratified_seir_full_diag}, and described briefly below, with additional details in Section \ref{subsec:ebola_synth_setup}. The simulation was designed to crudely reflect the Ebola outbreak in West Africa and allowed for cross--border transmission via the migration of infected individuals between countries. The three countries differed in their true and effective population sizes, times at which transmission commenced, epidemic dynamics, and case detection probabilities. We included a single changepoint for the basic reproductive number for Guinea at 33 weeks since the outbreak duration was longest in that country. The change in transmission dynamics coincided roughly with the WHO declaration of a state of emergency in early August 2014 and the closures of country borders with Liberia and Sierra Leone \cite{coltart2017ebola}. The outbreak was simulated from a MJP via Gillespie's direct algorithm \cite{gillespie1976general} using the parameters in Table \ref{tab:ebola_synth_pars} and the rates in Table \ref{tab:ebola_synth_rates_full}. The observed incidence was a negative binomial sample of the true incidence with the case detection probability varying across countries, but with the same value of over--dispersion.
 
+\begin{figure}[htbp]
+	\begin{fullpage}
+		\resizebox {\linewidth} {!} {
+			\begin{tikzpicture}
+			\draw[thick,dotted] (0,-0.25) rectangle (7.5, 1.25);
+			\node at (1, 1.1) [label=Guinea (G)] {};
+			\draw (0.75, 0.5) circle(0.4) node (Sa) {$ S_G $};
+			\draw (2.75, 0.5) circle(0.4) node (Ea) {$ E_G $};
+			\draw (4.75, 0.5) circle(0.4) node (Ia) {$ I_G $};
+			\draw (6.75, 0.5) circle(0.4) node (Ra) {$ R_G $};
+			
+			\draw[thick,dotted] (9.5,-0.25) rectangle (17, 1.25);
+			\node at (16, 1.1) [label=Liberia (L)] {};	
+			\draw (10.25, 0.5) circle(0.4) node (Sb) {$ S_L $};
+			\draw (12.25, 0.5) circle(0.4) node (Eb) {$ E_L $};
+			\draw (14.25, 0.5) circle(0.4) node (Ib) {$ I_L $};
+			\draw (16.25, 0.5) circle(0.4) node (Rb) {$ R_L $};
+			
+			\draw[thick,dotted] (4.75,-3) rectangle (12.25, -4.5);
+			\node at (6.25, -3.15) [label=Sierra Leone (S)] {};	
+			\draw (5.5, -3.75) circle(0.4) node (Sc) {$ S_S $};
+			\draw (7.5, -3.75) circle(0.4) node (Ec) {$ E_S $};
+			\draw (9.5, -3.75) circle(0.4) node (Ic) {$ I_S $};
+			\draw (11.5, -3.75) circle(0.4) node (Rc) {$ R_S $};
+			
+			\draw [thick,->] (Sa) -- (Ea) node[midway,above] {$ \lambda_{SE}^G(t) $};
+			\draw [thick,->,shorten >=.6mm] (Ea) -- (Ia) node[midway,above] {$ \lambda_{EI}^G $};
+			\draw [thick,->,shorten <=.5mm] (Ia) -- (Ra) node[midway,above] {$ \lambda_{IR}^G $};
+			
+			\draw [thick,->] (Sb) -- (Eb) node[midway,above] {$ \lambda_{SE}^L $};
+			\draw [thick,->,shorten >=.6mm] (Eb) -- (Ib) node[midway,above] {$ \lambda_{EI}^L $};
+			\draw [thick,->,shorten <=.5mm] (Ib) -- (Rb) node[midway,above] {$ \lambda_{IR}^L $};
+			
+			\draw [thick,->] (Sc) -- (Ec) node[midway,above] {$ \lambda_{SE}^S $};
+			\draw [thick,->,shorten >=.6mm] (Ec) -- (Ic) node[midway,above] {$ \lambda_{EI}^S $};
+			\draw [thick,->,shorten <=.5mm] (Ic) -- (Rc) node[midway,above] {$ \lambda_{IR}^S $};
+			
+			\path [dashed, <-] ([yshift=-0.5mm,xshift=-2mm]Ia.south) edge [shorten >= 2mm, shorten <= 4mm] node [above,xshift=2.5mm,yshift=1.5mm] {$ \lambda_I^{GS} $} ([xshift=-1mm]Ic.north);
+			\path [dashed, ->] (Ia.south) edge [shorten >= 5mm, shorten <= 2mm] node [below,xshift=-9mm,yshift=2mm] {$ \lambda_I^{SG} $} ([xshift=1.5mm]Ic.north);
+			
+			\path [dashed, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-2mm] {$ \lambda_I^{LS} $} ([xshift=1mm]Ic.north);
+			\path [dashed, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=5mm] {$ \lambda_I^{SL} $} ([xshift=-1.5mm]Ic.north);
+			
+			\path [dashed, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG} $} ([]Ib.north);
+			\path [dashed, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL} $} ([]Ib.north);	
+			\end{tikzpicture}
+		}
+		\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country virtual transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Dashed lines indicate virtual migrations, where infected individuals in one country contribute to the force of infection in another country but do not migrate. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptibles in Guinea become infected is time varying with one changepoint at 33 weeks. Full expressions for the rates are given in Table \ref{tab:ebola_synth_rates_full}.}
+		\label{fig:stratified_seir_approx_diag}
+	\end{fullpage}
+\end{figure}
+
 We fit a stratified SEIR model to the simulated data that was largely the same as the model used in simulating the data, except with respect to migration of infected individuals from one country to another. In this example, as we would expect for the real--world Ebola outbreak, transmission to susceptibles was largely driven by contacts with natively infected individuals within the same country. Here, we approximate the contribution of cross--border transmission to the local force of infection by replacing migrations of infected individuals with virtual migrations that modify the effective number of infected individuals in a country. Hence, we replace the rates at which individuals become infected in country A and import infections from countries B and C,
 \begin{align}
 \label{eqn:foi_migration}
@@ -418,73 +470,17 @@ with the approximate rates,
 \end{align}
 where $ \beta_A $ is the per--contact rate of infection in country A, and the $ \alpha $ parameters are the rates of real or virtual migration of infected individuals from countries B and C. We note that the models are approximately equivalent to the extent that the infectious period durations in each country are similar and that the contribution to the local force of infection from other countries is relatively minimal. The upside is that the quantities, $ \alpha_{BA}I_B $ and $ \alpha_{CA}I_C$, are interpretable as the effective number of infected individuals from countries B and C with whom susceptibles in country A come into contact. The approximate model is also more computationally tractable since we have fewer ODEs to solve in the LNA approximation and fewer boundary conditions on the LNA state space. Finally, the approximate model is arguably more appropriate from the standpoint of the LNA approximation since the rates of infectious migration events are low. The full model with explicit migration was fit as a supplementary analysis and yielded equivalent results (see Section \ref{subsec:ebola_synth_fullmod_res}).  
 
-\begin{figure}[htbp]
-	\resizebox {\linewidth} {!} {
-		\begin{tikzpicture}
-		\draw[thick,dotted] (0,-0.25) rectangle (7.5, 1.25);
-		\node at (1, 1.1) [label=Guinea (G)] {};
-		\draw (0.75, 0.5) circle(0.4) node (Sa) {$ S_G $};
-		\draw (2.75, 0.5) circle(0.4) node (Ea) {$ E_G $};
-		\draw (4.75, 0.5) circle(0.4) node (Ia) {$ I_G $};
-		\draw (6.75, 0.5) circle(0.4) node (Ra) {$ R_G $};
-		
-		\draw[thick,dotted] (9.5,-0.25) rectangle (17, 1.25);
-		\node at (16, 1.1) [label=Liberia (L)] {};	
-		\draw (10.25, 0.5) circle(0.4) node (Sb) {$ S_L $};
-		\draw (12.25, 0.5) circle(0.4) node (Eb) {$ E_L $};
-		\draw (14.25, 0.5) circle(0.4) node (Ib) {$ I_L $};
-		\draw (16.25, 0.5) circle(0.4) node (Rb) {$ R_L $};
-		
-		\draw[thick,dotted] (4.75,-3) rectangle (12.25, -4.5);
-		\node at (6.25, -3.15) [label=Sierra Leone (S)] {};	
-		\draw (5.5, -3.75) circle(0.4) node (Sc) {$ S_S $};
-		\draw (7.5, -3.75) circle(0.4) node (Ec) {$ E_S $};
-		\draw (9.5, -3.75) circle(0.4) node (Ic) {$ I_S $};
-		\draw (11.5, -3.75) circle(0.4) node (Rc) {$ R_S $};
-		
-		\draw [thick,->] (Sa) -- (Ea) node[midway,above] {$ \lambda_{SE}^G(t) $};
-		\draw [thick,->,shorten >=.6mm] (Ea) -- (Ia) node[midway,above] {$ \lambda_{EI}^G $};
-		\draw [thick,->,shorten <=.5mm] (Ia) -- (Ra) node[midway,above] {$ \lambda_{IR}^G $};
-		
-		\draw [thick,->] (Sb) -- (Eb) node[midway,above] {$ \lambda_{SE}^L $};
-		\draw [thick,->,shorten >=.6mm] (Eb) -- (Ib) node[midway,above] {$ \lambda_{EI}^L $};
-		\draw [thick,->,shorten <=.5mm] (Ib) -- (Rb) node[midway,above] {$ \lambda_{IR}^L $};
-		
-		\draw [thick,->] (Sc) -- (Ec) node[midway,above] {$ \lambda_{SE}^S $};
-		\draw [thick,->,shorten >=.6mm] (Ec) -- (Ic) node[midway,above] {$ \lambda_{EI}^S $};
-		\draw [thick,->,shorten <=.5mm] (Ic) -- (Rc) node[midway,above] {$ \lambda_{IR}^S $};
-		
-		\path [dashed, <-] ([yshift=-0.5mm,xshift=-2mm]Ia.south) edge [shorten >= 2mm, shorten <= 4mm] node [above,xshift=2.5mm,yshift=1.5mm] {$ \lambda_I^{GS} $} ([xshift=-1mm]Ic.north);
-		\path [dashed, ->] (Ia.south) edge [shorten >= 5mm, shorten <= 2mm] node [below,xshift=-9mm,yshift=2mm] {$ \lambda_I^{SG} $} ([xshift=1.5mm]Ic.north);
-		
-		\path [dashed, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-2mm] {$ \lambda_I^{LS} $} ([xshift=1mm]Ic.north);
-		\path [dashed, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=5mm] {$ \lambda_I^{SL} $} ([xshift=-1.5mm]Ic.north);
-		
-		\path [dashed, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG} $} ([]Ib.north);
-		\path [dashed, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL} $} ([]Ib.north);	
-		\end{tikzpicture}
-	}
-	\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country virtual transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Dashed lines indicate virtual migrations, where infected individuals in one country contribute to the force of infection in another country but do not migrate. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptibles in Guinea become infected is time varying with one changepoint at 33 weeks. Full expressions for the rates are given in Table \ref{tab:ebola_synth_rates_full}.}
-	\label{fig:stratified_seir_approx_diag}
-\end{figure}
-
 Before proceeding, we pause to note that the effective population size and case detection probability and effective population size are only weakly identifiable in this model. Rather, the mean case detection rate, $ \rho N_{eff} $, is estimable because of its relationship to the true and observed outbreak sizes. In practice, we require prior information about either $ \rho $ or $ N_{eff} $ in order to be able to estimate the parameters separately. This is is discussed further in Section \ref{sec:effpop_identifiability}. 
 
-We fit the model using a combination of weakly informative priors for the effective reproductive numbers, informative priors for the latent period durations, infectious period durations, and cross--border transmission parameters, and diffuse priors for the measurement process parameters and effective population sizes. The model was able to recover the true values (Figure \ref{fig:ebola_synth_posts}) for all parameters, or identifiable functions of parameters in the case of the case detection rate. We essentially recover the priors for the parameters to which we assigned informative priors. 
+We fit the model using a combination of weakly informative priors for the effective reproductive numbers, informative priors for the latent period durations, infectious period durations, and cross--border transmission parameters, and diffuse priors for the measurement process parameters and effective population sizes. The model was able to recover the true values (Figure \ref{fig:ebola_synth_posts}) for all parameters, or identifiable functions as for the case detection rate. We essentially recover the priors for parameters that were assigned informative priors. 
 
-Although the latent epidemic process in not identifiable in this model, we recover, for the most part, the mean incidence we would have expected to observe if the true incidence were known (Figure \ref{fig:ebola_synth_diags}). The partial posterior predictive distributions nicely capture the observed incidence curves, suggesting that the emission distribution adequately described the sampling process for the observed incidence, conditional on the latent incidence being distributed according to its posterior. While the full posterior predictive distributions for Guinea and Sierra Leone suggest that the model is an adequate data generating mechanism for the outbreaks in those countries. The full posterior predictive distribution for Liberia predicts slower dynamics than were actually observed, which is reflective of an estimated effective reproductive number for Liberia that was somewhat lower than the true value. 
-
-The  and posterior predictive
-
-The temporal full and partial predictive distributions for Guinea and Sierra Leone concord with the 
-
-Finally,  Furthermore, excess variability in the LNA residuals at the beginning and end of the outbreak suggest that the LNA approximation might not adequately account for the uncertainty in the epidemic process during those times (see Figure (((())))). This, too, is expected since we know that there were few disease state transitions during those times. We present additional results and diagnostics in Section \ref{subsec:ebola_synth_supplement}. 
+Although the latent epidemic process is not identifiable in this model, we recover, for the most part, the mean incidence we would have expected to observe if the true incidence were known (Figure \ref{fig:ebola_synth_diags}). The partial posterior predictive distributions capture the observed incidence curves, suggesting that the emission distribution adequately described the sampling process for the observed incidence, conditional on the latent incidence being distributed according to its posterior. The full posterior predictive distributions for Guinea and Sierra Leone suggest that the model may be a reasonable data generating mechanism for the outbreaks in those countries. However, the full posterior predictive distribution for Liberia predicts slower dynamics than were actually observed, which is reflective of an estimated effective reproductive number for Liberia that was somewhat lower than the true value. There is also some residual autocorrelation in the log transformed data for Liberia that was not well captured in the posterior predictive distributions (Figure \ref{fig:ebola_synth_pacfs}), unlike Guinea and Sierra Leone. Finally, the posterior distributions of the LNA draws suggest that the LNA approximation might not fully account for the uncertainty in the latent epidemic process, particularly in Guinea and Liberia. This is expected since the effective population sizes were not particularly large and the data included incidence from the beginning and end of the outbreak, when the relative stochasticity was large. The posterior LNA draws for Guinea, which had the smallest effective population size, are more variable than we would expect under the LNA prior. The posterior and posterior predictive draws for Liberia exhibit systematic deviations from normality during the periods when transmission commenced and tailed off.
 
 \begin{sidewaysfigure}[htbp]
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=\linewidth]{figures/ebola_synth_posts}
-		\caption[Posterior distributions of stratified SEIR model parameters for a simulated Ebola outbreak in three countries.]{Posterior distributions of .}
+		\caption[Posterior distributions of stratified SEIR model parameters for a simulated Ebola outbreak in three countries.]{Posterior distributions of parameters of a stratified SEIR model for a simulated Ebola outbreak in three countries. We show posterior medians (solid gray lines), 95\% Bayesian credible intervals (light gray areas under the posterior densities), prior densities (induced priors for the reporting rate and latent period durations) over the posterior ranges (dashed green curves), and true parameter values (solid red lines). $ R_{eff} = \beta N_{eff}/\mu $ is the effective reproductive number, where $ \beta $ is the per--contact infection rate, $ N_{eff} $ is the effective population size, and $ \mu $ is the recovery rate. The latent and infectious period durations, $ 7/\omega $ and $ 7/\mu $, respectively, are given in days. The effective number of cross--border infectious contacts in country $ B $ per 1000 infected individuals in country $ A $ is $ 1000\alpha_{AB} $. The effective reporting rate is $ \rho N_{eff} $, and $ \phi $ is the negative binomial over--dispersion parameter. Subscripts indicate countries.}
 		\label{fig:ebola_synth_posts}
 	\end{fullpage}
 \end{sidewaysfigure}
@@ -493,7 +489,7 @@ Finally,  Furthermore, excess variability in the LNA residuals at the beginning 
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=\linewidth]{figures/ebola_synth_diag_plots}
-		\caption[Posterior distributions of stratified SEIR model parameters for a simulated Ebola outbreak in three countries.]{Posterior distributions of .}
+		\caption[Posterior mean observed incidence, partial posterior predictive, and full posterior distributions for a stratified SEIR model fit to a simulated Ebola outbreak.]{From top to bottom, the posterior mean observed incidence, partial posterior predictive, and full posterior predictive distributions. The solid red line is the incidence we would expect to observe if we knew the true incidence. Green points correspond to the observed incidence. The shaded bands, in order of lightest to darkest, correspond to pointwise posterior 95\%, 80\%, and 50\% credible intervals, with the pointwise posterior median given by the corresponding colored solid line.}
 		\label{fig:ebola_synth_diags}
 	\end{fullpage}
 \end{figure}
@@ -501,8 +497,8 @@ Finally,  Furthermore, excess variability in the LNA residuals at the beginning 
 \begin{figure}[htbp]
 	\begin{fullpage}
 		\centering
-		\includegraphics[width=\linewidth]{figures/ebola_synth_pacfs}
-		\caption[Posterior distributions of stratified SEIR model parameters for a simulated Ebola outbreak in three countries.]{Posterior distributions of .}
+		\includegraphics[width=0.8\linewidth]{figures/ebola_synth_pacfs}
+			\caption[Posterior predictive distributions of partial autocorrelations for a stratified SEIR model fit to a simulated Ebola outbreak.]{Distributions of partial autocorrelations at lags 1, 2, and 3 for datasets generated under the full and partial posterior predictive distributions. Vertical red lines are the partial autocorrelations for the observed incidence data at the respective lags.}
 		\label{fig:ebola_synth_pacfs}
 	\end{fullpage}
 \end{figure}
@@ -511,15 +507,15 @@ Finally,  Furthermore, excess variability in the LNA residuals at the beginning 
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=\linewidth]{figures/ebola_synth_drawplots}
-		\caption[Posterior distributions of stratified SEIR model parameters for a simulated Ebola outbreak in three countries.]{Posterior distributions of .}
+		\caption[Posterior distributions of LNA draws for a stratified SEIR model fit to a simulated Ebola outbreak.]{Posterior distributions of the LNA draws for exposures, infections, and recoveries (blue boxplots) in a stratified SEIR model fit to a simulated Ebola outbreak in Guinea, Liberia, and Sierra Leone. The lower and upper whisker tips correspond to the $ 2.5^\mr{th} $ and $ 95.5^\mr{th} $ posterior quantiles, the lower and upper hinges to the $ 25^\mr{th} $ and $ 75^\mr{th} $ quantiles, and the middle hash mark to the posterior median. The solid red lines are the theoretical quantiles of the posterior predictive distribution (or equivalently, the prior distribution) of the LNA draws, drawn at the quantiles of a standard normal distribution corresponding to the boxplot quantiles. The green ticks are the estimated quantiles of the posterior predictive distributions of the LNA draws, accounting for boundary conditions on the state space of the latent process and obtained by simulating LNA paths from the posterior predictive distribution.}
 		\label{fig:ebola_synth_drawplots}
 	\end{fullpage}
 \end{figure}
 
+\newpage
 \section{Application: Modeling the Spread of Ebola}
 \label{sec:lna_ebola}
-
-Beginning in December 2013, the West African countries of Guinea, Liberia, and Sierra Leone experienced an outbreak of Ebola that was unprecedented in its size and duration compared to previous Ebola outbreaks. The first cases were thought to have occurred in December 2013 in the Gu\'{e}d\'{e}ckou prefecture in Guinea, while the first cases in Liberia and Sierra Leone were detected on March 30 and June 12, 2014, respectively. By March 2016, a total of 28,646 suspected, probable, and confirmed cases had been reported along with 11,323 deaths \cite{who2016situation}. The outbreak was exacerbated by a number of factors including insufficient outbreak response infrastructure, highly transient populations, and failures to engage with communities early on in the outbreak to implement infection prevention and control measures \cite{coltart2017ebola}. 
+Starting in December 2013, the West African countries of Guinea, Liberia, and Sierra Leone experienced an outbreak of Ebola that was unprecedented in its size and duration compared to previous Ebola outbreaks. The first cases were thought to have occurred in December 2013 in the Gu\'{e}d\'{e}ckou prefecture in Guinea, while the first cases in Liberia and Sierra Leone were detected on March 30 and June 12, 2014, respectively. By March 2016, a total of 28,646 suspected, probable, and confirmed cases had been reported along with 11,323 deaths \cite{who2016situation}. The outbreak was exacerbated by a number of factors including insufficient outbreak response infrastructure, highly transient populations, and failures to engage with communities early on in the outbreak to implement infection prevention and control measures \cite{coltart2017ebola}. 
 
 Mathematical models were key tools in informing decisions about resource allocation and interventions throughout the outbreak \cite{coltart2017ebola}. A 2015 literature review of 66 modeling studies comprising 125 models for the population--level spread of the outbreak found that modelers typically relied on pre--existing publicly available epidemiological data, which most often consisted of aggregate count data such as weekly incidence counts published by the WHO or national ministries of health \cite{chretien2015mathematical}. Modelers working with incidence data were most often interested in describing the transmission dynamics, particularly the basic reproductive number. Other objectives included forecasting the possible time--evolution of the outbreak, and constructing models to assess the effects of various interventions on the transmission dynamics. Although modeling teams working with publicly available data were not always involved in the policy--making process, the importance of developing outbreak models using real--world data, during what for those teams would be "peace time", has been emphasized as a critical exercise in preparing for future outbreaks \cite{viboud2018rapidd}.
 
