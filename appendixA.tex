@@ -15,7 +15,7 @@ In models where it is advantageous to shring the initial bracket width, we will 
 	\label{fig:esstuning}
 \end{figure}
 
-We mentioned in Section \ref{subsubsec:noncentered_parameterization} that our ElliptSS algorithm was modified slightly from that presented in \cite{murray2010} in order to facilitate tuning of the initial ElliptSS bracket width. In both cases, the distribution of proposed states, $ \bZ_{prop} $, is centered at the current state $ \bZ_{cur} $. However, the distribution of angles of accepted states using our algorithm will be centered around 0, whereas the distribution of angles for accepted proposals using the algorithm in \cite{murray2010} will be bimodal with peaks at 0 and $ 2\pi $. The algorithms are nevertheless equivalent due to the rotational symmetry of the proposals (a proposal made using an angle $ \phi $ is equivalent to a proposal using $ \phi+2\pi $). It is more natural to compute the standard deviation of the accepted angles if the distribution of angles is symmetric about zero than if it is bimodal (and would thus require a rotation).
+We mentioned in Section \ref{subsubsec:noncentered_parameterization} that our ElliptSS algorithm was modified slightly from that presented in \cite{murray2010} in order to facilitate tuning of the initial ElliptSS bracket width. In both cases, the distribution of proposed states, $ \bZ_{prop} $, is centered at the current state $ \bZ_{cur} $. However, the distribution of angles of accepted states using our algorithm will be centered around 0, whereas the distribution of angles for accepted proposals using the algorithm in \cite{murray2010} will be bimodal with peaks at 0 and $ 2\pi $. The algorithms are nevertheless equivalent due to the rotational symmetry of the proposals (a proposal made using an angle $ \phi $ is equivalent to a proposal using $ \phi+2\pi $). It is more natural to compute the standard deviation of the accepted angles if the distribution of angles is symmetric about zero than if it is bimodal (which would require a rotation).
 
 \section{Inference for Initial Compartment Volumes}
 \label{sec:lna_init_volumes}
@@ -159,7 +159,7 @@ The effective population size and the mean case detection probability are weakly
 
 In principle, absent prior information about the scales of $ \rho $ and $ N_{eff} $, we will have difficulty estimating the case detection probability and effective population size. In practice, there are a few reasons that $ \rho $ and $ N_{eff} $ might be weakly identifiable, rather than completely unidentifiable. First, certain stochastic aspects of the outbreak, such as the probability of a major outbreak and persistence of transmission, depend on the population size. Furthermore, the scale of the observed incidence and the observed outbreak duration are informative about the minimal effective population size. Therefore, the fact that we observe part of the outbreak is itself informative. Finally, a rough estimate the true population size is typically available, providing an upper bound on the effective population size. By extension, the latent epidemic process is also weakly identifiable in models where the effective population size and case detection probability are estimated.
 
-In contrast, the mean case reporting rate, $ \rho\times N_{eff} $, along with parameters governing the outbreak dynamics, are directly informed by the data and remain identifiable. It might seem paradoxical that we can infer the dynamics of an outbreak when we are unable to estimate the latent process. To understand why this is so, note that a SEM can be rewritten in terms of concentrations by dividing the compartment counts by the population size, yielding the so--called ``true mass--action model". The dynamics of this equivalent model, expressed, for example, by the basic reproductive number $ R0 $ and recovery rate for an SIR model, are known to be independent of the population size \cite{dejong1995does}. Combinations of model parameters yield latent paths, $ \bN^\prime $, expressed in terms of increments in concentrations, and are weighted in the posterior proportionally (modulo the prior) to the likelihood of scaled paths, $ \rho N_{eff}\bN^\prime $. The temporal nature of the data is important here because the curvature of the scaled paths should roughly match the shape of the data. Thus, we are leveraging the curvature in the data, not just the pointwise emission probabilities. 
+In contrast, the mean case reporting rate, $ \rho\times N_{eff} $, along with parameters governing the outbreak dynamics, are directly informed by the data and remain identifiable. It might seem paradoxical that we can infer the dynamics of an outbreak when we are unable to estimate the latent process. To understand why this is so, note that a SEM can be rewritten in terms of concentrations by dividing the compartment counts by the population size, yielding the so--called ``true mass--action model". The dynamics of this equivalent model, expressed, for example, by the basic reproductive number $ R0 $ and recovery rate for an SIR model, are known to be independent of the population size \cite{dejong1995does}. Combinations of model parameters yield latent paths, $ \bN^\prime $, expressed in terms of increments in concentrations, and are weighted in the posterior proportionally (modulo the prior) to the likelihood of scaled paths, $ \rho N_{eff}\bN^\prime $. The temporal nature of the data is important here because the curvature of scaled paths should roughly match that of the data. Thus, we are leveraging curvature in the data to make inferences, not just the pointwise emission probabilities. 
 
 We can check that $ \rho\times N_{eff} $ and the parameters governing the outbreak dynamics are identifiable via a simple simulation. We drew 500 sets of parameters from the priors given in Table \ref{tab:effpop_coverage_settings}, and simulated an outbreak and a dataset for each set of parameters. The models were fit via the LNA under the same priors from which the parameters were drawn using the MCMC procedure used to fit models for the main coverage simulation (described in Section \ref{subsec:lna_coverage_setup_details}). The results are summarized in Table \ref{tab:effpop_coverage_results}. The nominal coverage rates for all model parameters is approximately correct. However, the relative widths of the posterior credible intervals for the case detection rate are substantially narrower than the relative widths of the credible intervals for $ \rho $ and $ N_{eff} $ vis--a--vis their prior intervals. This suggests that the data are informative about $ \rho\times N_{eff} $. The priors for $ \rho $ and $ N_{eff} $ are not completely flat, and the scale of the observed counts is itself informative about $ N_{eff} $. Therefore, we still expect, and observe, some shrinkage for $ \rho $ and $ N_{eff} $, individually.
 
@@ -521,25 +521,25 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 		\draw [thick,->,shorten >=.6mm] (Ea) -- (Ia) node[midway,above] {$ \lambda_{EI}^G $};
 		\draw [thick,->,shorten <=.5mm] (Ia) -- (Ra) node[midway,above] {$ \lambda_{IR}^G $};
 		
-		\draw [thick,->] (Sb) -- (Eb) node[midway,above] {$ \lambda_{SE}^L $};
+		\draw [thick,->] (Sb) -- (Eb) node[midway,above] {$ \lambda_{SE}^L(t) $};
 		\draw [thick,->,shorten >=.6mm] (Eb) -- (Ib) node[midway,above] {$ \lambda_{EI}^L $};
 		\draw [thick,->,shorten <=.5mm] (Ib) -- (Rb) node[midway,above] {$ \lambda_{IR}^L $};
 		
-		\draw [thick,->] (Sc) -- (Ec) node[midway,above] {$ \lambda_{SE}^S $};
+		\draw [thick,->] (Sc) -- (Ec) node[midway,above] {$ \lambda_{SE}^S(t) $};
 		\draw [thick,->,shorten >=.6mm] (Ec) -- (Ic) node[midway,above] {$ \lambda_{EI}^S $};
 		\draw [thick,->,shorten <=.5mm] (Ic) -- (Rc) node[midway,above] {$ \lambda_{IR}^S $};
 		
 		\path [thick, <-] ([yshift=-0.5mm,xshift=-2mm]Ia.south) edge [shorten >= 2mm, shorten <= 4mm] node [above,xshift=2.5mm,yshift=1.5mm] {$ \lambda_I^{GS} $} ([xshift=-1mm]Ic.north);
 		\path [thick, ->] (Ia.south) edge [shorten >= 5mm, shorten <= 2mm] node [below,xshift=-9mm,yshift=2mm] {$ \lambda_I^{SG} $} ([xshift=1.5mm]Ic.north);
 		
-		\path [thick, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-2mm] {$ \lambda_I^{LS} $} ([xshift=1mm]Ic.north);
-		\path [thick, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=5mm] {$ \lambda_I^{SL} $} ([xshift=-1.5mm]Ic.north);
+		\path [thick, <-] ([yshift=-0.5mm,xshift=2mm]Ib.south) edge [shorten >= 2mm, shorten <= 4mm] node[above,yshift=1mm,xshift=-6mm] {$ \lambda_I^{LS}(t) $} ([xshift=1mm]Ic.north);
+		\path [thick, ->] (Ib.south) edge [shorten >= 5mm, shorten <= 2mm] node[below,xshift=8mm] {$ \lambda_I^{SL}(t) $} ([xshift=-1.5mm]Ic.north);
 		
-		\path [thick, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG} $} ([]Ib.north);
-		\path [thick, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL} $} ([]Ib.north);	
+		\path [thick, <-] ([]Ia.north) edge [shorten >= 3mm, shorten <= 3mm, bend left, looseness=1.1] node [below] {$ \lambda_I^{LG}(t) $} ([]Ib.north);
+		\path [thick, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL}(t) $} ([]Ib.north);		
 		\end{tikzpicture}
 	}
-	\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptible individuals in Guinea become infected is time varying with one changepoint at 33 weeks.}
+	\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country transmission.]{Diagram of state transitions for a stratified SEIR model used in simulating an outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptible individuals in Guinea become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone commenced at 10 and 19 weeks, respectively.Full expressions for the rates are given in Table \ref{tab:ebola_synth_rates_full}.}
 	\label{fig:stratified_seir_full_diag}
 \end{figure}
 
@@ -651,6 +651,7 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 	\end{tabular}
 \end{table}
 
+\newpage
 \subsection{MCMC Details}
 \label{subsec:ebola_synth_mcmc}
 We fit two models to the simulated data, the true model where migration was modeled explicitly and the approximated model, described in Section \ref{subsec:ebola_synth}, where cross--border transmission was incorporated into the rate of infection via virtual migration. The model fitting procedure and priors were the same for both models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was update over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The covariance matrix was blocked by country with covariances for parameters belonging to different countries set to zero. Thus, country specific parameters were proposed jointly but were independent in the proposal. Migration parameters were blocked with parameters corresponding to the destination country. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between three ElliptSS and two MVNSS updates per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. 
@@ -687,7 +688,7 @@ We fit two models to the simulated data, the true model where migration was mode
 		$ \rho_SN_{eff,S} $& 15000 & 14860 (11510, 20580) \\ 
 		$ \phi_{G} $& 50.00 & 59.78 (27.36, 211.88) \\ 
 		$ \phi_{L} $& 50.00 & 46.61 (20.82, 105.31) \\ 
-		$ \phi_{S} $& 50.00 & 33.13 (17.76, 60.48) \\ 
+		$ \phi_{S} $& 50.00 & 33.13 (17.76, 60.48) \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -728,6 +729,26 @@ We fit two models to the simulated data, the true model where migration was mode
 	\end{tabular}
 \end{table}
 
+\begin{table}[ht]
+	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for a stratified SEIR model fit to simulated Ebola data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for a stratified SEIR model fit to simulated Ebola data. The effective number of susceptible individuals in each country corresponds to the effective population size minus the number of individuals in other disease states, but is not identifiable and therefore is not reported.}
+	\centering
+	\begin{tabular}{lrl}
+		\hline
+		\textbf{Parameter} & \textbf{Truth} & \textbf{Estimate} \\ 
+		\hline
+		$ E_{0,G} $& 4.00 & 4.99 (1.39, 8.66) \\ 
+		$ E_{0,G} $& 3.00 & 3.4 (0.6, 6.76) \\ 
+		$ E_{0,G} $& 3.00 & 3.16 (0.45, 6.55) \\ 
+		$ I_{0,G} $& 3.00 & 3.7 (0.82, 6.91) \\ 
+		$ I_{0,L} $& 2.00 & 2.67 (0.45, 5.23) \\ 
+		$ I_{0,S} $& 2.00 & 2.46 (0.4, 4.95) \\ 
+		$ R_{0,G} $& 0.00 & 0.12 (0.07, 0.16) \\ 
+		$ R_{0,L} $	& 0.00 & 0.12 (0.07, 0.17) \\ 
+		$ R_{0,S} $& 0.00 & 0.11 (0.06, 0.17) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/ebola_synth_traces}
@@ -756,6 +777,120 @@ We fit two models to the simulated data, the true model where migration was mode
 \newpage
 \subsection{Supplementary Results with Explicit Migration of Infected Individuals}
 \label{subsec:ebola_synth_fullmod_res}
+
+\section{Modeling Ebola in West Africa --- MCMC Details and Supplementary Results}
+\label{sec:ebola_supplement}
+
+\subsection{Details and Supplementary Results for Single--Country Models}
+\label{subsec:ebola_single_country_supplement}
+
+\subsection{Details and Supplementary Results for Multi--Country Models}
+\label{subsec:ebola_joint_model_supplement}
+
+\subsubsection{Priors and MCMC details}
+\label{subsec:ebola_priors_mcmc}
+
+\begin{sidewaystable}[htbp]
+	\begin{fullpage}
+		\caption[Parameters and priors for a country--stratified SEIR model fit to the West Africa Ebola outbreak.]{Parameters for a country--stratified SEIR model fit to the West Africa Ebola outbreak, prior distributions, 95\% prior intervals, and references that informed the choice of priors. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
+		\label{tab:ebola_priors_main}
+		\scriptsize
+		\centering
+		\begin{tabular}{lllrr}
+			\hline
+			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
+			$ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} $ & Ratio of effective reproduction \#s &  LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) & \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,G}^{(2)}(t)-1 $ & Effective reproduction \# - 1, $ t\geq33 $ & LogNormal(log(0.5), $ 0.75^2 $) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,L} -1 $ & Effective reproduction \#-1 &  LogNormal(log(0.5), $ 0.75^2 $) & $ \implies R_{eff,L} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,S}-1 $ & Effective reproduction \#-1 & LogNormal(log(0.5), 0.75$ ^2 $) & $ \implies R_{eff,S} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable}\\
+			\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
+			$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.25) & \makecell[r]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)} & \cite{dudas2017virus}\\ 
+			$ \omega_G/\omega_G $ & Rate from $ E_G\rightarrow I_G $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_L/\omega_L $ & Rate from $ E_L\rightarrow I_L $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_S/\omega_S $ & Rate from $ E_S\rightarrow I_S $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_G $ & Rate from $ E_G\rightarrow I_G $ &  LogNormal(0.3, 0.2$ ^2 $) & $ 7/\mu_G = $ 9.45 (6.38, 13.98) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_L $ & Rate from $ E_L\rightarrow I_L $ &  LogNormal(0.3, 0.2$ ^2 $) & $ 7/\mu_L = $ 9.45 (6.38, 13.98) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_S $ & Rate from $ E_S\rightarrow I_S $ &  LogNormal(0.3, 0.2$ ^2 $) & $ 7/\mu_S = $ 9.45 (6.38, 13.98) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ N_{eff,G} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (3627,\ 2.95\times10^6) $ & Scale of counts \\
+			$ N_{eff,L} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (4994,\ 1.1\times10^6) $ & Scale of counts \\
+			$ N_{eff,S} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (11317,\ 1.775\times10^6) $ & Scale of counts \\
+			$ \rho_G $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_G = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_L $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_L = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_S $ & Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_S = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \phi_G,\ \phi_L, \phi_S $ &  Neg.Binomial overdispersion & LogNormal(0, 5$ ^2 $) & $ \implies \ = 1, (5.5\times 10^-5, 1.8\times10^4)$ & Diffuse. \\
+			\hline
+		\end{tabular}
+	\end{fullpage}
+\end{sidewaystable}
+
+\subsubsection{Prior Sensitivity Analyses}
+\label{subsec:ebola_prior_sensitivity}
+
+\begin{sidewaystable}[htbp]
+	\begin{fullpage}
+		\caption[Sensitivity analysis using more informative priors for a stratified SEIR model for Ebola in West Africa.]{Sensitivity analysis for a country--stratified SEIR model fit to the West Africa Ebola outbreak using more informative priors, vis--a--vis the main model, for the outbreak dynamics. In particular, the prior for the infectious period duration was tightened, and the prior for the ratio of infectious to latent period duration reflected a higher likelihood that the latent period might be shorter due to transmission from individuals with dry symptoms based on estimates in \cite{velasquez2015time,glynn2017variability}.  Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
+		\label{tab:ebola_priors_informative}
+		\scriptsize
+		\centering
+		\begin{tabular}{lllrr}
+			\hline
+			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
+			$ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} $ & Ratio of effective reproduction \#s &  LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) & \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,G}^{(2)}(t)-1 $ & Effective reproduction \# - 1, $ t\geq33 $ & LogNormal(log(0.5), $ 0.75^2 $) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,L} -1 $ & Effective reproduction \#-1 &  LogNormal(log(0.5), $ 0.75^2 $) & $ \implies R_{eff,L} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,S}-1 $ & Effective reproduction \#-1 & LogNormal(log(0.5), 0.75$ ^2 $) & $ \implies R_{eff,S} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable}\\
+			\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
+				$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.25) & \makecell[r]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)} & \cite{dudas2017virus}\\ 
+			$ \omega_G/\omega_G $ & Rate from $ E_G\rightarrow I_G $ & LogNormal(0.4, 0.3$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.49 (0.83, 2.69) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_L/\omega_L $ & Rate from $ E_L\rightarrow I_L $ & LogNormal(0.4, 0.3$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.49 (0.83, 2.69) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_S/\omega_S $ & Rate from $ E_S\rightarrow I_S $ & LogNormal(0.4, 0.3$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.49 (0.83, 2.69) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_G $ & Rate from $ E_G\rightarrow I_G $ &  LogNormal(0.3, 0.15$ ^2 $) & $ 7/\mu_G = $ 9.45 (7.04, 12.68) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_L $ & Rate from $ E_L\rightarrow I_L $ &  LogNormal(0.3, 0.15$ ^2 $) & $ 7/\mu_L = $ 9.45 (7.04, 12.68) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_S $ & Rate from $ E_S\rightarrow I_S $ &  LogNormal(0.3, 0.15$ ^2 $) & $ 7/\mu_S = $ 9.45 (7.04, 12.68) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ N_{eff,G} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (3627,\ 2.95\times10^6) $ & Scale of counts \\
+			$ N_{eff,L} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (4994,\ 1.1\times10^6) $ & Scale of counts \\
+			$ N_{eff,S} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (11317,\ 1.775\times10^6) $ & Scale of counts \\
+			$ \rho_G $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_G = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_L $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_L = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_S $ & Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_S = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \phi_G,\ \phi_L, \phi_S $ &  Neg.Binomial overdispersion & LogNormal(0, 5$ ^2 $) & $ \implies \ = 1, (5.5\times 10^-5, 1.8\times10^4)$ & Diffuse. \\
+			\hline
+		\end{tabular}
+	\end{fullpage}
+\end{sidewaystable}
+
+\begin{sidewaystable}[htbp]
+	\begin{fullpage}
+		\caption[Sensitivity analysis using less informative priors for a stratified SEIR model for Ebola in West Africa.]{Sensitivity analysis for a country--stratified SEIR model fit to the West Africa Ebola outbreak using less informative priors for the effective reproductive numbers, cross--border transmission, and infectious period duration vis--a--vis the main model. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
+		\label{tab:ebola_priors_diffuse}
+		\scriptsize
+		\centering
+		\begin{tabular}{lllrr}
+			\hline
+			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
+			$ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} $ & Ratio of effective reproduction \#s &  LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) & \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,G}^{(2)}(t)-1 $ & Effective reproduction \# - 1, $ t\geq33 $ & LogNormal(log(0.5), $ 1.5^2 $) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.02, 10.46)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,L} -1 $ & Effective reproduction \#-1 &  LogNormal(log(0.5), $ 1.5^2 $) & $ \implies R_{eff,L} = 1.50 (1.02, 10.46)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,S}-1 $ & Effective reproduction \#-1 & LogNormal(log(0.5), 1.5$ ^2 $) & $ \implies R_{eff,S} = 1.50 (1.02, 10.46)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable}\\
+			\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
+				$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.125) & \makecell[r]{\# migrations per 1000 infected \\ = 5.55 (0.20, 29.51)} & \cite{dudas2017virus}\\ 
+			$ \omega_G/\omega_G $ & Rate from $ E_G\rightarrow I_G $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_L/\omega_L $ & Rate from $ E_L\rightarrow I_L $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_S/\omega_S $ & Rate from $ E_S\rightarrow I_S $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_G $ & Rate from $ E_G\rightarrow I_G $ &  LogNormal(0.3, 0.35$ ^2 $) & $ 7/\mu_G = $ 9.45 (4.76, 18.76) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_L $ & Rate from $ E_L\rightarrow I_L $ &  LogNormal(0.3, 0.35$ ^2 $) & $ 7/\mu_L = $ 9.45 (4.76, 18.76) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_S $ & Rate from $ E_S\rightarrow I_S $ &  LogNormal(0.3, 0.35$ ^2 $) & $ 7/\mu_S = $ 9.45 (4.76, 18.76) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ N_{eff,G} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (3627,\ 2.95\times10^6) $ & Scale of counts \\
+			$ N_{eff,L} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (4994,\ 1.1\times10^6) $ & Scale of counts \\
+			$ N_{eff,S} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (11317,\ 1.775\times10^6) $ & Scale of counts \\
+			$ \rho_G $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_G = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_L $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_L = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_S $ & Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_S = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \phi_G,\ \phi_L, \phi_S $ &  Neg.Binomial overdispersion & LogNormal(0, 5$ ^2 $) & $ \implies \ = 1, (5.5\times 10^-5, 1.8\times10^4)$ & Diffuse. \\
+			\hline
+		\end{tabular}
+	\end{fullpage}
+\end{sidewaystable}
 
 \section{LNA Implementation Details and LNA Model Vignettes}
 \label{sec:lna_implementation_vignettes}
