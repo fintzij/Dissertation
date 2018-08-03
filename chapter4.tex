@@ -409,25 +409,25 @@ We simulated data from a three country SEIR model, diagrammed in Figure \ref{fig
 		\resizebox {\linewidth} {!} {
 			\begin{tikzpicture}
 			\draw[thick,dotted] (0,-0.25) rectangle (7.5, 1.25);
-			\node at (1, 1.1) [label=Guinea (G)] {};
-			\draw (0.75, 0.5) circle(0.4) node (Sa) {$ S_G $};
-			\draw (2.75, 0.5) circle(0.4) node (Ea) {$ E_G $};
-			\draw (4.75, 0.5) circle(0.4) node (Ia) {$ I_G $};
-			\draw (6.75, 0.5) circle(0.4) node (Ra) {$ R_G $};
+			\node at (1, 1) [label=Guinea (G)] {};
+			\draw (0.75, 0.4) circle(0.4) node (Sa) {$ S_G $};
+			\draw (2.75, 0.4) circle(0.4) node (Ea) {$ E_G $};
+			\draw (4.75, 0.4) circle(0.4) node (Ia) {$ I_G $};
+			\draw (6.75, 0.4) circle(0.4) node (Ra) {$ R_G $};
 			
 			\draw[thick,dotted] (9.5,-0.25) rectangle (17, 1.25);
-			\node at (16, 1.1) [label=Liberia (L)] {};	
-			\draw (10.25, 0.5) circle(0.4) node (Sb) {$ S_L $};
-			\draw (12.25, 0.5) circle(0.4) node (Eb) {$ E_L $};
-			\draw (14.25, 0.5) circle(0.4) node (Ib) {$ I_L $};
-			\draw (16.25, 0.5) circle(0.4) node (Rb) {$ R_L $};
+			\node at (16, 1) [label=Liberia (L)] {};	
+			\draw (10.25, 0.4) circle(0.4) node (Sb) {$ S_L $};
+			\draw (12.25, 0.4) circle(0.4) node (Eb) {$ E_L $};
+			\draw (14.25, 0.4) circle(0.4) node (Ib) {$ I_L $};
+			\draw (16.25, 0.4) circle(0.4) node (Rb) {$ R_L $};
 			
 			\draw[thick,dotted] (4.75,-3) rectangle (12.25, -4.5);
-			\node at (6.25, -3.15) [label=Sierra Leone (S)] {};	
-			\draw (5.5, -3.75) circle(0.4) node (Sc) {$ S_S $};
-			\draw (7.5, -3.75) circle(0.4) node (Ec) {$ E_S $};
-			\draw (9.5, -3.75) circle(0.4) node (Ic) {$ I_S $};
-			\draw (11.5, -3.75) circle(0.4) node (Rc) {$ R_S $};
+			\node at (6.25, -3.25) [label=Sierra Leone (S)] {};	
+			\draw (5.5, -3.85) circle(0.4) node (Sc) {$ S_S $};
+			\draw (7.5, -3.85) circle(0.4) node (Ec) {$ E_S $};
+			\draw (9.5, -3.85) circle(0.4) node (Ic) {$ I_S $};
+			\draw (11.5, -3.85) circle(0.4) node (Rc) {$ R_S $};
 			
 			\draw [thick,->] (Sa) -- (Ea) node[midway,above] {$ \lambda_{SE}^G(t) $};
 			\draw [thick,->,shorten >=.6mm] (Ea) -- (Ia) node[midway,above] {$ \lambda_{EI}^G $};
@@ -451,7 +451,7 @@ We simulated data from a three country SEIR model, diagrammed in Figure \ref{fig
 			\path [dashed, ->] ([]Ia.north) edge [shorten >= 2mm, shorten <= 2mm, bend left, looseness=1.1,yshift=2mm] node [above] {$ \lambda_I^{GL}(t) $} ([]Ib.north);	
 			\end{tikzpicture}
 		}
-		\caption[Model diagram for a stratified SEIR model with country specific outbreak dynamics and cross--country virtual transmission.]{Diagram of state transitions for a stratified SEIR model fit to a simulated Ebola outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Dashed lines indicate virtual migrations, where infected individuals in one country contribute to the force of infection in another country but do not migrate. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptibles in Guinea become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone commenced at 10 and 19 weeks, respectively. Full expressions for the rates are given in Table \ref{tab:ebola_synth_rates_approx}.}
+		\caption[Diagram of a stratified SEIR model with country specific outbreak dynamics and cross--country virtual transmission.]{Diagram of state transitions for a stratified SEIR model fit to a simulated Ebola outbreak in Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Dashed lines indicate virtual migrations, where infected individuals in one country contribute to the force of infection in another country but do not migrate. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia, $ \lambda_I^{SG} $ is the rate at which an infected individual in Sierra Leone migrates to Guinea. The rate at which susceptibles in Guinea become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone commenced at 10 and 19 weeks, respectively. Full expressions for the rates are given in Table \ref{tab:ebola_synth_rates_approx}.}
 		\label{fig:stratified_seir_approx_diag}
 	\end{fullpage}
 \end{figure}
@@ -549,12 +549,55 @@ There are several reasons to believe \textit{a priori} that the true incidence i
 	\end{tabular} 
 \end{table}
 
-\subsection{Single Country Models for the Spread of Ebola}
+\subsection{Single Country Models for the Spread of Ebola in West Africa}
 \label{subsec:ebola_single_country}
 
 A typical first step in learning about the overall outbreak dynamics is to separately model the incidence data from each country. This is less challenging than fitting a joint model that incorporates cross--border transmission since each model will have fewer parameters and a smaller latent state space. Furthermore, as we discuss in Section \ref{sec:est_scale_discussion}, iterating through simplified models is useful in identifying parameterizations that simplify the posterior geometry that we can use to fit the more complicated joint model discussed in the next section. 
 
-We fit SEIR models to the incidence data from each country
+\begin{figure}[htbp]
+	\begin{fullpage}
+		\resizebox {\linewidth} {!} {
+			\begin{tikzpicture}
+			\draw[thick,dotted] (0,-0.25) rectangle (7.5, 1.25);
+			\node at (1, 1.1) [label=Guinea (G)] {};
+			\draw (0.75, 0.4) circle(0.4) node (Sa) {$ S_G $};
+			\draw (2.75, 0.4) circle(0.4) node (Ea) {$ E_G $};
+			\draw (4.75, 0.4) circle(0.4) node (Ia) {$ I_G $};
+			\draw (6.75, 0.4) circle(0.4) node (Ra) {$ R_G $};
+			
+			\draw[thick,dotted] (9.5,-0.25) rectangle (17, 1.25);
+			\node at (16, 1.1) [label=Liberia (L)] {};	
+			\draw (10.25, 0.4) circle(0.4) node (Sb) {$ S_L $};
+			\draw (12.25, 0.4) circle(0.4) node (Eb) {$ E_L $};
+			\draw (14.25, 0.4) circle(0.4) node (Ib) {$ I_L $};
+			\draw (16.25, 0.4) circle(0.4) node (Rb) {$ R_L $};
+			
+			\draw[thick,dotted] (4.75,-2) rectangle (12.25, -3.5);
+			\node at (6.25, -2.15) [label=Sierra Leone (S)] {};	
+			\draw (5.5, -2.85) circle(0.4) node (Sc) {$ S_S $};
+			\draw (7.5, -2.85) circle(0.4) node (Ec) {$ E_S $};
+			\draw (9.5, -2.85) circle(0.4) node (Ic) {$ I_S $};
+			\draw (11.5, -2.85) circle(0.4) node (Rc) {$ R_S $};
+			
+			\draw [thick,->] (Sa) -- (Ea) node[midway,above] {$ \lambda_{SE}^G(t) $};
+			\draw [thick,->,shorten >=.6mm] (Ea) -- (Ia) node[midway,above] {$ \lambda_{EI}^G $};
+			\draw [thick,->,shorten <=.5mm] (Ia) -- (Ra) node[midway,above] {$ \lambda_{IR}^G $};
+			
+			\draw [thick,->] (Sb) -- (Eb) node[midway,above] {$ \lambda_{SE}^L $};
+			\draw [thick,->,shorten >=.6mm] (Eb) -- (Ib) node[midway,above] {$ \lambda_{EI}^L $};
+			\draw [thick,->,shorten <=.5mm] (Ib) -- (Rb) node[midway,above] {$ \lambda_{IR}^L $};
+			
+			\draw [thick,->] (Sc) -- (Ec) node[midway,above] {$ \lambda_{SE}^S $};
+			\draw [thick,->,shorten >=.6mm] (Ec) -- (Ic) node[midway,above] {$ \lambda_{EI}^S $};
+			\draw [thick,->,shorten <=.5mm] (Ic) -- (Rc) node[midway,above] {$ \lambda_{IR}^S $};
+			\end{tikzpicture}
+		}
+		\caption[Diagram of single country SEIR models for the Ebola outbreak in West Africa.]{Diagram of state transitions for SEIR models fit to Ebola incidence data from Guinea, Liberia, and Sierra Leone. Dashed boxes denote countries, nodes in circles denote the model compartments: susceptible (S), exposed (E), infectious (I), recovered (R). Compartments  are subscripted with country indicators. The number of susceptible individuals is equal to the effective population size, estimated as a parameter in the model, minus the numbers of exposed, infected, and recovered individuals. Solid lines with arrows indicate stochastic transitions between model compartments, which occur continuously in time. Rates at which individuals transition between compartments are denoted by $ \lambda $ and are subscripted by compartments and superscripted by countries, e.g., $ \lambda_{SE}^L $ is the rate at which susceptible individuals become exposed in Liberia. The rate at which susceptibles in Guinea become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone commenced at 10 and 19 weeks, respectively. Full expressions for the rates are given in Table \ref{tab:ebola_rates_single}.}
+		\label{fig:ebola_single_diag}
+	\end{fullpage}
+\end{figure}
+
+We fit separate SEIR models, diagrammed in Figure \ref{fig:SEIR_single_diag} to the incidence data from each country. Transmission was modeled in Liberia beginning March 2, 2014, and in Sierra Leone from May 4, 2014, corresponding to three weeks prior to the first confirmed or probable cases in those countries. Phylogeographic models for viral sequences collected during the outbreak suggested that Guinea experienced re--importation of Ebola throughout the outbreak from Liberia and Sierra Leone \cite{dudas2017virus}. Therefore, we included a single changepoint for the effective reproductive number for Guinea to account for possible changes in the outbreak dynamics. The changepoint was set to August 10, 2014, two days after the WHO declared an international state of emergency, and one day after borders were closed with Sierra Leone and Liberia \cite{coltart2017ebola}. The force of infection in each country included a constant term for infectious contact from outside the population. To account for the small scale of each outbreak relative to the population size in the country, we estimate the effective population size as a parameter in the model. The number of susceptible individuals is then equal to the effective population size, minus the numbers of exposed, infected, and recovered individuals. Implications of this choice for identifiability of parameters and the latent epidemic process are discussed in Section \ref{sec:effpop_identifiability}. Finally, the observed incidence was modeled as a negative binomial sample of the true incidence in each inter--observation interval, as in (\ref{eqn:incidence_emitprob}).
 
 \begin{table}[htbp]
 	\caption[Population sizes for Guinea, Liberia, and Sierra Leone, along with times at which transmission was assumed to begin.]{Population sizes for Guinea, Liberia, and Sierra Leone \cite{un2017popdat}, and times at which within--country transmission was assumed to begin. Week zero corresponded to the first reported case in Guinea. Weeks zero for Liberia and Sierra Leone were set to three weeks prior to the first reported cases in each country.}
@@ -571,8 +614,9 @@ We fit SEIR models to the incidence data from each country
 	\end{tabular} 
 \end{table}
 
+We fit the models under identical sets of informative priors, listed along with references in Table \ref{tab:ebola_priors_single_tight}, for parameters governing the outbreak dynamics, and diffuse priors for parameters governing the emission distribution, including the effective population sizes. The priors for effective reproduction numbers, and sojourn time distributions in the exposed and infectious compartments were based on previously published estimates. The prior for the baseline rate of infectious contact from outside the population reflected our assumption that there were probably fewer than a dozen (two dozen under the more diffuse prior regime) transmission events per 1,000 infected individuals outside the country. This was based in part on results published in \cite{dudas2017virus}, who estimated between one--half to two dozen reintroduction events, depending on the country, between April 2014 and May 2015. We were agnostic in our priors for the mean case detection probability, effective population size, and the over-dispersion parameter in the emission distribution. The prior for the detection probability reflected our belief that a case was unlikely to be detected with probability nearly equal to zero or one, but also our uncertainty about the reliability of published estimates. Our priors for the effective population sizes were uniformly distributed between the total observed incidence and one quarter of the population in each country. An additional set of models were fit under more diffuse priors for the outbreak dynamics is presented in Section \ref{subsubsec:ebola_single_sensitivity}
 
-\subsection{Joint Modeling of the West Africa Ebola Outbreak}
+\subsection{A Joint Model for the Spread of Ebola in West Africa}
 \label{subsec:ebola_joint}
 
-We fit a country--stratified SEIR model, diagrammed in Figure \ref{fig:stratified_seir_approx_diag}, with cross--border transmission modeled via virtual migration of infectious individuals. The model allowed for country--specific outbreak dynamics and emission distributions. Transmission was assumed to commence in Liberia at the beginning of March 2014, and in Sierra Leone at the beginning of May 2014, which corresponded to three weeks prior to the first confirmed or probable cases in each country. We included a changepoint in the basic reproductive number for Guinea at the beginning of August 2014 due to the outbreak duration. The changepoint corresponded to the WHO declaration of a state of emergency and border closures with Liberia and Sierra Leone \cite{coltart2017ebola}. The observed incidence in each country was modeled as a negative binomial sample of the true incidence, with country--specific mean detection probabilities and overdispersion parameters. We fit the model under informative priors for the rate and cross--border transmission parameters that were based on published results from other studies, and diffuse priors for the emission process parameters. The priors are summarized and sourced in Table \ref{tab:ebola_main_priors}, and additional MCMC details are presented in Section \ref{subsec:ebola_priors_mcmc}. Sensitivity analyses using tighter and more diffuse priors for the outbreak dynamics are presented in \ref{subsec:ebola_prior_sensitivity}. We also fit three supplementary single country country SEIR models with a constant rate of infectious contact outside the population. 
+We fit a country--stratified SEIR model, diagrammed in Figure \ref{fig:stratified_seir_approx_diag}, with cross--border transmission modeled via virtual migration of infectious individuals. The model allowed for country--specific outbreak dynamics and emission distributions. Transmission was assumed to commence in Liberia at the beginning of March 2014, and in Sierra Leone at the beginning of May 2014, which corresponded to three weeks prior to the first confirmed or probable cases in each country. We included a changepoint in the basic reproductive number for Guinea at the beginning of August 2014 due to the outbreak duration. The changepoint corresponded to the WHO declaration of a state of emergency and border closures with Liberia and Sierra Leone \cite{coltart2017ebola}. The observed incidence in each country was modeled as a negative binomial sample of the true incidence, with country--specific mean detection probabilities and overdispersion parameters. We fit the model under informative priors for the rate and cross--border transmission parameters that were based on published results from other studies, and diffuse priors for the emission process parameters. The priors are summarized and sourced in Table \ref{tab:ebola_priors_joint_tight}, and additional MCMC details are presented in Section \ref{subsubsec:ebola_joint_mcmc}. Sensitivity analyses using more diffuse priors for the outbreak dynamics are presented in \ref{subsubsec:ebola_joint_sensitivity}. We also fit three supplementary single country country SEIR models with a constant rate of infectious contact outside the population. 
