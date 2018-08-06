@@ -562,7 +562,7 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
-		\caption[Parameters and priors for a simulated Ebola outbreak in West Africa.]{Parameters under which the outbreak and data were simulated, prior distributions, and 95\% prior intervals. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
+		\caption[Parameters and priors for a simulated Ebola outbreak in West Africa.]{Parameters used to simulate an Ebola outbreak in West Africa using a country--stratified SEIR model, prior distributions, and 95\% prior intervals. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
 		\label{tab:ebola_synth_pars}
 		\scriptsize
 	\centering
@@ -654,10 +654,31 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 \newpage
 \subsection{MCMC Details}
 \label{subsec:ebola_synth_mcmc}
-We fit two models to the simulated data, the true model where migration was modeled explicitly and the approximated model, described in Section \ref{subsec:ebola_synth}, where cross--border transmission was incorporated into the rate of infection via virtual migration. The model fitting procedure and priors were the same for both models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was update over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The covariance matrix was blocked by country with covariances for parameters belonging to different countries set to zero. Thus, country specific parameters were proposed jointly but were independent in the proposal. Migration parameters were blocked with parameters corresponding to the destination country. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between three ElliptSS and two MVNSS updates per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. The full model took approximately 9.6 days to run, while the approximate model took about 2.8 days. 
+We fit two models to the simulated data, the true model where migration was modeled explicitly and the approximated model, described in Section \ref{subsec:ebola_synth}, where cross--border transmission was incorporated into the rate of infection via virtual migration. The model fitting procedure and priors were the same for both models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was adapted over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The covariance matrix was blocked by country with covariances for parameters belonging to different countries set to zero. Thus, country specific parameters were proposed jointly but were independent in the proposal. Migration parameters were blocked with parameters corresponding to the destination country. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between three ElliptSS and two MVNSS updates per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. The full model took approximately 9.6 days to run, while the approximate model took about 2.8 days. 
 
 \subsection{Additional Results}
 \label{subsec:ebola_synth_supplement}
+
+\begin{table}[htbp]
+	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for a stratified SEIR model fit to simulated Ebola data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for a stratified approximate SEIR model with virtual migration of infecteds fit to simulated Ebola data. The effective number of susceptibles is equal to the effective population size, reported in Table \ref{tab:ebola_synth_ests}, minus the numbers of exposed, infected, and recovered individuals, but is not reported since the effective population size is not marginally identifiable.}
+	\label{tab:ebola_synth_initdist_res}
+	\centering
+	\begin{tabular}{lrl}
+		\hline
+		\textbf{Parameter} & \textbf{Truth} & \textbf{Estimate} \\ 
+		\hline
+		$ E_{0,G} $& 4.00 & 4.99 (1.39, 8.66) \\ 
+		$ E_{0,G} $& 3.00 & 3.4 (0.6, 6.76) \\ 
+		$ E_{0,G} $& 3.00 & 3.16 (0.45, 6.55) \\ 
+		$ I_{0,G} $& 3.00 & 3.7 (0.82, 6.91) \\ 
+		$ I_{0,L} $& 2.00 & 2.67 (0.45, 5.23) \\ 
+		$ I_{0,S} $& 2.00 & 2.46 (0.4, 4.95) \\ 
+		$ R_{0,G} $& 0.00 & 0.12 (0.07, 0.16) \\ 
+		$ R_{0,L} $	& 0.00 & 0.12 (0.07, 0.17) \\ 
+		$ R_{0,S} $& 0.00 & 0.11 (0.06, 0.17) \\ 
+		\hline
+	\end{tabular}
+\end{table}
 
 \begin{table}[htbp]
 	\caption[Posterior parameter estimates for full and approximate stratified SEIR models fit to a simulated Ebola outbreak.]{Posterior medians (95\% Bayesian credible intervals) for parameters of the full (Figure \ref{fig:stratified_seir_full_diag}) and approximate (Figure \ref{fig:stratified_seir_approx_diag}) stratified SEIR models fit to a simulated Ebola outbreak. The full model explicitly models cross--border transmission via migration of infected individuals, while the approximate model incorporates cross--border transmission through virtual migrations. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $. Parameter interpretations and priors are given in Table \ref{tab:ebola_synth_pars}.}
@@ -729,26 +750,6 @@ We fit two models to the simulated data, the true model where migration was mode
 	\end{tabular}
 \end{table}
 
-\begin{table}[ht]
-	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for a stratified SEIR model fit to simulated Ebola data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for a stratified approximate SEIR model with virtual migration of infecteds fit to simulated Ebola data. The effective number of susceptibles is equal to the effective population size, reported in Table \ref{tab:ebola_synth_ests}, minus the numbers of exposed, infected, and recovered individuals, but is not reported since the effective population size is not marginally identifiable.}
-	\centering
-	\begin{tabular}{lrl}
-		\hline
-		\textbf{Parameter} & \textbf{Truth} & \textbf{Estimate} \\ 
-		\hline
-		$ E_{0,G} $& 4.00 & 4.99 (1.39, 8.66) \\ 
-		$ E_{0,G} $& 3.00 & 3.4 (0.6, 6.76) \\ 
-		$ E_{0,G} $& 3.00 & 3.16 (0.45, 6.55) \\ 
-		$ I_{0,G} $& 3.00 & 3.7 (0.82, 6.91) \\ 
-		$ I_{0,L} $& 2.00 & 2.67 (0.45, 5.23) \\ 
-		$ I_{0,S} $& 2.00 & 2.46 (0.4, 4.95) \\ 
-		$ R_{0,G} $& 0.00 & 0.12 (0.07, 0.16) \\ 
-		$ R_{0,L} $	& 0.00 & 0.12 (0.07, 0.17) \\ 
-		$ R_{0,S} $& 0.00 & 0.11 (0.06, 0.17) \\ 
-		\hline
-	\end{tabular}
-\end{table}
-
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/ebola_synth_traces}
@@ -774,11 +775,13 @@ We fit two models to the simulated data, the true model where migration was mode
 	\caption{Scatterplots of Sierra Leone--specific parameters in a stratified SEIR model for a simulated Ebola outbreak.}
 \end{figure}
 
+\newpage
 \section{Modeling Ebola in West Africa --- MCMC Details and Supplementary Results}
 \label{sec:ebola_supplement}
 
 \subsection{Details and Supplementary Results for Single--Country Models}
 \label{subsec:ebola_single_country_supplement}
+
 
 \begin{table}[htbp]
 	\caption[Transmission rates for single country SEIR models for Ebola in West Africa.]{Rates of transitions between compartments of single country SEIR models, diagrammed in Figure \ref{fig:ebola_single_diag}, for the spread of Ebola in Guinea, Liberia, and Sierra Leone with constant rate of infectious contact from outside the population. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The number of susceptible individuals is equal to the effective population size, estimated as a parameter in the model, minus the numbers of exposed, infected, and recovered individuals. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times, but is not modeled explicitly.}
@@ -801,8 +804,13 @@ We fit two models to the simulated data, the true model where migration was mode
 	\end{tabular}
 \end{table}
 
+\subsubsection{Priors and MCMC details}
+\label{subsubsec:ebola_single_mcmc}
+
+We fit country specific SEIR models to the Ebola incidence data from Guinea, Liberia, and Sierra Leone under two prior regimes given in Tables \ref{tab:ebola_priors_single_tight} and \ref{tab:ebola_priors_single_diff}. The model fitting procedure and priors were the same for all models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was adapted over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between two ElliptSS and one MVNSS update per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. The models took between 8 hours and 34 hours to run, depending on the speed of the cluster cores. 
+
 \begin{table}[htbp]
-	\caption[Priors for initial compartment volumes for a simulated Ebola outbreak in West Africa]{Priors for the initial compartment volumes at the times when transmission commenced in each country for a simulated Ebola outbreak in West Africa. The initial compartment volumes for each country are assigned independent truncated multivariate normal priors that respect the boundary conditions on the state space of compartment volumes for that country (explained in Section \ref{sec:lna_init_volumes}). If the population size for country A is $ N_A $, and the initial state probability is denoted $ \bp_{0,A} = \bX_{0,A}/N_A  = (S_{0,A}, E_{0,A}, I_{0,A}, R_{0,A})/N_A$, the prior is a truncated multivariate normal approximation of a multinomial distribution with mean $ N_A\bp_{0,A}$ and covariance $ N_A(\bP_{0,A} - \bp_{0,A}\bp_{0,A}^T) $.} 
+	\caption[Priors for initial compartment volumes for single country models fit to data from the Ebola outbreak in West Africa.]{Priors for the initial compartment volumes at the times when transmission commenced in each country for single country models fit to data from the Ebola outbreak in West Africa. The initial compartment volumes for each country are assigned independent truncated multivariate normal priors that respect the boundary conditions on the state space of compartment volumes for that country (explained in Section \ref{sec:lna_init_volumes}). If the population size for country A is $ N_A $, and the initial state probability is denoted $ \bp_{0,A} = \bX_{0,A}/N_A  = (S_{0,A}, E_{0,A}, I_{0,A}, R_{0,A})/N_A$, the prior is a truncated multivariate normal approximation of a multinomial distribution with mean $ N_A\bp_{0,A}$ and covariance $ N_A(\bP_{0,A} - \bp_{0,A}\bp_{0,A}^T) $.} 
 	\label{tab:ebola_single_initdist_priors}
 	\centering
 	\begin{tabular}{lc}
@@ -817,7 +825,7 @@ We fit two models to the simulated data, the true model where migration was mode
 
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
-		\caption[Parameters and priors for a country--stratified SEIR model fit to the West Africa Ebola outbreak.]{Parameters for a country--stratified SEIR model fit to the West Africa Ebola outbreak, prior distributions, 95\% prior intervals, and references that informed the choice of priors. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
+		\caption[Parameters and priors for single country SEIR models fit to the West Africa Ebola outbreak.]{Parameters for a single country SEIR models fit to the West Africa Ebola outbreak, prior distributions used in the main analysis, 95\% prior intervals, and references that informed the choice of priors. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
 		\label{tab:ebola_priors_single_tight}
 		\scriptsize
 		\centering
@@ -828,8 +836,7 @@ We fit two models to the simulated data, the true model where migration was mode
 			$ R_{eff,G}^{(2)}(t)-1 $ & Effective reproduction \# - 1, $ t\geq33 $ & LogNormal(log(0.5), $ 0.75^2 $) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
 			$ R_{eff,L} -1 $ & Effective reproduction \#-1 &  LogNormal(log(0.5), $ 0.75^2 $) & $ \implies R_{eff,L} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
 			$ R_{eff,S}-1 $ & Effective reproduction \#-1 & LogNormal(log(0.5), 0.75$ ^2 $) & $ \implies R_{eff,S} = 1.50 (1.11, 3.17)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable}\\
-			\makecell[l]{$ \alpha_{GS},\alpha_{GL}, \alpha_{LG},$\\
-				$ \alpha_{LS},\alpha_{SG}, \alpha_{SL} $} & \makecell[l]{Infectious migration rate \\ from country A to B} & $ 1000\alpha_{AB} \sim$ Exponential(0.25) & \makecell[r]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)} & \cite{dudas2017virus}\\ 
+			$ \alpha_{G},\alpha_{L}, \alpha_{S}$ & \makecell[l]{Rate of infectious contact \\ from outside the country} & $ 1000\alpha_{A} \sim$ Exponential(0.25) & \makecell[r]{\# migrations per 1000 infected \\ = 2.78 (0.10, 14.76)} & \cite{dudas2017virus}\\ 
 			$ \omega_G/\omega_G $ & Rate from $ E_G\rightarrow I_G $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
 			$ \omega_L/\omega_L $ & Rate from $ E_L\rightarrow I_L $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
 			$ \omega_S/\omega_S $ & Rate from $ E_S\rightarrow I_S $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
@@ -848,12 +855,198 @@ We fit two models to the simulated data, the true model where migration was mode
 	\end{fullpage}
 \end{sidewaystable}
 
+\begin{sidewaystable}[htbp]
+	\begin{fullpage}
+		\caption[Parameters and priors for supplementary single country SEIR models fit to the West Africa Ebola outbreak.]{Parameters for a single country SEIR models fit to the West Africa Ebola outbreak, prior distributions used in the supplementary analysis, 95\% prior intervals, and references that informed the choice of priors. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $. Prior distributions for parameters controlling the outbreak dynamics for the supplementary models were more diffuse vis--a--vis the priors in the main analysis.}
+		\label{tab:ebola_priors_single_diff}
+		\scriptsize
+		\centering
+		\begin{tabular}{lllrr}
+			\hline
+			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
+			$ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} $ & Ratio of effective reproduction \#s &  LogNormal(0, 0.5$ ^2 $) & $ R_{eff,G}^{(2)} / R_{eff,G}^{(1)} = $ 1.00 (0.38, 2.66) & \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,G}^{(2)}(t)-1 $ & Effective reproduction \# - 1, $ t\geq33 $ & LogNormal(log(0.5), $ 1.5^2 $) & $ \implies R_{eff,G}^{(2)} = 1.50 (1.02, 10.46)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,L} -1 $ & Effective reproduction \#-1 &  LogNormal(log(0.5), $ 1.5^2 $) & $ \implies R_{eff,L} = 1.50 (1.02, 10.46)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable} \\
+			$ R_{eff,S}-1 $ & Effective reproduction \#-1 & LogNormal(log(0.5), 1.5$ ^2 $) & $ \implies R_{eff,S} = 1.50 (1.02, 10.46)$ &  \cite{chowell2014transmission,chretien2015mathematical,coltart2017ebola,king2015avoidable}\\
+			$ 1000\alpha_{A}$ & \makecell[l]{Rate of infectious contact \\ from outside  country A} & Exponential(0.125) & \makecell[r]{\# migrations per 1000 infected \\ = 5.55 (0.20, 29.51)} & \cite{dudas2017virus}\\ 
+			$ \omega_G/\omega_G $ & Rate from $ E_G\rightarrow I_G $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_G)\big/(1/\omega_G) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_L/\omega_L $ & Rate from $ E_L\rightarrow I_L $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_L)\big/(1/\omega_L) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ \omega_S/\omega_S $ & Rate from $ E_S\rightarrow I_S $ & LogNormal(0.0, 0.3$ ^2 $) & $ (1/\mu_S)\big/(1/\omega_S) $ = 1.00 (0.56, 1.80) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_G $ & Rate from $ E_G\rightarrow I_G $ &  LogNormal(0.3, 0.35$ ^2 $) & $ 7/\mu_G = $ 9.45 (4.76, 18.76) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_L $ & Rate from $ E_L\rightarrow I_L $ &  LogNormal(0.3, 0.35$ ^2 $) & $ 7/\mu_L = $ 9.45 (4.76, 18.76) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ 1/\mu_S $ & Rate from $ E_S\rightarrow I_S $ &  LogNormal(0.3, 0.35$ ^2 $) & $ 7/\mu_S = $ 9.45 (4.76, 18.76) & \cite{chowell2014transmission,velasquez2015time,glynn2017variability} \\
+			$ N_{eff,G} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^G, N_G/4) $& $ N_{eff,G} \in (3627,\ 2.95\times10^6) $ & Scale of counts \\
+			$ N_{eff,L} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^L, N_L/4) $& $ N_{eff,L} \in (4994,\ 1.1\times10^6) $ & Scale of counts \\
+			$ N_{eff,S} $ & Effective population size & $\mr{Unif}(\sum_{\ell=1}^{L}Y_\ell^S, N_S/4) $& $ N_{eff,S} \in (11317,\ 1.775\times10^6) $ & Scale of counts \\
+			$ \rho_G $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_G = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_L $ &  Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_L = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \rho_S $ & Mean case detection prob. & LogitNormal(0, 1.4$ ^2 $) & $ \implies \rho_S = 0.5, (0.06, 0.94)$ & Very high and very low $ \rho $ unlikely. \\
+			$ \phi_G,\ \phi_L, \phi_S $ &  Neg.Binomial overdispersion & LogNormal(0, 5$ ^2 $) & $ \implies \ = 1, (5.5\times 10^-5, 1.8\times10^4)$ & Diffuse. \\
+			\hline
+		\end{tabular}
+	\end{fullpage}
+\end{sidewaystable}
 
+\subsubsection{Additional results}
+\label{subsubsec:ebola_single_res}
+
+
+\begin{table}[htbp]
+	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for country--specific SEIR models fit to Ebola outbreak data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for the main country specfic SEIR models fit to Ebola data from the West Africa outbreak under tight priors. The effective number of susceptibles is equal to the effective population size, reported in Table \ref{tab:ebola_single_ests}, minus the numbers of exposed, infected, and recovered individuals, but is not reported since the effective population size is not marginally identifiable.}
+	\label{tab:ebola_single_initdist_res}
+	\centering
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Parameter} & \textbf{Estimate }\\ 
+		\hline
+		$ E_{0,G} $& 3.92 (0.7, 7.71) \\ 
+		$ I_{0,G} $& 3.01 (0.39, 6.26) \\ 
+		$ R_{0,G} $& 0.1 (0.06, 0.15) \\ 
+		\hline
+		$ E_{0,L} $& 3.12 (0.44, 6.41) \\ 
+		$ I_{0,L} $& 2.24 (0.29, 4.81) \\ 
+		$ R_{0,L} $& 0.11 (0.06, 0.16) \\ 
+		\hline
+		$ E_{0,S} $& 1.99 (0.17, 4.73) \\ 
+		$ I_{0,S} $& 1.98 (0.22, 4.5) \\ 
+		$ R_{0,S} $& 0.09 (0.05, 0.14) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption[Posterior parameter estimates for country--specific SEIR models fit Ebola outbreak data.]{Posterior medians (95\% Bayesian credible intervals) for parameters of the country--specific SEIR models (Figure \ref{fig:ebola_single_diag}) fit to Ebola outbreak data. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $. Parameter interpretations and priors are given in Tables \ref{tab:ebola_priors_single_tight} and \ref{tab:ebola_priors_single_diff}. The more informative of the two prior regimes was presented as the main model in Section \ref{subsec:ebola_single_country}.}
+	\label{tab:ebola_single_ests}
+	\centering\footnotesize
+	\begin{tabular}{lrr}
+		\hline
+		& \multicolumn{2}{c}{\textbf{Posterior median (95\% BCI)}}\\\cline{2-3}
+		\textbf{Parameter} & \textit{Tight Priors} & \textit{Loose Priors} \\ 
+		\hline
+		$ R_{eff,G}^{(1)} $& 1.19 (1.09, 1.37) & 1.13 (1.02, 1.39) \\ 
+		$ R_{eff,G}^{(2)} $& 1.41 (1.18, 1.77) & 1.24 (1.02, 1.89) \\ 
+		$ 7/\omega_G $& 8.42 (4.04, 17.25) & 5.56 (2.25, 18.25) \\ 
+		$ 7/\mu_G $& 8.96 (5.9, 13.35) & 6.43 (3.12, 16.01) \\ 
+		$ 1000\alpha_{G} $& 0.18 (0.01, 0.6) & 0.09 (0, 0.66) \\ 
+		$ \rho_GN_{eff,G} $& 7250 (5140, 11930) & 9800 (4920, 34550) \\ 
+		$ \phi_{G} $& 4.61 (2.81, 9.43) & 5.84 (3.02, 17.64) \\ 
+		\hline
+		$ R_{eff,L} $& 2.22 (1.67, 3.31) & 2.65 (1.58, 4.35) \\ 
+		$ 7/\omega_L $& 10.51 (4.82, 19.57) & 13.68 (4.57, 23.12) \\ 
+		$ 7/\mu_L $& 9.75 (6.63, 14.07) & 11.68 (5.72, 20.28) \\ 
+		$ 1000\alpha_L $& 0.02 (0, 0.06) & 0.02 (0, 0.06) \\ 
+		$ \rho_LN_{eff,L} $& 5650 (4650, 7372) & 5330 (4430, 7800) \\ 
+		$ \phi_L $& 8.07 (3.74, 17.75) & 8.62 (3.96, 19.17) \\ 
+		\hline
+		$ R_{eff,S} $& 1.34 (1.22, 1.5) & 1.24 (1.13, 1.39) \\ 
+		$ 7/\omega_S $& 4.47 (2.59, 7.4) & 3.46 (1.86, 5.96) \\ 
+		$ 7/\mu_S $& 6.21 (4.52, 8.48) & 4.3 (2.61, 6.73) \\ 
+		$ 1000\alpha_S $& 0.03 (0, 0.12) & 0.02 (0, 0.08) \\ 
+		$ \rho_SN_{eff,S} $& 24270 (19110, 32770) & 30720 (21990, 48660) \\ 
+		$ \phi_S $& 46.36 (21.94, 112.1) & 55.03 (25.6, 149.79) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption{Effective sample sizes and potential scale reduction factors for the main stratified SEIR model with virtual migration of infecteds fit to data from the West Africa Ebola outbreak under tight priors.}
+	\centering\footnotesize
+	\begin{tabular}{lrr}
+		\hline
+		\textbf{Parameter} & \textbf{ESS} & \textbf{PSRF} \\ 
+		\hline
+		& 1512 & 1.01 \\ 
+		& 2992 & 1.00 \\ 
+		& 2573 & 1.00 \\ 
+		& 4953 & 1.00 \\ 
+		& 3323 & 1.00 \\ 
+		& 2564 & 1.00 \\ 
+		& 1865 & 1.01 \\ 
+		& 1335 & 1.01 \\
+		\hline 
+		& 1812 & 1.00 \\ 
+		& 3595 & 1.00 \\ 
+		& 3061 & 1.00 \\ 
+		& 4278 & 1.00 \\ 
+		& 3495 & 1.00 \\ 
+		& 1534 & 1.00 \\ 
+		& 4333 & 1.00 \\ 
+		\hline
+		& 1503 & 1.00 \\ 
+		& 949 & 1.01 \\ 
+		& 2268 & 1.00 \\ 
+		& 1432 & 1.00 \\ 
+		& 958 & 1.01 \\ 
+		& 2124 & 1.00 \\ 
+		& 969 & 1.00 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/guin_tight_traces}
+	\caption{Posterior traceplots for the SEIR model fit to data from the Ebola outbreak in Guinea.}
+	\label{fig:guineatraces}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/guin_tight_pairs}
+	\caption{Scatterplots of parameters for the SEIR model fit to data from the Ebola outbreak in Guinea.}
+	\label{fig:guineapairs}
+\end{figure}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/lib_tight_traces}
+	\caption{Posterior traceplots for the SEIR model fit to data from the Ebola outbreak in Liberia.}
+	\label{fig:liberiatraces}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/lib_tight_pairs}
+	\caption{Scatterplots of parameters for the SEIR model fit to data from the Ebola outbreak in Liberia.}
+	\label{fig:liberiapairs}
+\end{figure}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sln_tight_traces}
+	\caption{Posterior traceplots for the SEIR model fit to data from the Ebola outbreak in Sierra Leone.}
+	\label{fig:sierraleonetraces}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sln_tight_pairs}
+	\caption{Scatterplots of parameters for the SEIR model fit to data from the Ebola outbreak in Sierra Leone.}
+	\label{fig:sierraleonepairs}
+\end{figure}
+
+\newpage
 \subsection{Details and Supplementary Results for Multi--Country Models}
 \label{subsec:ebola_joint_supplement}
 
 \subsubsection{Priors and MCMC details}
 \label{subsubsec:ebola_joint_mcmc}
+
+We fit stratified SEIR models to the Ebola incidence data from Guinea, Liberia, and Sierra Leone under two prior regimes given in Tables \ref{tab:ebola_priors_joint_tight} and \ref{tab:ebola_priors_joint_diffuse}. Cross--border transmission was incorporated into the rate of infection via virtual migration, as explained in Section \ref{subsec:ebola_synth}.  The model fitting procedure and priors were the same for both models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was adapted over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The covariance matrix was blocked by country with covariances for parameters belonging to different countries set to zero. Thus, country specific parameters were proposed jointly but were independent in the proposal. Migration parameters were blocked with parameters corresponding to the destination country. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between three ElliptSS and two MVNSS updates per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of effective reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. The models each took roughly three days to run. 
+
+\begin{table}[htbp]
+	\caption[Priors for initial compartment volumes for a stratified SEIR model fit to data from the Ebola outbreak in West Africa.]{Priors for the initial compartment volumes at the times when transmission commenced in each country for single country models fit to data from the Ebola outbreak in West Africa. The initial compartment volumes for each country are assigned independent truncated multivariate normal priors that respect the boundary conditions on the state space of compartment volumes for that country (explained in Section \ref{sec:lna_init_volumes}). If the population size for country A is $ N_A $, and the initial state probability is denoted $ \bp_{0,A} = \bX_{0,A}/N_A  = (S_{0,A}, E_{0,A}, I_{0,A}, R_{0,A})/N_A$, the prior is a truncated multivariate normal approximation of a multinomial distribution with mean $ N_A\bp_{0,A}$ and covariance $ N_A(\bP_{0,A} - \bp_{0,A}\bp_{0,A}^T) $.} 
+	\label{tab:ebola_joint_initdist_priors}
+	\centering
+	\begin{tabular}{lc}
+		\hline \textbf{Country} & \textbf{Prior mean initial volumes} ($ \bX_0 $) \\
+		\hline
+		Guinea & ($ 11.8\times10^6 -7.1$, 4, 3, 0.1) \\
+		Liberia & ($ 4.4\times10^6 -5.1$, 3, 2, 0.1) \\
+		Sierra Leone & ($ 7.1\times10^6 -5.1$, 3, 2, 0.1) \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
@@ -888,9 +1081,6 @@ We fit two models to the simulated data, the true model where migration was mode
 	\end{fullpage}
 \end{sidewaystable}
 
-\subsubsection{Prior Sensitivity Analyses}
-\label{subsubsec:ebola_joint_sensitivity}
-
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
 		\caption[Loose priors used in a sensitivity analysis for a stratified SEIR model for Ebola in West Africa.]{Priors for a sensitivity analysis for the country--stratified SEIR model fit to the West Africa Ebola outbreak. Priors were less informative priors for the effective reproductive numbers, cross--border transmission, and infectious period duration vis--a--vis the main model. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $.}
@@ -924,5 +1114,125 @@ We fit two models to the simulated data, the true model where migration was mode
 	\end{fullpage}
 \end{sidewaystable}
 
+\subsubsection{Additional results}
+\label{subsubsec:ebola_joint_supp_res}
+
+\begin{table}[htbp]
+	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for a stratified SEIR model fit to Ebola outbreak data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for the main stratified approximate SEIR model with virtual migration of infecteds fit to Ebola data from the West Africa outbreak under tight priors. The effective number of susceptibles is equal to the effective population size, reported in Table \ref{tab:ebola_joint_ests}, minus the numbers of exposed, infected, and recovered individuals, but is not reported since the effective population size is not marginally identifiable.}
+	\label{tab:ebola_joint_initdist_res}
+	\centering
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Parameter} & \textbf{Estimate }\\ 
+		\hline
+		$ E_{0,G} $&  4.29 (1.06, 7.84) \\ 
+		$ E_{0,L} $&  3.39 (0.59, 6.61) \\ 
+		$ E_{0,S} $&  2.31 (0.23, 5.46) \\ 
+		$ I_{0,G} $& 3.36 (0.59, 6.61) \\ 
+		$ I_{0,L} $&  2.6 (0.47, 5.07) \\ 
+		$ I_{0,S} $& 2.35 (0.37, 4.81) \\ 
+		$ R_{0,G} $& 0.11 (0.07, 0.15) \\ 
+		$ R_{0,L} $&  0.12 (0.07, 0.17) \\ 
+		$ R_{0,S} $&  0.1 (0.06, 0.15) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption[Posterior parameter estimates for stratified SEIR models fit Ebola outbreak data.]{Posterior medians (95\% Bayesian credible intervals) for parameters of the approximate (Figure \ref{fig:stratified_seir_approx_diag}) stratified SEIR models fit to Ebola outbreak data. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $. Effective reproduction numbers are defined with respect to the effective population size as $ R_{eff} = \beta N_{eff} /\mu $. Parameter interpretations and priors are given in Tables \ref{tab:ebola_priors_joint_tight} and \ref{tab:ebola_priors_joint_diffuse}. The more informative of the two prior regimes was presented as the main model in Section \ref{subsec:ebola_joint}.}
+	\label{tab:ebola_joint_ests}
+	\centering\footnotesize
+	\begin{tabular}{crr}
+		& \multicolumn{2}{c}{\textbf{Posterior median (95\% BCI)}}\\\cline{2-3}
+		\textbf{Parameter} & \textit{Tight Priors} & \textit{Loose Priors} \\ 
+		\hline
+		$ R_{eff,G}^{(1)} $& 1.14 (1.05, 1.3) & 1.07 (1.01, 1.23) \\ 
+		$ R_{eff,G}^{(2)} $& 1.18 (1.06, 1.43) & 1.07 (1.01, 1.29) \\ 
+		$ R_{eff,L} $& 2.06 (1.58, 3.34) & 1.85 (1.32, 3.41) \\ 
+		$ R_{eff,S} $& 1.27 (1.14, 1.43) & 1.14 (1.02, 1.31) \\ 
+		$ 7/\omega_G $& 7.55 (3.9, 13.6) & 5.55 (2.63, 11.42) \\ 
+		$ 7/\omega_L $& 8.96 (4.05, 19.87) & 7.17 (2.46, 19.31) \\ 
+		$ 7/\omega_S $& 4.14 (2.42, 6.58) & 2.98 (1.51, 5.37) \\ 
+		$ 7/\mu_G $& 8.39 (5.94, 11.8) & 6.42 (3.59, 10.82) \\ 
+		$ 7/\mu_L $& 8.99 (6.05, 13.22) & 7.53 (3.37, 15.54) \\ 
+		$ 7/\mu_S $& 6.05 (4.4, 8.17) & 3.88 (2.36, 6.21) \\ 
+		$ 1000\alpha_GL $& 3.01 (0.15, 15.48) & 6.25 (0.34, 29.79) \\ 
+		$ 1000\alpha_GS $& 2.58 (0.11, 13.47) & 4.43 (0.15, 23.49) \\ 
+		$ 1000\alpha_LG $& 3.87 (0.45, 14.18) & 6.47 (0.97, 20.53) \\ 
+		$ 1000\alpha_LS $& 1.4 (0.06, 7.23) & 2.97 (0.22, 13.25) \\ 
+		$ 1000\alpha_SG $& 2.55 (0.11, 13.38) & 4.68 (0.28, 24.99) \\ 
+		$ 1000\alpha_SL $& 3.03 (0.1, 16.7) & 6.77 (0.18, 37.83) \\ 
+		$ \rho_GN_{eff,G} $& 9910 (6630, 15600) & 14590 (7800, 29170) \\ 
+		$ \rho_{L}N_{eff,L} $& 5920 (4770, 7940) & 6430 (4760, 11120) \\ 
+		$ \rho_SN_{eff,S} $& 26800 (20630, 38700) & 39420 (24820, 85850) \\ 
+		$ \phi_G $& 5.75 (3.36, 10.55) & 6.27 (3.57, 12.89) \\ 
+		$ \phi_L $& 8.78 (4.09, 19.32) & 10.22 (4.74, 27.24) \\ 
+		$ \phi_S $& 47.98 (21.57, 118.37) & 56.36 (25.33, 139.74) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption{Effective sample sizes and potential scale reduction factors for the main stratified SEIR model with virtual migration of infecteds fit to data from the West Africa Ebola outbreak under tight priors.}
+	\centering\footnotesize
+	\begin{tabular}{lrr}
+		\hline
+		\textbf{Parameter} & \textbf{ESS} & \textbf{PSRF} \\ 
+		\hline
+		$ \log(R_{eff,G}^{(2)}/R_{eff,G}^{(1)}) $& 647 & 1.00 \\ 
+		$ \log(R_{eff,G}^{(2)}) $& 626 & 1.01 \\ 
+		$ \log(R_{eff,L}) $& 347 & 1.02 \\ 
+		$ \log(R_{eff,S}) $& 459 & 1.08 \\ 
+		$ \log(\omega_G/\mu_G) $& 1161 & 1.01 \\ 
+		$ \log(\omega_L/\mu_L) $& 409 & 1.02 \\ 
+		$ \log(\omega_S/\mu_S) $& 1217 & 1.01 \\ 
+		$ \log(1/\mu_G) $& 1141 & 1.01 \\ 
+		$ \log(1/\mu_L) $& 743 & 1.00 \\ 
+		$ \log(1/\mu_S) $& 874 & 1.00 \\ 
+		$ \log(1000\alpha_{GL}) $& 1583 & 1.00 \\ 
+		$ \log(1000\alpha_{GS}) $& 972 & 1.02 \\ 
+		$ \log(1000\alpha_{LG}) $& 292 & 1.04 \\ 
+		$ \log(1000\alpha_{LS}) $& 478 & 1.02 \\ 
+		$ \log(1000\alpha_{SG}) $& 1238 & 1.00 \\ 
+		$ \log(1000\alpha_{SL}) $& 1198 & 1.06 \\ 
+		$ \log(\rho_GN_{eff,G}) $& 725 & 1.00 \\ 
+		$ \log(\rho_LN_{eff,L}) $& 521 & 1.01 \\ 
+		$ \log(\rho_SN_{eff,S}) $& 479 & 1.04 \\ 
+		$ \logit(\rho_G) $& 631 & 1.01 \\ 
+		$ \logit(\rho_L) $& 217 & 1.04 \\ 
+		$ \logit(\rho_S) $& 1414 & 1.01 \\ 
+		$ \log(\phi_G) $& 596 & 1.03 \\ 
+		$ \log(\phi_L) $& 1098 & 1.01 \\ 
+		$ \log(\phi_S) $& 489 & 1.00 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_joint_traces}
+	\caption{Posterior traceplots for a stratified SEIR model fit to a simulated Ebola outbreak.}
+	\label{fig:ebolajointtraces}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_joint_pairs_guin}
+	\caption{Scatterplots of Guinea--specific parameters in a stratified SEIR model fit to data from the West Africa Ebola outbreak.}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_joint_pairs_lib}
+	\caption{Scatterplots of Liberia--specific parameters in a stratified SEIR model fit to data from the West Africa Ebola outbreak.}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/ebola_joint_pairs_sln}
+	\caption{Scatterplots of Sierra Leone--specific parameters in a stratified SEIR model fit to data from the West Africa Ebola outbreak.}
+\end{figure}
+
+\newpage
 \section{LNA Implementation Details and LNA Model Vignettes}
 \label{sec:lna_implementation_vignettes}
