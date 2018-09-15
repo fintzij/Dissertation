@@ -1045,14 +1045,14 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 	\end{fullpage}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{sidewaysfigure}[htbp]
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=\linewidth]{figures/ebola_single_drawplots}
 		\caption[Posterior distributions of LNA draws for the main country--specific SEIR models fit to data from the West Africa Ebola outbreak.]{Posterior distributions of the LNA draws for exposures, infections, and recoveries (blue boxplots) in the main country--specific SEIR models fit data from the Ebola outbreak in Guinea, Liberia, and Sierra Leone. The lower and upper whisker tips correspond to the $ 2.5^\mr{th} $ and $ 97.5^\mr{th} $ posterior quantiles, the lower and upper hinges to the $ 25^\mr{th} $ and $ 75^\mr{th} $ quantiles, and the middle hash mark to the posterior median. The solid red lines are the theoretical quantiles of the posterior predictive distribution (or equivalently, the prior distribution) of the LNA draws, drawn at the quantiles of a standard normal distribution corresponding to the boxplot quantiles. The green ticks are the estimated quantiles of the posterior predictive distributions of the LNA draws, accounting for boundary conditions on the state space of the latent process and obtained by simulating LNA paths from the posterior predictive distribution.  The posterior distributions of LNA draws are shaded according to the level of posterior shrinkage, computed as one minus the ratio of standard deviations of LNA draws in the posterior and prior.}
 		\label{fig:ebola_single_drawplots}
 	\end{fullpage}
-\end{figure}
+\end{sidewaysfigure}
 
 \newpage
 \subsection{Details and Supplementary Results for Multi--Country Models}
@@ -1281,14 +1281,14 @@ We fit stratified SEIR models to the Ebola incidence data from Guinea, Liberia, 
 	\end{fullpage}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{sidewaysfigure}[htbp]
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=\linewidth]{figures/ebola_joint_drawplots}
 		\caption[Posterior distributions of LNA draws for the main stratified SEIR model fit to data from the West Africa Ebola outbreak.]{Posterior distributions of the LNA draws for exposures, infections, and recoveries (blue boxplots) in the main stratified SEIR model fit data from the Ebola outbreak in Guinea, Liberia, and Sierra Leone. The lower and upper whisker tips correspond to the $ 2.5^\mr{th} $ and $ 97.5^\mr{th} $ posterior quantiles, the lower and upper hinges to the $ 25^\mr{th} $ and $ 75^\mr{th} $ quantiles, and the middle hash mark to the posterior median. The solid red lines are the theoretical quantiles of the posterior predictive distribution (or equivalently, the prior distribution) of the LNA draws, drawn at the quantiles of a standard normal distribution corresponding to the boxplot quantiles. The green ticks are the estimated quantiles of the posterior predictive distributions of the LNA draws, accounting for boundary conditions on the state space of the latent process and obtained by simulating LNA paths from the posterior predictive distribution. The posterior distributions of LNA draws are shaded according to the level of posterior shrinkage, computed as one minus the ratio of standard deviations of LNA draws in the posterior and prior.}
 		\label{fig:ebola_joint_drawplots}
 	\end{fullpage}
-\end{figure}
+\end{sidewaysfigure}
 
 \newpage
 \section{LNA Implementation Details and LNA Model Vignettes}
