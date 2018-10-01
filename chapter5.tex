@@ -12,7 +12,7 @@ In this chapter, we will use SEMs with time--varying force of infection (FOI) to
 
 The emergence of a pandemic influenza A strain, A(H1N1)pdm09, in the spring of 2009 led to widespread concern that it would lead to high mortality and excessive stress on public health systems around the world. The strain, commonly referred to as ``swine flu", was a triple reassortment of human, avian, and swine viruses, and was of particular concern because of its similarity with the 1918 pandemic strain that infected up to a third of the world's population and led to an estimated 50 million deaths \cite{cdc1918pandemic}. While the burden imposed by the 2009 pandemic was ultimately comparable to that of seasonal influenza \cite{iuliano2018estimates}, it nevertheless resulted in an estimated 110,000--400,000 respiratory deaths and 50,000--180,000 cardivascular deaths \cite{dawood2012estimated}. The age--standardized cumulative incidence was estimated from serological samples in 19 countries to be between 20\%--27\% \cite{van2013estimating}, with attack rates and transmission dynamics varying greatly by age, and being consistently more severe in children and adolescents \cite{opatowski2011transmission,steens2011age,van2013estimating,yang2015inference}. 
 
-Here, we will analyze surveillance data, displayed in Figure \ref{fig:finland_fludat}, from the first and second waves of the epidemic in Finland. The dataset, previously analyzed in \cite{shubin2016revealing} and \cite{shubin2014estimating}, consists of weekly counts of laboratory--confirmed A(H1N1) cases , aggregated into sixteen age strata, that were culled from a national surveillance system \cite{lyytikainen2011surveillance}. All cases in our dataset were of mild severity, i.e., cases that did not require hospitalization. Following \cite{shubin2016revealing,shubin2014estimating}, we treat all A(H1N1) cases as A(H1N1)pdm09 as nearly all A(H1N1) cases were of the pandemic strain. 
+We will analyze surveillance data, displayed in Figure \ref{fig:finland_fludat}, from the first and second waves of the epidemic in Finland. The dataset, previously analyzed in \cite{shubin2016revealing} and \cite{shubin2014estimating}, consists of weekly counts of laboratory--confirmed A(H1N1) cases, aggregated into sixteen age strata, that were culled from a national surveillance system \cite{lyytikainen2011surveillance}. For computational considerations, we will further aggregate the incidence data into two age groups, individuals ages 0--19 those of ages 20+, based on differences in mixing patterns, susceptibility, and vaccination priority \cite{kelly2011age,opatowski2011transmission,steens2011age}. All cases in our dataset were of mild severity, i.e., cases that did not require hospitalization. Following \cite{shubin2016revealing,shubin2014estimating}, we treat all A(H1N1) cases as A(H1N1)pdm09 as nearly all A(H1N1) cases were of the pandemic strain. It is critical to note that the data are not marked by vaccination status.
 
 An important aspect of the pandemic response in Finland was the execution of a concerted vaccination campaign with the adjuvented monovalent vaccine Pandemrix. Each resident was offered one vaccine dose, free of charge, starting in October, 2009. Vaccination priority was given to health care workers, vulnerable individuals, and young people under the age of 20 \cite{syrjanen2014effectiveness}.  Coverage levels and the timing of vaccination administration varied by age, see Figure \ref{fig:finland_fludat}, with highest coverage among children under the age of 15 ($ \approx $70\%) and the lowest among young adults between the ages of 20--29 ($ \approx $30\%). In other settings, vaccine efficacy was also found to be higher in children than adults \cite{lansbury2017effectiveness}. Data was not available on vaccine coverage for a trivalent vaccine administered during the 2010--2011 season. 
 
@@ -55,13 +55,22 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 	\label{fig:sinfoi_ppi_comp}
 \end{figure}
 
+\newpage
 \section{Modeling the Spread of A(H1N1)pdm09 in Finland}
 \label{sec:flu_tparam_models}
 
+The data are collapsed into weekly incidence counts in each of the two age groups, 0--19 and 20+, over a one year period beginning in epiweek 15, 2009, one month prior to the first observed case in the first season, and a 37 week period beginning in epiweek 37, 2010, one month prior to the first observed case in the second season. Data from the inter--season period, epiweeks 15--36, 2010, over which a total of three cases were observed, were collapsed for computational considerations and indexed as epiweek 36, 2010. Indexing by weeks from epiweek 15, 2009, we write the data as, $$ \bY = \left (\left (Y_{0-19,1},Y_{20+,1}\right ),\dots,\left (Y_{0-19,52},Y_{20+,52}\right ),\left (Y^\prime_{0-19,75},Y^\prime_{20+,75}\right ),\dots,\left (Y_{0-19,113},Y_{20+,113}\right )\right ). $$ We model the observed incidence in age--stratum $ j $ at week $ \ell $ as a negative binomial sample of the true incidence \begin{equation}
+\label{flu_emit_prob}
+Y_{j,\ell} ~ \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + \Delta N_{SI}^{(v)}(t_\ell)), \sigma^2 = \mu + \mu^2 / \phi_j\right ),
+\end{equation}
+where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an age--specific overdispersion parameter, and $ \Delta $ is a differencing operator for the cumulative incidence in a age--vaccination stratum, e.g., $ \Delta N_{SI}^{(u)}(t_\ell) = N_{SI}^{(u)}(t_\ell) - N_{SI}^{(u)}(t_{\ell-1}) $ is change in cumulative incidence between times $ t_{\ell-1} $ and $ t_\ell $.
+
+We will fit a vaccination--age stratified susceptible--infected--recovered--susceptible (SIRS) model (Figure \ref{fig:flu_sirs_diag}) in which individuals transition stochastically, and continuously in time, between disease states. Individuals are become infectious immediately upon becoming infected, and are acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. For simplicity, we will ignore demographic changes or mortality since the age groupings are considerably coarser than the time period under consideration. 
+
 \begin{center}
 	\begin{tikzpicture}
-	\draw[thick,dotted] (-1,1) rectangle (11.25,8);
-	\node at (1,7) [label={\textbf{Age stratum = j}}] {};
+	\draw[thick,dotted] (-1,1) rectangle (11.25,8.25);
+	\node at (1,7.25) [label={\textbf{Age stratum = j}}] {};
 	\draw (1.25,5) circle(0.5) node (Sju) {$S_j^{(u)}$};
 	\draw (5,5) circle(0.5) node (Iju) {$I_j^{(u)}$};
 	\draw (9,5) circle(0.5) node (Rju) {$R_j^{(u)}$};
@@ -73,11 +82,11 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 	\draw (9.15,6.5) coordinate (rec2) {};
 	
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Iju) node[midway,above] {$ \lambda_{SI,j}^{(u)}(t) $};
-	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Rju) node[midway,above] {$ \lambda_{IR,j}^{(u)} $};
+	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Rju) node[midway,above] {$ \lambda_{IR,j}^{(u)}(t) $};
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sjv) -- (Ijv) node[midway,above] {$ \lambda_{SI,j}^{(v)}(t) $};
-	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Ijv) -- (Rjv) node[midway,above] {$ \lambda_{IR,j}^{(v)} $};
+	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Ijv) -- (Rjv) node[midway,above] {$ \lambda_{IR,j}^{(v)}(t) $};
 	
-	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Sjv) node[midway,right] {$ \xi_{R,j}^{(uv)}(t) $};
+	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Sjv) node[midway,right] {$ \xi_{S,j}^{(uv)}(t) $};
 	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Ijv) node[midway,right] {$ \xi_{I,j}^{(uv)}(t) $};
 	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Rju) -- (Rjv) node[midway,left] {$ \xi_{R,j}^{(uv)}(t) $};
 	
@@ -85,12 +94,23 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 	\draw [thick,shorten >=0cm,shorten <=0.1cm] (Rjv) to [out=30, in = -20] (rec2);
 	\draw [thick] (rec2) to [out=160,in=-1] (rec);
 	\draw [thick,shorten >=0.15cm,shorten <=0.0cm,->] (rec) to [out=180, in = 90] (Sju);
-		
 	\end{tikzpicture}
+	\label{fig:flu_sirs_diag}
 \end{center}
+
+At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed independently and in proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected. We apply the deterministic forcing at the beginning of the week following the time at which each dose count was indexed in order to account for the time required to elicit an immune response. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ susceptible, infected, and recovered unvaccinated individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
+\begin{align}
+\label{eqn:vacc_forcing}
+\begin{split}
+	\bX_{j}^{(u)}(t_\ell^+) &= \bX_j^{(u)}(t_\ell) - V_j(t_\ell)\frac{\bX_{j}^{(u)}(t_\ell)}{\sum\bX_{j}^{(u)}(t_\ell)}, \\
+	\bX_{j}^{(v)}(t_\ell^+) &= \bX_j^{(v)}(t_\ell) + V_j(t_\ell)\frac{\bX_{j}^{(u)}(t_\ell)}{\sum\bX_{j}^{(u)}(t_\ell)}.
+\end{split}
+\end{align}
+
 
 \subsection{Flexible Models for the Force of Infection with Gaussian Markov Random Fields}
 \label{subsec:flu_gmrf}
 
+\subsection{Additional Models}
 
 \section{Discussion}
