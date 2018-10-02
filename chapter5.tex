@@ -59,15 +59,22 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 \section{Modeling the Spread of A(H1N1)pdm09 in Finland}
 \label{sec:flu_tparam_models}
 
+\subsection{Data and Vaccination}
+\label{subsec:flu_datavacc}
+
 The data are collapsed into weekly incidence counts in each of the two age groups, 0--19 and 20+, over a one year period beginning in epiweek 15, 2009, one month prior to the first observed case in the first season, and a 37 week period beginning in epiweek 37, 2010, one month prior to the first observed case in the second season. Data from the inter--season period, epiweeks 15--36, 2010, over which a total of three cases were observed, were collapsed for computational considerations and indexed as epiweek 36, 2010. Indexing by weeks from epiweek 15, 2009, we write the data as, $$ \bY = \left (\left (Y_{0-19,1},Y_{20+,1}\right ),\dots,\left (Y_{0-19,52},Y_{20+,52}\right ),\left (Y^\prime_{0-19,75},Y^\prime_{20+,75}\right ),\dots,\left (Y_{0-19,113},Y_{20+,113}\right )\right ). $$ We model the observed incidence in age--stratum $ j $ at week $ \ell $ as a negative binomial sample of the true incidence \begin{equation}
 \label{flu_emit_prob}
 Y_{j,\ell} ~ \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + \Delta N_{SI}^{(v)}(t_\ell)), \sigma^2 = \mu + \mu^2 / \phi_j\right ),
 \end{equation}
 where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an age--specific overdispersion parameter, and $ \Delta $ is a differencing operator for the cumulative incidence in a age--vaccination stratum, e.g., $ \Delta N_{SI}^{(u)}(t_\ell) = N_{SI}^{(u)}(t_\ell) - N_{SI}^{(u)}(t_{\ell-1}) $ is change in cumulative incidence between times $ t_{\ell-1} $ and $ t_\ell $.
 
-We will fit a vaccination--age stratified susceptible--infected--recovered--susceptible (SIRS) model (Figure \ref{fig:flu_sirs_diag}) in which individuals transition stochastically, and continuously in time, between disease states. Individuals are become infectious immediately upon becoming infected, and are acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. For simplicity, we will ignore demographic changes or mortality since the age groupings are considerably coarser than the time period under consideration. 
+\subsection{Model Structure}
+\label{subsec:flu_modstructure}
 
-\begin{center}
+We will use the fit a vaccination--age stratified susceptible--infected--recovered--susceptible (SIRS) model (Figure \ref{fig:flu_sirs_diag}) in which individuals transition stochastically, and continuously in time, between disease states. Individuals become infectious immediately upon becoming infected, and acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. For simplicity, we will ignore demographic changes or mortality since the age groupings are considerably coarser than the time period under consideration. 
+
+\begin{figure}[htpb]
+	\centering
 	\begin{tikzpicture}
 	\draw[thick,dotted] (-1,1) rectangle (11.25,8.25);
 	\node at (1,7.25) [label={\textbf{Age stratum = j}}] {};
@@ -86,19 +93,22 @@ We will fit a vaccination--age stratified susceptible--infected--recovered--susc
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sjv) -- (Ijv) node[midway,above] {$ \lambda_{SI,j}^{(v)}(t) $};
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Ijv) -- (Rjv) node[midway,above] {$ \lambda_{IR,j}^{(v)}(t) $};
 	
-	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Sjv) node[midway,right] {$ \xi_{S,j}^{(uv)}(t) $};
-	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Ijv) node[midway,right] {$ \xi_{I,j}^{(uv)}(t) $};
-	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Rju) -- (Rjv) node[midway,left] {$ \xi_{R,j}^{(uv)}(t) $};
+	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Sjv) node[midway,right] {$ \xi_{S,j}^{(uv)}(t_\ell) $};
+	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Ijv) node[midway,right] {$ \xi_{I,j}^{(uv)}(t_\ell) $};
+	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Rju) -- (Rjv) node[midway,left] {$ \xi_{R,j}^{(uv)}(t_\ell) $};
 	
 	\draw [thick,shorten >=0cm,shorten <=0.15cm] (Rju) to [out=90, in = 0] (rec);
 	\draw [thick,shorten >=0cm,shorten <=0.1cm] (Rjv) to [out=30, in = -20] (rec2);
 	\draw [thick] (rec2) to [out=160,in=-1] (rec);
 	\draw [thick,shorten >=0.15cm,shorten <=0.0cm,->] (rec) to [out=180, in = 90] (Sju);
 	\end{tikzpicture}
+	\caption[Diagram of state transitions for an age--vaccination stratified SIRS model for influenza.]{Diagram of state transitions for an age--vaccination stratified SIRS model for influenza in Finland. Both age strata, 0--19 and 20+, have the same compartmental structure. Nodes in circles denote model compartments, which are subscripted with age stratum and superscripted with vaccination status. Solid lines indicate stochastic transitions that occur continuously in time. Rates of disease state transitions, denoted by $ \lambda $, are subscripted with the states from which, and to which, individuals flow and by the age stratum. Superscripts for transition rates indicate vaccination status. Dashed lines represent deterministic forcings from unvaccinated to vaccinated compartments that occur at discrete times. The mass of the forcing at time $ t $, denoted $ \xi(t) $, is subscripted by the compartment and age stratum, and superscripted by the direction of the forcing (unvaccinated to vaccinated).} 
 	\label{fig:flu_sirs_diag}
-\end{center}
+\end{figure}
 
-At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed independently and in proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected. We apply the deterministic forcing at the beginning of the week following the time at which each dose count was indexed in order to account for the time required to elicit an immune response. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ susceptible, infected, and recovered unvaccinated individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
+1) exponential sojourn time distributions, specify rates, but not yet timevarying FOI -> MJP, approximate with LNA
+
+At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed independently and in proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected.  To account for the time required to elicit an immune response, we apply the deterministic forcing at the beginning of week after the time when each dose count was indexed. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ unvaccinated susceptible, infected, and recovered individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
 \begin{align}
 \label{eqn:vacc_forcing}
 \begin{split}
@@ -107,6 +117,39 @@ At weekly intervals, we deterministically force individuals from unvaccinated mo
 \end{split}
 \end{align}
 
+\begin{table}[htbp]
+	\caption{Summary of notation for influenza models.}
+	\label{tab:flu_notation}
+	\footnotesize
+	\centering
+	\begin{tabular}{lll}
+		\hline
+		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Time--varying}\\
+		\hline
+		$\alpha_j(t)$ & Rate of exogenous infectious contact, age stratum $ j $ & Yes \\
+		$ \beta_j(t) $ & Per--contact rate of endogenous infection, age stratum $ j $ & Yes \\
+		$ \nu_j $ & Relative rate of infectious contact, vaccinated in age stratum $ j $ & No \\
+		$1/\mu_j(t)$ & Mean infectious period duration, age stratum $ j $ & Season specific\\
+		$ 1/\omega $ & Mean duration of immunity & No \\
+		$ \rho_j $ & Mean case detection rate, age stratum $ j $ & No\\
+		$ \phi_j $ & Negative binomial overdispersion parameter, age stratum $ j $ & No \\
+		$ \bX(t) $ & Compartment counts at time $ t $ & Yes\\
+		$ \bN(t) $ & Cumulative incidence by time $ t $ & Yes \\
+		\hline \hline
+		\textbf{Variable} & \textbf{Interpretation} & \textbf{Time-varying}\\
+		\hline		
+		$ Y_{j,\ell} $ & Observed incidence, age stratum $ j $, time $ t_\ell $ & Yes \\
+		$ N$ & Population size & No\\
+		$ N_j^{(k)} $ & Size of age stratum $ j $ with vaccination status $ k $ & Yes \\
+		$ V_{j,\ell} $ & \# individuals in age stratum j vaccinated in week $ \ell $ & Yes\\		
+		$ \xi_{k,j}^{(uv)}(t_\ell) $ & Vaccination forcing for compartment $ k $ in age stratum $ j $ in week $ t_\ell $ & Yes\\
+		$ R_0(t) $ & Basic reproduction number at time $ t $ & Yes \\
+		$ R_{eff}(t) $ & Effective reproduction number at time $ t $ & Yes \\
+		$ T_{0,j}(t) $ & Basic type reproduction number at time $ t $, stratum $ j $ & Yes \\
+		$ T_{eff,j}(t) $ & Effective type reproduction number at time $ t $, stratum $ j $ & Yes \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \subsection{Flexible Models for the Force of Infection with Gaussian Markov Random Fields}
 \label{subsec:flu_gmrf}
