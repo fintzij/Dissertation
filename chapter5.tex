@@ -12,7 +12,7 @@ In this chapter, we will use SEMs with time--varying force of infection (FOI) to
 
 The emergence of a pandemic influenza A strain, A(H1N1)pdm09, in the spring of 2009 led to widespread concern that it would lead to high mortality and excessive stress on public health systems around the world. The strain, commonly referred to as ``swine flu", was a triple reassortment of human, avian, and swine viruses, and was of particular concern because of its similarity with the 1918 pandemic strain that infected up to a third of the world's population and led to an estimated 50 million deaths \cite{cdc1918pandemic}. While the burden imposed by the 2009 pandemic was ultimately comparable to that of seasonal influenza \cite{iuliano2018estimates}, it nevertheless resulted in an estimated 110,000--400,000 respiratory deaths and 50,000--180,000 cardivascular deaths \cite{dawood2012estimated}. The age--standardized cumulative incidence was estimated from serological samples in 19 countries to be between 20\%--27\% \cite{van2013estimating}, with attack rates and transmission dynamics varying greatly by age, and being consistently more severe in children and adolescents \cite{opatowski2011transmission,steens2011age,van2013estimating,yang2015inference}. 
 
-We will analyze surveillance data, displayed in Figure \ref{fig:finland_fludat}, from the first and second waves of the epidemic in Finland. The dataset, previously analyzed in \cite{shubin2016revealing} and \cite{shubin2014estimating}, consists of weekly counts of laboratory--confirmed A(H1N1) cases, aggregated into sixteen age strata, that were culled from a national surveillance system \cite{lyytikainen2011surveillance}. For computational considerations, we will further aggregate the incidence data into two age groups, individuals ages 0--19 those of ages 20+, based on differences in mixing patterns, susceptibility, and vaccination priority \cite{kelly2011age,opatowski2011transmission,steens2011age}. All cases in our dataset were of mild severity, i.e., cases that did not require hospitalization. Following \cite{shubin2016revealing,shubin2014estimating}, we treat all A(H1N1) cases as A(H1N1)pdm09 as nearly all A(H1N1) cases were of the pandemic strain. It is critical to note that the data are not marked by vaccination status.
+We will analyze surveillance data, displayed in Figure \ref{fig:finland_fludat}, from the first and second waves of the epidemic in Finland. The dataset, previously analyzed in \cite{shubin2016revealing} and \cite{shubin2014estimating}, consists of weekly counts of laboratory--confirmed A(H1N1) cases, aggregated into sixteen age strata, that were culled from a national surveillance system \cite{lyytikainen2011surveillance}. For computational considerations, we will further aggregate the data into two age groups, individuals ages 0--19 those of ages 20+, chosen on basis of differences in mixing patterns, susceptibility, vaccination priority, and observed attack rates \cite{kelly2011age,opatowski2011transmission,steens2011age}. All cases in our dataset were of mild severity, i.e., cases that did not require hospitalization. Following \cite{shubin2016revealing,shubin2014estimating}, we treat all A(H1N1) cases as A(H1N1)pdm09 as nearly all A(H1N1) cases were of the pandemic strain. It is critical to note that the data are not marked by vaccination status.
 
 An important aspect of the pandemic response in Finland was the execution of a concerted vaccination campaign with the adjuvented monovalent vaccine Pandemrix. Each resident was offered one vaccine dose, free of charge, starting in October, 2009. Vaccination priority was given to health care workers, vulnerable individuals, and young people under the age of 20 \cite{syrjanen2014effectiveness}.  Coverage levels and the timing of vaccination administration varied by age, see Figure \ref{fig:finland_fludat}, with highest coverage among children under the age of 15 ($ \approx $70\%) and the lowest among young adults between the ages of 20--29 ($ \approx $30\%). In other settings, vaccine efficacy was also found to be higher in children than adults \cite{lansbury2017effectiveness}. Data was not available on vaccine coverage for a trivalent vaccine administered during the 2010--2011 season. 
 
@@ -62,7 +62,7 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 \subsection{Data and Vaccination}
 \label{subsec:flu_datavacc}
 
-The data are collapsed into weekly incidence counts in each of the two age groups, 0--19 and 20+, over a one year period beginning in epiweek 15, 2009, one month prior to the first observed case in the first season, and a 37 week period beginning in epiweek 37, 2010, one month prior to the first observed case in the second season. Data from the inter--season period, epiweeks 15--36, 2010, over which a total of three cases were observed, were collapsed for computational considerations and indexed as epiweek 36, 2010. Indexing by weeks from epiweek 15, 2009, we write the data as, $$ \bY = \left (\left (Y_{0-19,1},Y_{20+,1}\right ),\dots,\left (Y_{0-19,52},Y_{20+,52}\right ),\left (Y^\prime_{0-19,75},Y^\prime_{20+,75}\right ),\dots,\left (Y_{0-19,113},Y_{20+,113}\right )\right ). $$ We model the observed incidence in age--stratum $ j $ at week $ \ell $ as a negative binomial sample of the true incidence \begin{equation}
+We will model the time series of weekly incidence counts in each of the two age groups, 0--19 and 20+, over a one year period beginning in epiweek 15, 2009, one month prior to the first observed case in the first season, and a 37 week period beginning in epiweek 37, 2010, one month prior to the first observed case in the second season. Data from the inter--season period, epiweeks 15--36, 2010, over which a total of three cases were observed, were not considered to be informative about the transmission dynamics during the outbreak seasons and were aggregated for computational reasons. Thus, the cases accrued over the inter--season period were indexed at epiweek 36, 2010. We denote the data as, $$ \bY = \left (\left (Y_{0-19,1},Y_{20+,1}\right ),\dots,\left (Y_{0-19,52},Y_{20+,52}\right ),\left (Y^\prime_{0-19,75},Y^\prime_{20+,75}\right ),\dots,\left (Y_{0-19,113},Y_{20+,113}\right )\right ), $$ with time zero corresponding to epiweek 15, 2009. The observed incidence in age--stratum $ j $ at week $ \ell $ is modeled as a negative binomial sample of the true incidence \begin{equation}
 \label{flu_emit_prob}
 Y_{j,\ell} ~ \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + \Delta N_{SI}^{(v)}(t_\ell)), \sigma^2 = \mu + \mu^2 / \phi_j\right ),
 \end{equation}
@@ -71,7 +71,46 @@ where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an
 \subsection{Model Structure}
 \label{subsec:flu_modstructure}
 
-We will use the fit a vaccination--age stratified susceptible--infected--recovered--susceptible (SIRS) model (Figure \ref{fig:flu_sirs_diag}) in which individuals transition stochastically, and continuously in time, between disease states. Individuals become infectious immediately upon becoming infected, and acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. For simplicity, we will ignore demographic changes or mortality since the age groupings are considerably coarser than the time period under consideration. 
+We will use the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fit an age--vaccination stratified susceptible--infected--recovered--susceptible (SIRS) model in which individuals transition stochastically, and continuously in time, between disease states. They become infectious immediately upon becoming infected, and acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. For simplicity, we will ignore demographic changes or mortality since the age groupings are considerably coarser than the time period under consideration. 
+
+\begin{table}[htbp]
+	\caption{Summary of notation for influenza models.}
+	\label{tab:flu_notation}
+	\footnotesize
+	\centering
+	\begin{tabular}{lll}
+		\hline
+		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Time--varying}\\
+		\hline
+		$\alpha_j(t)$ & Rate of exogenous infectious contact, age stratum $ j $ & Yes \\
+		$ \beta_j(t) $ & Per--contact rate of endogenous infection, age stratum $ j $ & Yes \\
+		$ \nu_j $ & Relative rate of infectious contact, vaccinated in age stratum $ j $ & No \\
+		$1/\mu_j(t)$ & Mean infectious period duration, age stratum $ j $ & Season specific\\
+		$ 1/\omega $ & Mean duration of immunity & No \\
+		$ \rho_j $ & Mean case detection rate, age stratum $ j $ & No\\
+		$ \phi_j $ & Negative binomial overdispersion parameter, age stratum $ j $ & No \\
+		$ \bX(t) $ & Compartment counts at time $ t $ & Yes\\
+		$ \bN(t) $ & Cumulative incidence by time $ t $ & Yes \\
+		\hline \hline
+		\textbf{Variable} & \textbf{Interpretation} & \textbf{Time-varying}\\
+		\hline		
+		$ Y_{j,\ell} $ & Observed incidence, age stratum $ j $, time $ t_\ell $ & Yes \\
+		$ N$ & Population size & No\\
+		$ N_{j,\ell}^{(k)} $ & Size of age stratum $ j $ with vaccination status $ k $ & Yes \\
+		$ V_{j,\ell} $ & \# individuals in age stratum j vaccinated in week $ \ell $ & Yes\\		
+		$ \xi_{k,j}^{(uv)}(t_\ell) $ & Vaccination forcing for compartment $ k $ in age stratum $ j $ in week $ t_\ell $ & Yes\\
+		$ C_{jk} $ & Relative contact rate to age stratum $ j $ from stratum $ k $ & No\\
+		$ R_0(t) $ & Basic reproduction number at time $ t $ & Yes \\
+		$ R_{eff}(t) $ & Effective reproduction number at time $ t $ & Yes \\
+		$ T_{0,j}(t) $ & Basic type reproduction number at time $ t $, stratum $ j $ & Yes \\
+		$ T_{eff,j}(t) $ & Effective type reproduction number at time $ t $, stratum $ j $ & Yes \\
+		\hline
+	\end{tabular}
+\end{table}
+
+By taking the sojourn time of an individual in each disease state is taken to be exponentially distributed, and leveraging the exchangeability of individuals within the model, we represent the time--evolution of the epidemic as a Markov jump process (MJP), $$ \bX^c = \lbrace S_{0-19}^{(u)}, I_{0-19}^{(u)}, R_{0-19}^{(u)},
+S_{0-19}^{(v)}, I_{0-19}^{(v)}, R_{0-19}^{(v)}, S_{20+}^{(u)}, I_{20+}^{(u)}, R_{20+}^{(u)},
+S_{20+}^{(v)}, I_{20+}^{(v)}, R_{20+}^{(v)} \rbrace, $$ on the state space of compartment counts, $ \mcS_X^c$, with corresponding cumulative incidence process $ \bN^c $ on the state space of cumulative incidence counts $ \mcS_N^c $. The boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $ ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{0-19}^{(u)}(t) + I_{0-19}^{(u)}(t) + R_{0-19}^{(u)}(t) = N_{0-19}^{(u)}(t) $. 
 
 \begin{figure}[htpb]
 	\centering
@@ -106,8 +145,6 @@ We will use the fit a vaccination--age stratified susceptible--infected--recover
 	\label{fig:flu_sirs_diag}
 \end{figure}
 
-1) exponential sojourn time distributions, specify rates, but not yet timevarying FOI -> MJP, approximate with LNA
-
 At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed independently and in proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected.  To account for the time required to elicit an immune response, we apply the deterministic forcing at the beginning of week after the time when each dose count was indexed. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ unvaccinated susceptible, infected, and recovered individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
 \begin{align}
 \label{eqn:vacc_forcing}
@@ -117,39 +154,8 @@ At weekly intervals, we deterministically force individuals from unvaccinated mo
 \end{split}
 \end{align}
 
-\begin{table}[htbp]
-	\caption{Summary of notation for influenza models.}
-	\label{tab:flu_notation}
-	\footnotesize
-	\centering
-	\begin{tabular}{lll}
-		\hline
-		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Time--varying}\\
-		\hline
-		$\alpha_j(t)$ & Rate of exogenous infectious contact, age stratum $ j $ & Yes \\
-		$ \beta_j(t) $ & Per--contact rate of endogenous infection, age stratum $ j $ & Yes \\
-		$ \nu_j $ & Relative rate of infectious contact, vaccinated in age stratum $ j $ & No \\
-		$1/\mu_j(t)$ & Mean infectious period duration, age stratum $ j $ & Season specific\\
-		$ 1/\omega $ & Mean duration of immunity & No \\
-		$ \rho_j $ & Mean case detection rate, age stratum $ j $ & No\\
-		$ \phi_j $ & Negative binomial overdispersion parameter, age stratum $ j $ & No \\
-		$ \bX(t) $ & Compartment counts at time $ t $ & Yes\\
-		$ \bN(t) $ & Cumulative incidence by time $ t $ & Yes \\
-		\hline \hline
-		\textbf{Variable} & \textbf{Interpretation} & \textbf{Time-varying}\\
-		\hline		
-		$ Y_{j,\ell} $ & Observed incidence, age stratum $ j $, time $ t_\ell $ & Yes \\
-		$ N$ & Population size & No\\
-		$ N_j^{(k)} $ & Size of age stratum $ j $ with vaccination status $ k $ & Yes \\
-		$ V_{j,\ell} $ & \# individuals in age stratum j vaccinated in week $ \ell $ & Yes\\		
-		$ \xi_{k,j}^{(uv)}(t_\ell) $ & Vaccination forcing for compartment $ k $ in age stratum $ j $ in week $ t_\ell $ & Yes\\
-		$ R_0(t) $ & Basic reproduction number at time $ t $ & Yes \\
-		$ R_{eff}(t) $ & Effective reproduction number at time $ t $ & Yes \\
-		$ T_{0,j}(t) $ & Basic type reproduction number at time $ t $, stratum $ j $ & Yes \\
-		$ T_{eff,j}(t) $ & Effective type reproduction number at time $ t $, stratum $ j $ & Yes \\
-		\hline
-	\end{tabular}
-\end{table}
+1) exponential sojourn time distributions, specify rates, but not yet timevarying FOI -> MJP, approximate with LNA
+2) forcings
 
 \subsection{Flexible Models for the Force of Infection with Gaussian Markov Random Fields}
 \label{subsec:flu_gmrf}
