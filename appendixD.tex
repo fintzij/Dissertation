@@ -34,40 +34,82 @@ We fit two models, one where the force of infection was constant over the course
 	\end{tabular}
 \end{table}
 
+\newpage
 \subsection{Additional results}
 \label{subsec:sinfoi_supp_res}
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_rw1_traces}
 	\caption{Posterior traceplots for SIRS model parameters with time--varying force of infection.}
 	\label{fig:sinfoirw1traces}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_rw1_pairs}
 	\caption{Posterior histograms and pairwise hexplots for SIRS model parameters with time--varying force of infection.}
 	\label{fig:sinfoirw1pairs}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_const_traces}
 	\caption{Posterior traceplots for SIRS model parameters with time--homogeneous force of infection.}
 	\label{fig:sinfoiconsttraces}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_const_pairs}
 	\caption{Posterior histograms and pairwise hexplots for SIRS model parameters with time--homogeneous force of infection.}
 	\label{fig:sinfoiconstpairs}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_lna_drawplots}
 	\caption[Posterior distributions of LNA draws for SIRS models with time--varying and constant force of infection.]{Posterior distributions of the LNA draws for infection, recovery, and loss of immunity in SIRS models with time--varying and constant force of infection (blue boxplots). The lower and upper whisker tips correspond to the $ 2.5^\mr{th} $ and $ 97.5^\mr{th} $ posterior quantiles, the lower and upper hinges to the $ 25^\mr{th} $ and $ 75^\mr{th} $ quantiles, and the middle hash mark to the posterior median. The solid red lines are the theoretical quantiles of the posterior predictive distribution (or equivalently, the prior distribution) of the LNA draws, drawn at the quantiles of a standard normal distribution corresponding to the boxplot quantiles. The green ticks are the estimated quantiles of the posterior predictive distributions of the LNA draws, accounting for boundary conditions on the state space of the latent process and obtained by simulating LNA paths from the posterior predictive distribution. The posterior distributions of LNA draws are shaded according to the level of posterior shrinkage, computed as one minus the ratio of standard deviations of LNA draws in the posterior and prior.}
 	\label{fig:sinfoidrawplots}
 \end{figure}
+
+\newpage
+\section{Specification of Contact Rates}
+\label{sec:flu_contact_rates}
+text
+\newpage
+\section{Joint Sampling of LNA Paths with Forcings and Gaussian Markov Random Fields}
+\label{sec:lna_ess_forcings}
+
+Jointly sampling the LNA draws and the values of a GMRF, $ \bF $, in addition to possibly any other latent Gaussian parameters including the initial compartment volumes as in Section \ref{sec:lna_init_volumes}, requires trivially modifying Algorithm \ref{alg:elliptss_lna_initvols} to include the additional parameters. We implement the same computational strategy used throughout Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of using non--centered parameterizations for the parameters of interest and the LNA path. As we have noted, this has the advantage of breaking the autocorrelation that would otherwise lead to poor MCMC mixing when using a centered parameterization. We will denote by $ \bZ = (\bZ^X,\ \bZ^{X_0},\ \bZ^F,\ \bZ^{\btheta_F}) $ the multivariate standard normal draws for the latent LNA process, the initial compartment volumes, the draws to be mapped to the GMRF, and $ \bZ^{\btheta_F} $ the draws that are mapped to the GMRF hyper--parameters that are to be updated along with the GMRF. Unless otherwise stated (and we never do so state), we will at the very least update the precision or standard deviation of the GMRF increments jointly with the field since alternating between updates to the field and hyper--parameters can lead to inefficient MCMC \cite{murray2010hyper}. We will assume that non--centered parameterizations for the GMRF and the hyper--parameters are linear transformations and thus do not require Jacobian terms to be included in the ElliptSS acceptance probability. Thus, we will denote by $ \bm_0 $, $ \bm_\theta $, $ \bV_0 $, and $ \bV_\theta $ the means and covariance matrices of the initial volumes and hyper--parameters, and by $ \doGMRF $ the operator for mapping $ \bZ^F $ to a GMRF sample, i.e., the GMRF values are obtained by $ \doGMRF(\bZ^F; \btheta_F) $. 
+
+\begin{algorithm}[htbp]
+	\caption{Sampling LNA draws, initial volumes, GMRF values, and GMRF hyper--parameters via elliptical slice sampling.}
+	\label{alg:elliptss_lna_gmrf_forcings}
+	\begin{algorithmic}[1]
+		\Procedure{\doElliptSS3}{$ \bZ = (\bZ^X_{cur}, \bZ^{X_0}_{cur},\bZ^{F},\bZ^{\btheta_F}),\btheta,\bY,\mcI,\omega = 2\pi $}
+		\State Sample ellipse: $ \bZ_{prop} \sim N(\bs{0}, \mb{I})$
+		\State Sample threshold: $ u|\bx \sim \mr{Unif}(0, L(\bY|\doLNA(\bZ_{cur},\btheta,\mcI))) $
+		\State Position the bracket: \vspace{-0.15in}
+		\begin{align*}
+		\psi &\sim \mr{Unif}(0,\omega)\\
+		L_\psi &\leftarrow -\psi;\ R_\psi \leftarrow L_\psi + \psi\\
+		\phi &\sim \mr{Unif}(L_\psi,R_\psi)
+		\end{align*}
+		\State Make the initial proposal: \vspace{-0.1in}\begin{align*}
+		\bZ^\prime &\leftarrow \bZ_{cur}\cos(\phi) + \bZ_{prop}\sin(\phi) \\
+		&\implies \bX_0^\prime = \bm_0 + \bV_0^{1/2}\bZ^{X_0^\prime}\\
+		&\implies\btheta_F^\prime = \bm_\theta + \bV_\theta^{1/2}\bZ^{\theta_F} \\
+		&\implies\bF^\prime = \doGMRF(\bZ^F;\btheta_F)
+		\end{align*}
+		\If{$ L(\bY|\doLNA(\bZ^{X\prime},\bX_0^\prime,\bF^\prime,\btheta_F^\prime,\btheta,\mcI)) > u $}{ accept $ \bZ^\prime $}
+		\State\Return{ $ \bZ' $}
+		\Else
+		\State Shrink bracket and try a new angle:
+		\State{\textbf{If:} $ \phi < 0 $}{ \textbf{then: }$ L_\phi \leftarrow\phi $ }{ \textbf{else: }$ R_\phi \leftarrow \phi $}
+		\State $ \phi \sim \mr{Unif}(L_\phi, R_\phi) $
+		\State \textbf{GoTo:} 5
+		\EndIf
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}

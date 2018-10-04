@@ -35,13 +35,15 @@ Let $ \bm = N\bp$, $ \bV = \alpha N(\bP - \bp\bp^T) $, and $ \bV^{1/2} $ be the 
 		\Procedure{\doElliptSS2}{$ \bZ^X_{cur}, \bZ^{X_0}_{cur},\btheta,\bY,\mcI,\omega = 2\pi $}
 		\State Sample ellipse: $ \bZ^X_{prop} \sim N(\bs{0}, \mb{I}),\ \bZ^{X_0}_{prop} \sim N(\bs{0}, \mb{I})$
 		\State Sample threshold: $ u|\bx \sim \mr{Unif}(0, L(\bY|\doLNA(\bZ_{cur},\btheta,\mcI))) $
-		\State Position the bracket and make initial proposal: \vspace{-0.1in}
+		\State Position the bracket: \vspace{-0.1in}
 		\begin{align*}
 		\psi &\sim \mr{Unif}(0,\omega)\\
 		L_\psi &\leftarrow -\psi;\ R_\psi \leftarrow L_\psi + \psi\\
 		\phi &\sim \mr{Unif}(L_\psi,R_\psi)
 		\end{align*}
-		\State Set $ \bZ^{X'} \leftarrow \bZ^X_{cur}\cos(\phi) + \bZ^X_{prop}\sin(\phi) \implies \bX_0^\prime = \bm + \bV^{1/2}\left (\bZ^{X_0}_{cur}\cos(\phi) + \bZ^{X_0}_{prop}\sin(\phi)\right ) $ 
+		\State Make the initial proposal: \vspace{-0.1in}\begin{align*}
+		 \bZ^{X'} &\leftarrow \bZ^X_{cur}\cos(\phi) + \bZ^X_{prop}\sin(\phi) \\ \bZ^{X_0'} &\leftarrow \bZ^{X_0}_{cur}\cos(\phi) + \bZ^{X_0}_{prop}\sin(\phi) \implies \bX_0^\prime = \bm + \bV^{1/2}\bZ^{X_0^\prime}
+		\end{align*}
 		\If{$ L(\bY|\doLNA(\bZ',\btheta^\prime,\mcI)) > u $}{ accept $ \bZ^{X^\prime},\bZ^{X_0^\prime} $}
 		\State\Return{ $ \bZ' $}
 		\Else
@@ -609,7 +611,7 @@ We simulated an outbreak for a stratified SEIR model, diagrammed in Figure \ref{
 \end{table}
 
 \begin{table}[htbp]
-	\caption[Transmission rates for the stratified SEIR model with migration of infecteds for Ebola in West Africa.]{Rates of transitions between compartments for the full stratified SEIR model for the spread of Ebola in Guinea, Liberia, and Sierra Leone with cross--country migration of infected individuals across country borders. These rates were used in simulating the outbreak and data, and in the supplementary model presented in Section \ref{subsec:ebola_synth_fullmod_res}. The model is diagrammed in Figure \ref{fig:stratified_seir_full_diag}. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The number of susceptible individuals is equal to the effective population size, estimated as a parameter in the model, minus the numbers of exposed, infected, and recovered individuals. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times. Thus, all respective transition rates are set to zero prior to the times when transmission commenced in those countries.}
+	\caption[Transmission rates for the stratified SEIR model with migration of infecteds for Ebola in West Africa.]{Rates of transitions between compartments for the full stratified SEIR model for the spread of Ebola in Guinea, Liberia, and Sierra Leone with cross--country migration of infected individuals across country borders. These rates were used in simulating the outbreak and data, and in the supplementary model presented in Section \ref{subsec:ebola_synth_supplement}. The model is diagrammed in Figure \ref{fig:stratified_seir_full_diag}. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The number of susceptible individuals is equal to the effective population size, estimated as a parameter in the model, minus the numbers of exposed, infected, and recovered individuals. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times. Thus, all respective transition rates are set to zero prior to the times when transmission commenced in those countries.}
 	\label{tab:ebola_synth_rates_full}
 	\centering\footnotesize
 	\begin{tabular}{llll}
@@ -718,7 +720,7 @@ We fit two models to the simulated data, the true model where migration was mode
 
 \begin{table}[htbp]
 	\caption{Effective sample sizes and potential scale reduction factors for the stratified SEIR model with virtual migration of infecteds fit to a simulated Ebola outbreak.}
-	\centering
+	\centering\small
 	\begin{tabular}{lrr}
 		\hline
 		\textbf{Parameter} & \textbf{ESS} & \textbf{PSRF} \\ 

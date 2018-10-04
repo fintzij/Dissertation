@@ -16,7 +16,7 @@ We will analyze surveillance data, displayed in Figure \ref{fig:finland_fludat},
 
 An important aspect of the pandemic response in Finland was the execution of a concerted vaccination campaign with the adjuvented monovalent vaccine Pandemrix. Each resident was offered one vaccine dose, free of charge, starting in October, 2009. Vaccination priority was given to health care workers, vulnerable individuals, and young people under the age of 20 \cite{syrjanen2014effectiveness}.  Coverage levels and the timing of vaccination administration varied by age, see Figure \ref{fig:finland_fludat}, with highest coverage among children under the age of 15 ($ \approx $70\%) and the lowest among young adults between the ages of 20--29 ($ \approx $30\%). In other settings, vaccine efficacy was also found to be higher in children than adults \cite{lansbury2017effectiveness}. Data was not available on vaccine coverage for a trivalent vaccine administered during the 2010--2011 season. 
 
-\begin{sidewaysfigure}[htpb]
+\begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/fludat_plots}
 	\caption{(Top) Observed incidence (solid lines) and vaccine coverage (lines with points). (Bottom left) Observed incidence by season and age stratum. The 2009--2010 season (dark green) corresponds to the period from April 15, 2009 through April 4, 2010. The 2010--2011 season (light green) corresponds to the period from September 12, 2010 through June 5, 2011. Numbers in points give the attack rate within each stratum for the corresponding season. (Bottom right) Vaccination coverage by age stratum, colored by vaccine coverages at the times of peak incidence in the first season, tail of the major outbreak in the first season, and end of the vaccination campaign. The numbers inside and outside the histograms denote the percentage of individuals in each stratum that were vaccinated and unvaccinated, respectively, by the end of the vaccination campaign. The times at which vaccine coverages are summarized, denoted by colors of histogram bars, are also identified by corresponding triangles above the top figure.}
@@ -34,21 +34,21 @@ Before delving into details of how we intend to accomodate time--inhomogeneity i
 
 Although both models are misspecified vis--a--vis the  data generating model, the model with time--varying FOI was clearly better able to capture the dynamics of the outbreak (Figure \ref{fig:sinfoi_tparam_plots}). Estimates of basic and effective reproduction numbers captured the true basic and effective reproduction numbers throughout both seasons. The model with time--varying FOI is also able to recover the true incidence. In contrast, the model with constant FOI fails to accurately estimate the basic and effective reproduction numbers between seasons and during the second wave. It also completely fails to capture the incidence during the second wave. Unlike the model with time--varying FOI, the model with constant FOI also fails to recover the hyperparameters governing the outbreak dynamics and sampling process. In particular the mean duration of immunity and case detection rate are important parameters that are poorly estimated (Figure \ref{fig:sinfoi_param_plots}). Finally, the posterior predictive distributions for the model with time--varying FOI are more accurate, and more precise, than posterior predictive distributions for the model with constant FOI (Figures \ref{fig:sinfoi_tparam_plots} and \ref{fig:sinfoi_ppi_comp}).
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_lna_tparam_plots}
 	\caption[Time--varying reproduction numbers, latent incidence, and posterior predictive distributions for SIRS models fit to data from an outbreak with time--varying dynamics.]{From left to right: posterior distributions of basic reproduction numbers, of effective reproduction numbers, of latent incidence, partial and full posterior predictive distributions. The top row corresponds to estimates obtained using an SIRS model where the basic reproduction number, and hence the per--contact infectivity rate, was allowed to vary in time, with differences penalized according to a first order GMRF. The second row shows estimates obtained from an SIRS model where the per--contact infectivity rate was constant over time. Shaded bands correspond to pointwise 50\%, 80\%, and 95\% Bayesian credible intervals and posterior predictive intervals, with the pointwise posterior/predictive median drawn as a solid line of the corresponding color.}
 	\label{fig:sinfoi_tparam_plots}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_lna_param_plots}
 	\caption[Posterior distributions of SIRS model parameters fit to data from an outbreak with time--varying dynamics.]{Posterior distributions of SIRS model parameters fit to data from an outbreak with time--varying dynamics. From left to right: $ 1/\mu $, the mean infectious period duration; $ 1/\omega $, the mean duration of immunity; $ \rho $, the mean case detection rate; $ \phi $, negative binomial overdispersion parameter; $ \sigma_{RW1} $, standard deviation of log--differences of time--varying basic reproduction numbers. The true values are given by solid red lines and priors by dashed green curves. The solid grey lines are posterior medians, and shaded regions correspond to 95\% Bayesian credible intervals.}
 	\label{fig:sinfoi_param_plots}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\linewidth]{figures/sinfoi_ppi_comp}
 	\caption[Comparison with posterior predictive p-values and relative predictive interval widths for SIRS models fit to an outbreak with time--varying dynamics.]{Comparison of models with time--varying and constant force of infection using posterior predictive p-values (PPPs) and relative posterior predictive interval (PPI) widths. Each point corresponds to the observed incidence in a given week. The X--Y coordinates give the PPPs under a model with a time--varying force of infection (FOI), where R0 was modeled as a Gaussian Markov random field of order one, the PPP under a model with constant per--contact infection rate. The size and color of each point corresponds to the relative PPI width, computed as $ (\widehat{\sigma}_{post,\ell}^{constant} - \widehat{\sigma}_{post,\ell}^{RW1})/\widehat{\sigma}_{post,\ell}^{RW1} $, and the sign of the relative width is further emphasized by the shape of the point. Dots indicate that PPIs with constant FOI are wider, the lone triangle corresponds to the one data point where the PPI for the model with time--varying FOI was wider.}
@@ -71,7 +71,7 @@ where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an
 \subsection{Model Structure}
 \label{subsec:flu_modstructure}
 
-We will use the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fit an age--vaccination stratified susceptible--infected--recovered--susceptible (SIRS) model in which individuals transition stochastically, and continuously in time, between disease states. They become infectious immediately upon becoming infected, and acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. For simplicity, we will ignore demographic changes or mortality since the age groupings are considerably coarser than the time period under consideration. 
+We will use the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fit an age--vaccination stratified susceptible--infected--recovered--susceptible (SIRS) model in which individuals transition stochastically, and continuously in time, between disease states. They become infectious immediately upon becoming infected, and acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. For simplicity, we assume a closed population and ignore demographic changes or mortality since the age groupings are considerably coarser than the time period under consideration. All individuals were assumed to be susceptible and unvaccinated at the start of the modeling period. The model is diagrammed in Figure \ref{fig:flu_sirs_diag}, and Table \ref{tab:flu_notation} lists the model parameters and their interpretations. 
 
 \begin{table}[htbp]
 	\caption{Summary of notation for influenza models.}
@@ -108,11 +108,11 @@ We will use the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fi
 	\end{tabular}
 \end{table}
 
-By taking the sojourn time of an individual in each disease state is taken to be exponentially distributed, and leveraging the exchangeability of individuals within the model, we represent the time--evolution of the epidemic as a Markov jump process (MJP), $$ \bX^c = \lbrace S_{0-19}^{(u)}, I_{0-19}^{(u)}, R_{0-19}^{(u)},
+By taking the sojourn time in each disease state to be exponentially distributed, and leveraging the exchangeability of individuals within the model, we represent the time--evolution of the epidemic as a Markov jump process (MJP), $$ \bX^c = \lbrace S_{0-19}^{(u)}, I_{0-19}^{(u)}, R_{0-19}^{(u)},
 S_{0-19}^{(v)}, I_{0-19}^{(v)}, R_{0-19}^{(v)}, S_{20+}^{(u)}, I_{20+}^{(u)}, R_{20+}^{(u)},
-S_{20+}^{(v)}, I_{20+}^{(v)}, R_{20+}^{(v)} \rbrace, $$ on the state space of compartment counts, $ \mcS_X^c$, with corresponding cumulative incidence process $ \bN^c $ on the state space of cumulative incidence counts $ \mcS_N^c $. The boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $ ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{0-19}^{(u)}(t) + I_{0-19}^{(u)}(t) + R_{0-19}^{(u)}(t) = N_{0-19}^{(u)}(t) $. 
+S_{20+}^{(v)}, I_{20+}^{(v)}, R_{20+}^{(v)} \rbrace, $$ on the state space of compartment counts, $ \mcS_X^c$, with corresponding cumulative incidence process $ \bN^c $ on the state space of cumulative incidence counts $ \mcS_N^c $.
 
-\begin{figure}[htpb]
+\begin{figure}[htbp]
 	\centering
 	\begin{tikzpicture}
 	\draw[thick,dotted] (-1,1) rectangle (11.25,8.25);
@@ -145,6 +145,21 @@ S_{20+}^{(v)}, I_{20+}^{(v)}, R_{20+}^{(v)} \rbrace, $$ on the state space of co
 	\label{fig:flu_sirs_diag}
 \end{figure}
 
+The contact rate between individuals in age stratum $ j $ and age stratum $ k $, denoted $ C_{jk} $, was based on estimated mean contact rates, appropriately standardized (see Section \ref{sec:flu_contact_rates}), from the Finnish arm of the POLYMOD survey \cite{mossong2008social,polymod} and accessed via the \texttt{socialmixr R} package \cite{funk2018socialmixr}. Sixty percent of contacts in the 0--19 age group were from other individuals age 0--19, while eighty--five percent of the contacts in the 20+ age group were from other adults.  The rates, $ \blambda = (\blambda_{0-19},\blambda_{20+}) $, at which individuals in age--stratum $ j \in {0-19,\ 20+} $ transition between disease states are
+\begin{equation}\small
+\label{eqn:flu_sirs_rates}
+\blambda_{j} = \left\lbrace
+\begin{array}{ll}
+\lambda_{SI,j}^{(u)} = \left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{u} \\ 
+\lambda_{SI,j}^{(v)} = \nu_{j}\left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{v}\\
+\lambda_{IR,j}^{(u)} = \mu_{j}(t) I_{j}^{(u)} \\
+\lambda_{IR,j}^{(v)} = \mu_{j}(t) I_{j}^{(v)} \\
+\lambda_{RS,j}^{(u)} = \omega R_{j}^{(u)} \\
+\lambda_{RS,j}^{(v)} = \omega R_{j}^{(v)}
+\end{array}
+\right .
+\end{equation}
+
 At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed independently and in proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected.  To account for the time required to elicit an immune response, we apply the deterministic forcing at the beginning of week after the time when each dose count was indexed. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ unvaccinated susceptible, infected, and recovered individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
 \begin{align}
 \label{eqn:vacc_forcing}
@@ -154,8 +169,7 @@ At weekly intervals, we deterministically force individuals from unvaccinated mo
 \end{split}
 \end{align}
 
-1) exponential sojourn time distributions, specify rates, but not yet timevarying FOI -> MJP, approximate with LNA
-2) forcings
+The diffusion approximation for the MJP is a real--valued process, $ \bX $, on the analogous state space of compartment volumes, $ \mcS_X^R $, and with corresponding cumulative incidence process, $ \bN $, with state space $ \mcS_N^R $. Note that the boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $, and similarly of $ \bX $ and $ \bN $, ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{0-19}^{(u)}(t) + I_{0-19}^{(u)}(t) + R_{0-19}^{(u)}(t) = N_{0-19}^{(u)}(t) $. As in Chapter \ref{chap:lna_for_sems}, we will use the non--centered parameterization of the restarting LNA of the log--transformed SDE to approximate the time--evolution of $ \bX^c $ and $ \bN^c $. Algorithm \ref{alg:elliptss_lna_gmrf_forcings} for sampling LNA draws with forcings using elliptical slice sampling (ElliptSS) is given in Section \ref{sec:lna_ess_forcings}.
 
 \subsection{Flexible Models for the Force of Infection with Gaussian Markov Random Fields}
 \label{subsec:flu_gmrf}
