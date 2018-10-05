@@ -1,5 +1,5 @@
  
-\documentclass [12pt, proquest] {uwthesis}[03/04/2018]
+\documentclass [12pt, proquest] {uwthesis}[10/05/2018]
  
 \usepackage[noend]{algpseudocode}
 \usepackage{algorithm}
@@ -8,9 +8,11 @@
 \usepackage{booktabs}      % underline table cells
 \usepackage{dashrule}      % long dashes for table cells
 \usepackage{dsfont}        % for indicator function
+\usepackage{enumitem}      % nolistsep,noitemsep
 \usepackage{graphicx}      % includegraphic
 \usepackage{kbordermatrix} % matrix with element labels
 \usepackage{makecell}      % carriage returns in table cells
+\usepackage{mathabx}       % corresponds symbol
 \usepackage{multirow}      % multiple rows for table cells
 \usepackage{mathtools}     % shortintertext
 \usepackage{url}           % urls in bibliography
@@ -34,11 +36,13 @@
 \newcommand{\bmu}{\boldsymbol{\mu}}
 \newcommand{\bSigma}{\boldsymbol{\Sigma}}
 \newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\btau}{\boldsymbol{\tau}}
 \newcommand{\bA}{\mathbf{A}}
 \newcommand{\bC}{\mathbf{C}}
 \newcommand{\bc}{\mathbf{c}}
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bM}{\mathbf{M}}
+\newcommand{\bQ}{\mathbf{Q}}
 \newcommand{\bW}{\mathbf{W}}
 \newcommand{\bN}{\mathbf{N}}
 \newcommand{\bK}{\mathbf{K}}
@@ -81,6 +85,9 @@
 \newcommand{\dt}{\rmd t}
 \newcommand{\logit}{\mr{logit}}
 \newcommand{\Cor}{\mr{Cor}}
+\newcommand{\ttau}{\widetilde{\tau}}
+\newcommand{\xnew}{\mathbf{x}^{\mathrm{new}}}
+\newcommand{\xcur}{\mathbf{x}^{\mathrm{cur}}}
 \newcommand{\deriv}[2]{\frac{\rmd#1}{\rmd#2}}
 \newcommand{\pdiv}[2]{\frac{\partial#1}{\partial#2}}
 \newcommand{\doLNA}{\texttt{doLNA}}
