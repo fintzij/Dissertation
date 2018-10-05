@@ -76,16 +76,33 @@ We fit two models, one where the force of infection was constant over the course
 \newpage
 \section{Specification of Contact Rates}
 \label{sec:flu_contact_rates}
-text
-\newpage
-\section{Joint Sampling of LNA Paths with Forcings and Gaussian Markov Random Fields}
-\label{sec:lna_ess_forcings}
 
-Jointly sampling the LNA draws and the values of a GMRF, $ \bF $, in addition to possibly any other latent Gaussian parameters including the initial compartment volumes as in Section \ref{sec:lna_init_volumes}, requires trivially modifying Algorithm \ref{alg:elliptss_lna_initvols} to include the additional parameters. We implement the same computational strategy used throughout Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of using non--centered parameterizations for the parameters of interest and the LNA path. As we have noted, this has the advantage of breaking the autocorrelation that would otherwise lead to poor MCMC mixing when using a centered parameterization. We will denote by $ \bZ = (\bZ^X,\ \bZ^{X_0},\ \bZ^F,\ \bZ^{\btheta_F}) $ the multivariate standard normal draws for the latent LNA process, the initial compartment volumes, the draws to be mapped to the GMRF, and $ \bZ^{\btheta_F} $ the draws that are mapped to the GMRF hyper--parameters that are to be updated along with the GMRF. Unless otherwise stated (and we never do so state), we will at the very least update the precision or standard deviation of the GMRF increments jointly with the field since alternating between updates to the field and hyper--parameters can lead to inefficient MCMC \cite{murray2010hyper}. We will assume that non--centered parameterizations for the GMRF and the hyper--parameters are linear transformations and thus do not require Jacobian terms to be included in the ElliptSS acceptance probability. Thus, we will denote by $ \bm_0 $, $ \bm_\theta $, $ \bV_0 $, and $ \bV_\theta $ the means and covariance matrices of the initial volumes and hyper--parameters, and by $ \doGMRF $ the operator for mapping $ \bZ^F $ to a GMRF sample, i.e., the GMRF values are obtained by $ \doGMRF(\bZ^F; \btheta_F) $. 
+Contact rates within and between age--strata were obtained from the Finnish arm of the POLYMOD survey \cite{mossong2008social,polymod}, and were accessed via the \texttt{socialmixr R} package \cite{funk2018socialmixr}. The survey was a population--based, prospective survey that recorded contact rates by sex, age, location, duration, and frequency. We queried the symmetric form of the estimated mean contact matrix aggregated age--strata in our analysis (0--19 years and 20+ years), which based on a sample of 1,006 individuals. A contact matrix is said to be symmetric if the total number of contacts between two groups is equal. In particular, if $ c_{ij} $ is the mean number of contacts an individual in group $ i $ has with members of group $ j $, and group $ i $ is of size $ N_i $, then symmetry requires that $ c_{ij}N_i = c_{ji}N_j $. Due to the vagaries of sampling variability, this relation does not always hold. The symmetric contact matrix is obtained by taking $ c_{ij}^{\prime} = (c_{ij}N_i + c_{ji}N_j) / 2N_i $. 
+
+The estimated mean contact rates are
+\[ \bC_{tot} = 
+\kbordermatrix{
+	 & 0-19 & 20+ \\
+	 0-19 & 7.44 & 5.05 \\
+	 20+ & 1.55 & 8.56
+}. \]
+Following \cite{meyer2017incorporating}, we row--normalize the matrix, thus removing differences in absolute contact rates. This is helpful in parameterizing and assigning sensible priors to other aspects of the model, such as basic reproduction numbers. The normalized contact rates are
+\[ \bC = 
+\kbordermatrix{
+	& 0-19 & 20+ \\
+	0-19 & 0.60 & 0.40 \\
+	20+ & 0.15 & 0.85
+}. \]
+
+\newpage
+\section{Joint Sampling of LNA Paths and Gaussian Markov Random Fields}
+\label{sec:lna_ess_gmrf}
+
+Jointly sampling the LNA draws and the values of a GMRF, $ \bF $, in addition to possibly any other latent Gaussian parameters including the initial compartment volumes as in Section \ref{sec:lna_init_volumes}, requires trivially modifying Algorithm \ref{alg:elliptss_lna_initvols} to include the additional parameters. We implement the same computational strategy used throughout Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of using non--centered parameterizations for the parameters of interest and the LNA path. As we have noted, this has the advantage of breaking the autocorrelation that would otherwise lead to poor MCMC mixing when using a centered parameterization and alternating between updates to different parameters in the model. We will denote by $ \bZ = (\bZ^X,\ \bZ^{X_0},\ \bZ^F,\ \bZ^{\btheta_F}) $ the multivariate standard normal draws for the latent LNA process, the initial compartment volumes, the draws to be mapped to the GMRF, and $ \bZ^{\btheta_F} $ the draws that are mapped to the GMRF hyper--parameters that are to be updated along with the GMRF. Unless otherwise stated (and we never do so state), we will at the very least update the precision or standard deviation of the GMRF increments jointly with the field to avoid poor MCMC mixing. We will assume that non--centered parameterizations for the GMRF and the hyper--parameters are linear transformations and thus do not require Jacobian terms to be included in the ElliptSS acceptance probability. We will denote by $ \bm_0 $, $ \bm_\theta $, $ \bV_0 $, and $ \bV_\theta $ the means and covariance matrices of the initial volumes and hyper--parameters, and by $ \doGMRF $ the linear operator for mapping $ \bZ^F $ to a GMRF sample, i.e., the GMRF values are obtained by $ \doGMRF(\bZ^F; \btheta_F) $. 
 
 \begin{algorithm}[htbp]
 	\caption{Sampling LNA draws, initial volumes, GMRF values, and GMRF hyper--parameters via elliptical slice sampling.}
-	\label{alg:elliptss_lna_gmrf_forcings}
+	\label{alg:elliptss_lna_gmrf}
 	\begin{algorithmic}[1]
 		\Procedure{\doElliptSS3}{$ \bZ = (\bZ^X_{cur}, \bZ^{X_0}_{cur},\bZ^{F},\bZ^{\btheta_F}),\btheta,\bY,\mcI,\omega = 2\pi $}
 		\State Sample ellipse: $ \bZ_{prop} \sim N(\bs{0}, \mb{I})$
@@ -96,10 +113,10 @@ Jointly sampling the LNA draws and the values of a GMRF, $ \bF $, in addition to
 		L_\psi &\leftarrow -\psi;\ R_\psi \leftarrow L_\psi + \psi\\
 		\phi &\sim \mr{Unif}(L_\psi,R_\psi)
 		\end{align*}
-		\State Make the initial proposal: \vspace{-0.1in}\begin{align*}
+		\State Compute the proposal: \vspace{-0.1in}\begin{align*}
 		\bZ^\prime &\leftarrow \bZ_{cur}\cos(\phi) + \bZ_{prop}\sin(\phi) \\
 		&\implies \bX_0^\prime = \bm_0 + \bV_0^{1/2}\bZ^{X_0^\prime}\\
-		&\implies\btheta_F^\prime = \bm_\theta + \bV_\theta^{1/2}\bZ^{\theta_F} \\
+		&\implies\btheta_F^\prime = \bm_\theta + \bV_\theta^{1/2}\bZ^{\theta_F^\prime} \\
 		&\implies\bF^\prime = \doGMRF(\bZ^F;\btheta_F)
 		\end{align*}
 		\If{$ L(\bY|\doLNA(\bZ^{X\prime},\bX_0^\prime,\bF^\prime,\btheta_F^\prime,\btheta,\mcI)) > u $}{ accept $ \bZ^\prime $}

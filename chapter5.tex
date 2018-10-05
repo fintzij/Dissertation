@@ -62,7 +62,7 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 \subsection{Data and Vaccination}
 \label{subsec:flu_datavacc}
 
-We will model the time series of weekly incidence counts in each of the two age groups, 0--19 and 20+, over a one year period beginning in epiweek 15, 2009, one month prior to the first observed case in the first season, and a 37 week period beginning in epiweek 37, 2010, one month prior to the first observed case in the second season. Data from the inter--season period, epiweeks 15--36, 2010, over which a total of three cases were observed, were not considered to be informative about the transmission dynamics during the outbreak seasons and were aggregated for computational reasons. Thus, the cases accrued over the inter--season period were indexed at epiweek 36, 2010. We denote the data as, $$ \bY = \left (\left (Y_{0-19,1},Y_{20+,1}\right ),\dots,\left (Y_{0-19,52},Y_{20+,52}\right ),\left (Y^\prime_{0-19,75},Y^\prime_{20+,75}\right ),\dots,\left (Y_{0-19,113},Y_{20+,113}\right )\right ), $$ with time zero corresponding to epiweek 15, 2009. The observed incidence in age--stratum $ j $ at week $ \ell $ is modeled as a negative binomial sample of the true incidence \begin{equation}
+We will model the time series of weekly incidence counts in youths (Y), ages 0--19, and adults (A), ages 20+, over a one year period beginning in epiweek 15, 2009, one month prior to the first observed case in the first season, and a 37 week period beginning in epiweek 37, 2010, one month prior to the first observed case in the second season. Data from the inter--season period, epiweeks 15--36, 2010, over which a total of three cases were observed, were not considered to be informative about the transmission dynamics during the outbreak seasons and were aggregated for computational reasons. Thus, the cases accrued over the inter--season period were indexed at epiweek 36, 2010. We denote the data as, $$ \bY = \left (\left (Y_{Y,1},Y_{A,1}\right ),\dots,\left (Y_{Y,52},Y_{A,52}\right ),\left (Y^\prime_{Y,75},Y^\prime_{A,75}\right ),\dots,\left (Y_{Y,113},Y_{A,113}\right )\right ), $$ with time zero corresponding to epiweek 15, 2009. The observed incidence in age--stratum $ j $ at week $ \ell $ is modeled as a negative binomial sample of the true incidence \begin{equation}
 \label{flu_emit_prob}
 Y_{j,\ell} ~ \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + \Delta N_{SI}^{(v)}(t_\ell)), \sigma^2 = \mu + \mu^2 / \phi_j\right ),
 \end{equation}
@@ -96,9 +96,10 @@ We will use the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fi
 		\hline		
 		$ Y_{j,\ell} $ & Observed incidence, age stratum $ j $, time $ t_\ell $ & Yes \\
 		$ N$ & Population size & No\\
-		$ N_{j,\ell}^{(k)} $ & Size of age stratum $ j $ with vaccination status $ k $ & Yes \\
-		$ V_{j,\ell} $ & \# individuals in age stratum j vaccinated in week $ \ell $ & Yes\\		
-		$ \xi_{k,j}^{(uv)}(t_\ell) $ & Vaccination forcing for compartment $ k $ in age stratum $ j $ in week $ t_\ell $ & Yes\\
+		$ N_{j}^{(k)}(t_\ell) $ & Size of age stratum $ j $ with vaccination status $ k $ in week $ \ell $ & Yes \\
+		$ V_{j}(t_\ell) $ & \# vaccine doses to individuals in age stratum j at week $ \ell $ & Yes\\	
+		$ P_{j}(t_\ell) $ & Fraction of age stratum $ j $ vaccinated by week $ \ell $ & Yes \\
+		$ \xi_{k,j}^{(uv)}(t_\ell) $ & Vaccination forcing for compartment $ k $ in age stratum $ j $ in week $ \ell $ & Yes\\
 		$ C_{jk} $ & Relative contact rate to age stratum $ j $ from stratum $ k $ & No\\
 		$ R_0(t) $ & Basic reproduction number at time $ t $ & Yes \\
 		$ R_{eff}(t) $ & Effective reproduction number at time $ t $ & Yes \\
@@ -108,9 +109,9 @@ We will use the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fi
 	\end{tabular}
 \end{table}
 
-By taking the sojourn time in each disease state to be exponentially distributed, and leveraging the exchangeability of individuals within the model, we represent the time--evolution of the epidemic as a Markov jump process (MJP), $$ \bX^c = \lbrace S_{0-19}^{(u)}, I_{0-19}^{(u)}, R_{0-19}^{(u)},
-S_{0-19}^{(v)}, I_{0-19}^{(v)}, R_{0-19}^{(v)}, S_{20+}^{(u)}, I_{20+}^{(u)}, R_{20+}^{(u)},
-S_{20+}^{(v)}, I_{20+}^{(v)}, R_{20+}^{(v)} \rbrace, $$ on the state space of compartment counts, $ \mcS_X^c$, with corresponding cumulative incidence process $ \bN^c $ on the state space of cumulative incidence counts $ \mcS_N^c $.
+By taking the sojourn time in each disease state to be exponentially distributed, and leveraging the exchangeability of individuals within the model, we represent the time--evolution of the epidemic as a Markov jump process (MJP), $$ \bX^c = \lbrace S_{Y}^{(u)}, I_{Y}^{(u)}, R_{Y}^{(u)},
+S_{Y}^{(v)}, I_{Y}^{(v)}, R_{Y}^{(v)}, S_{A}^{(u)}, I_{A}^{(u)}, R_{A}^{(u)},
+S_{A}^{(v)}, I_{A}^{(v)}, R_{A}^{(v)} \rbrace, $$ on the state space of compartment counts, $ \mcS_X^c$, with corresponding cumulative incidence process $ \bN^c $ on the state space of cumulative incidence counts $ \mcS_N^c $.
 
 \begin{figure}[htbp]
 	\centering
@@ -145,7 +146,7 @@ S_{20+}^{(v)}, I_{20+}^{(v)}, R_{20+}^{(v)} \rbrace, $$ on the state space of co
 	\label{fig:flu_sirs_diag}
 \end{figure}
 
-The contact rate between individuals in age stratum $ j $ and age stratum $ k $, denoted $ C_{jk} $, was based on estimated mean contact rates, appropriately standardized (see Section \ref{sec:flu_contact_rates}), from the Finnish arm of the POLYMOD survey \cite{mossong2008social,polymod} and accessed via the \texttt{socialmixr R} package \cite{funk2018socialmixr}. Sixty percent of contacts in the 0--19 age group were from other individuals age 0--19, while eighty--five percent of the contacts in the 20+ age group were from other adults.  The rates, $ \blambda = (\blambda_{0-19},\blambda_{20+}) $, at which individuals in age--stratum $ j \in {0-19,\ 20+} $ transition between disease states are
+The contact rate between individuals in age stratum $ j $ and age stratum $ k $, denoted $ C_{jk} $, was based on estimated mean contact rates, appropriately standardized (see Section \ref{sec:flu_contact_rates}), from the Finnish arm of the POLYMOD survey \cite{mossong2008social,polymod} and accessed via the \texttt{socialmixr R} package \cite{funk2018socialmixr}. Sixty percent of contacts in the 0--19 age group were from other individuals age 0--19, while eighty--five percent of the contacts in the 20+ age group were from other adults.  The rates, $ \blambda = (\blambda_{Y},\blambda_{A}) $, at which individuals in age--stratum $ j \in {Y,\ A} $ transition between disease states are
 \begin{equation}\small
 \label{eqn:flu_sirs_rates}
 \blambda_{j} = \left\lbrace
@@ -160,7 +161,7 @@ The contact rate between individuals in age stratum $ j $ and age stratum $ k $,
 \right .
 \end{equation}
 
-At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed independently and in proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected.  To account for the time required to elicit an immune response, we apply the deterministic forcing at the beginning of week after the time when each dose count was indexed. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ unvaccinated susceptible, infected, and recovered individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
+At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed independently and in proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected. We do not model vaccine efficacy for infectiousness or recovery due to the limited extent of the data. To account for the time required to elicit an immune response, we apply the deterministic forcing at the beginning of week after the time when each dose count was indexed. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ unvaccinated susceptible, infected, and recovered individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
 \begin{align}
 \label{eqn:vacc_forcing}
 \begin{split}
@@ -168,11 +169,54 @@ At weekly intervals, we deterministically force individuals from unvaccinated mo
 	\bX_{j}^{(v)}(t_\ell^+) &= \bX_j^{(v)}(t_\ell) + V_j(t_\ell)\frac{\bX_{j}^{(u)}(t_\ell)}{\sum\bX_{j}^{(u)}(t_\ell)}.
 \end{split}
 \end{align}
+Thus, the vaccination forcing affects the initial condition for the period $ (t_\ell,t_{\ell+1}] $, not the state at time $ t_\ell $. 
 
-The diffusion approximation for the MJP is a real--valued process, $ \bX $, on the analogous state space of compartment volumes, $ \mcS_X^R $, and with corresponding cumulative incidence process, $ \bN $, with state space $ \mcS_N^R $. Note that the boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $, and similarly of $ \bX $ and $ \bN $, ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{0-19}^{(u)}(t) + I_{0-19}^{(u)}(t) + R_{0-19}^{(u)}(t) = N_{0-19}^{(u)}(t) $. As in Chapter \ref{chap:lna_for_sems}, we will use the non--centered parameterization of the restarting LNA of the log--transformed SDE to approximate the time--evolution of $ \bX^c $ and $ \bN^c $. Algorithm \ref{alg:elliptss_lna_gmrf_forcings} for sampling LNA draws with forcings using elliptical slice sampling (ElliptSS) is given in Section \ref{sec:lna_ess_forcings}.
+The diffusion approximation for the MJP is a real--valued process, $ \bX $, on the analogous state space of compartment volumes, $ \mcS_X^R $, and with corresponding cumulative incidence process, $ \bN $, with state space $ \mcS_N^R $. Note that the boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $, and similarly of $ \bX $ and $ \bN $, ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{Y}^{(u)}(t) + I_{Y}^{(u)}(t) + R_{Y}^{(u)}(t) = N_{Y}^{(u)}(t) $. As in Chapter \ref{chap:lna_for_sems}, we will use the non--centered parameterization of the restarting LNA of the log--transformed SDE to approximate the time--evolution of $ \bX^c $ and $ \bN^c $. Algorithm \ref{alg:elliptss_lna_gmrf} for sampling LNA draws using elliptical slice sampling (ElliptSS) is given in Section \ref{sec:lna_ess_gmrf}.
+
+\subsubsection{Reproduction numbers}
+\label{subsubsec:stratmod_repnumbs}
+The basic reproduction number, $ R_0 $, (and its variants) describes the propensity of an outbreak to spread through a population \cite{heffernan2005perspectives,van2008further}. It is loosely interpreted as the average number of secondary infections arising from a single infected individual in a completely susceptible population. An outbreak will fail to sustain itself (almost surely when it evolves deterministically, but in reality with high probability due to the inherently stochastic nature of epidemics) when $ R_0 < 1 $. For this reason, epidemiologists often quantify the effectiveness of a control measure by estimating the extent to which it reduces $ R_0 $, hopefully below 1. We can interpret the basic reproduction number as an intrinsic reproduction number in cases, such as ours, when there is an exogenous contribution to force of infection \cite{blackwood2018introduction}. From a modeling perspective, is helpful to understand not only how $ R_0 $ affects the transmission dynamics, but also how various aspects of the model interact to affect $ R_0 $. This is important for parameterizing the model and assimilating prior information about how different aspects of the model \textit{jointly} influence the outbreak dynamics.
+
+The basic reproduction number of a structured SEM may be obtained by computing spectral radius of the next generation matrix (NGM) for the linearized system of ODEs specifying the flow in and out of states at infection (see \cite{heffernan2005perspectives,van2008further,van2017reproduction} for details). The $ i,j $ element of the NGM gives the expected number of secondary infections in age stratum $ i $ given an index infection in stratum $ j $. Noting that vaccinated and unvaccinated invididuals in this model are equally transmissive and have the same mean infectious period durations, we obtain the age--structured next generation matrix
+\begin{align}
+\label{eqn:sirs_ngm_full}
+\bK &= 
+	\left (
+	\begin{array}{cc}
+	K_{YY} & K_{YA} \\
+	K_{AY} & K_{AA}
+	\end{array}
+	\right ) \nonumber\\
+	&=\left (
+	\begin{array}{cc}
+	\frac{C_{YY}\beta_Y\left (N_Y^{(u)} + \nu_YN_Y^{(v)}\right )}{\mu_Y} & \frac{C_{YA}\beta_Y\left (N_Y^{(u)} + \nu_YN_Y^{(v)}\right )}{\mu_A} \\[2ex]
+	\frac{C_{AY}\beta_A\left (N_A^{(u)} + \nu_AN_A^{(v)}\right )}{\mu_Y} & \frac{C_{AA}\beta_A\left (N_A^{(u)} + \nu_AN_A^{(v)}\right )}{\mu_A}
+	\end{array}
+	\right ).
+\end{align}
+The basic reproduction number is 
+\begin{align}
+\label{eqn:sirs_R0}
+R_0 = \frac{1}{2}\left (K_{YY} + K_{AA}\right ) + \frac{1}{2}\sqrt{(K_{YY} - K_{AA})^2 + 4K_{YA}K_{AY}}.
+\end{align}
+
+There are a few aspects of this expression that deserve to be highlighted in order to substantiate some of the choices we will make regarding model priors. First, it is possible for the outbreak to persist, i.e., $ R_0 > 1 $, even when the intrinsic reproduction number in one of the strata is below 1, e.g., $ K_{YY} <1$. However, a critical aspect of the contact structure is that most of the infectious contacts for each group are within--group contacts ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $). Therefore, the persistence of an outbreak in both strata suggests that $ K_{11} $ and $ K_{22} $ should not be much less than 1. If not, then persistence of transmission in the stratum where transmission is not self--sustained necessarily implies either highly elevated levels of infectious contact from outside the population ($ \alpha_j(t)N_j \gg 1 $ in our model), or a very high intrinsic reproduction number in the other stratum. This latter possibility could lead to unreasonably high attack rates in the other stratum.
+
+Another point is that the basic reproduction number will be greater than the average of the intrinsic reproduction numbers, $ K_{YY} $ and $ K_{AA} $, since the second term on the right hand side of (\ref{eqn:sirs_R0}) will typically be positive. Similarly, the variance of $ R_0 $ is also greater than the average of variances of $ K_{YY} $ and $ K_{AA} $. For these reasons, it would not be appropriate to assign priors to $ K_{YY} $ and $ K_{AA} $ without considering how they interact to induce a prior over $ R_0 $. Note that if the cross--stratum contact rates were negligible, $ R_0 $ would behave like the average of intrinsic reproduction number plus a term proportional to the absolute difference between $ K_{YY} $ and $ K_{AA} $. This might suggest that a parameterization in terms of the average and difference of intrinsic reproduction numbers, or at least incorporating prior information about those quantities, could be appropriate. Note that our situation is more complicated since the cross stratum terms are not negligible ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $). Note that 
+\begin{align*}
+K_{YA} &= \frac{(1 - C_{YY})}{C_{YY}}\frac{\mu_Y}{\mu_A}K_{YY},\\
+K_{AY} &= \frac{(1 - C_{AA})}{C_{AA}}\frac{\mu_A}{\mu_Y}K_{AA},\\
+\implies K_{YA}K_{AY} &= \frac{(1 - C_{YY})(1-C_{AA})}{C_{YY}C_{AA}}K_{YY}K_{AA}.
+\end{align*} 
+Thus, $ R_0 $ behaves like the average of intrinsic reproductive numbers plus a term that is non--linear in $ K_{11} $ and $ K_{22} $.
+
+Finally, the intrinsic reproduction numbers, and by extension $ R_0 $, are intrinsically tied to vaccine efficacy for susceptibility. It is critical that this be taken into account since 
+
+((((((Resume here - taking VE into account, at least in proposal for initial values. Then RW specification in next section, and another section on priors.))))))
 
 \subsection{Flexible Models for the Force of Infection with Gaussian Markov Random Fields}
 \label{subsec:flu_gmrf}
+
 
 \subsection{Additional Models}
 

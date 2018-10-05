@@ -1,4 +1,6 @@
 
+@preamble{ " \newcommand{\noop}[1]{} " }
+
 @inproceedings{ahnert2011odeint,
   title={Odeint--solving ordinary differential equations in {C++}},
   author="K. {Ahnert} and M. {Mulansky}",
@@ -56,6 +58,15 @@
   publisher={Wiley Online Library}
 }
 
+@article{anon1978,
+	title={Influenza in a boarding school},
+	author={Anon.},
+	year={1978},
+	journal={The British Medical Journal},
+	volume={1},
+	pages={587}
+}
+
 @article{atkins2015under,
   title={Under-reporting and case fatality estimates for emerging epidemics},
   author="K.E. {Atkins} and N.S. {Wenzel} and M. {Ndeffo}-{Mbah} and F.L. {Altice} and J.P. {Townsend} and A.P. {Galvani}",
@@ -64,6 +75,16 @@
   pages={h1115},
   year={2015},
   publisher={British Medical Journal Publishing Group}
+}
+
+@article{auranen2000,
+  title={Transmission of pneumococcal carriage in families: a latent {M}arkov process model for binary longitudinal data},
+  author="K. {Auranen} and E. {Arjas} and T. {Leino}  and A.K. {Takala}",
+  journal={Journal of the American Statistical Association},
+  volume={95},
+  pages={1044--1053},
+  year={2000},
+  publisher={Taylor \& Francis}
 }
 
 @article{backer2016spatiotemporal,
@@ -83,6 +104,16 @@
   pages={18--80},
   year={2008},
   publisher={Springer, New York}
+}
+
+@article{becker1977general,
+  title={On a general stochastic epidemic model},
+  author="N.G. {Becker}",
+  journal={Theoretical Population Biology},
+  volume={11},
+  pages={23--36},
+  year={1977},
+  publisher={Elsevier}
 }
 
 @inproceedings{bernardo2003non,
@@ -111,6 +142,26 @@
   publisher={BioMed Central}
 }
 
+@article{blackwood2018introduction,
+  title={An introduction to compartmental modeling for the budding infectious disease modeler},
+  author="J.C. {Blackwood} and L.M. {Childs}",
+  journal={Letters in Biomathematics},
+  volume={5},
+  pages={195--221},
+  year={2018},
+  publisher={Taylor \& Francis}
+}
+
+@article{boys2007bayesian,
+  title={Bayesian inference for stochastic epidemic models with time-inhomogeneous removal rates},
+  author="R.J. {Boys} and P.R. {Giles}",
+  journal={Journal of Mathematical Biology},
+  volume={55},
+  pages={223--247},
+  year={2007},
+  publisher={Springer}
+}
+
 @article{breto2009time,
   title={Time series analysis via mechanistic models},
   author="C.M. {Bret{\'o}} and D. {He} and E.L. {Ionides} and A.A. {King}",
@@ -127,6 +178,16 @@
   volume={121},
   pages={2571--2591},
   year={2011},
+  publisher={Elsevier}
+}
+
+@article{britton2010,
+  title={Stochastic epidemic models: a survey},
+  author="T. {Britton}",
+  journal={Mathematical Biosciences},
+  volume={225},
+  pages={24--35},
+  year={2010},
   publisher={Elsevier}
 }
 
@@ -157,12 +218,30 @@
   publisher={Taylor \& Francis}
 }
 
+@article{buchholz1994exact,
+	title={Exact and ordinary lumpability in finite {M}arkov chains},
+	author="P. {Buchholz}",
+	journal={Journal of Applied Probability},
+	volume={31},
+	pages={59--75},
+	year={1994},
+	publisher={JSTOR}
+}
+
 @article{buckingham2018gaussian,
   title={Gaussian process approximations for fast inference from infectious disease data},
   author="E. {Buckingham-Jeffery} and V. {Isham} and T. {House}",
   journal={Mathematical biosciences},
   year={2018},
   publisher={Elsevier}
+}
+
+@book{cappe2006inference,
+  title={Inference in {H}idden {M}arkov {M}odels},
+  author="O. {Capp{\'e}} and E. {Moulines} and T. {Ryden}",
+  series={Springer Series in Statistics},
+  year={2006},
+  publisher={Springer, New York},
 }
 
 @article{carrat2008time,
@@ -175,11 +254,38 @@
   publisher={Oxford University Press}
 }
 
+@article{cauchemez2004bayesian,
+  title={A {B}ayesian {MCMC} approach to study transmission of influenza: application to household longitudinal data},
+  author="S. {Cauchemez} and F. {Carrat} and C. {Viboud} and A.J. {Valleron}",
+  journal={Statistics in Medicine},
+  volume={23},
+  pages={3469--3487},
+  year={2004}
+}
+
+@article{cauchemez2008,
+  title={Likelihood-based estimation of continuous-time epidemic models from time-series data: application to measles transmission in {L}ondon},
+  author="S. {Cauchemez} and N.M. {Ferguson}",
+  journal={Journal of the Royal Society Interface},
+  volume={5},
+  pages={885--897},
+  year={2008},
+  publisher={The Royal Society}
+}
+
 @misc{cdc2016eboladat,
   title={Centers for {D}isease {C}ontrol and {P}revention. 2014--2016 {E}bola outbreak in {W}est {A}frica: {C}ase counts},
   key={Centers for Disease Control},
   howpublished={\url{https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/case-counts.html}},
   note={Last accessed: July 28, 2018}
+}
+
+@misc{cdcFlu,
+  author="{Centers for Disease Control and Prevention}",
+  title = {How Flu Spreads},
+  url = {http://www.cdc.gov/flu/about/disease/spread.htm},
+  year={2014},
+  note={Accessed on January 3, 2016}
 }
 
 @misc{cdc1918pandemic,
@@ -216,15 +322,24 @@
     year = {2006},
     volume = {6},
     pages = {7--11}
-  }
+}
 
-  @article{coltart2017ebola,
+@article{coltart2017ebola,
   title={The {E}bola outbreak, 2013--2016: old lessons for new epidemics},
   author="C.E.M. {Coltart} and B. {Lindsey} and I. {Ghinai} and A.M. {Johnson} and D.L. {Heymann}",
   journal={Philosophical Transactions of the Royal Society B},
   volume={372},
   pages={20160297},
   year={2017},
+  publisher={The Royal Society}
+}
+
+@article{conlan2009resolving,
+  title={Resolving the impact of waiting time distributions on the persistence of measles},
+  author="A.J.K. {Conlan} and P. {Rohani} and A.L. {Lloyd} and M. {Keeling} and B.T. {Grenfell}",
+  journal={Journal of the Royal Society Interface},
+  pages={rsif20090284},
+  year={2009},
   publisher={The Royal Society}
 }
 
@@ -247,6 +362,16 @@
   publisher={Wiley}
 }
 
+@article{davies1982,
+  title={Christ's {H}ospital 1978--79: An account of two outbreaks of influenza {A} {H1N1}},
+  author="J.R. {Davies} and A.J. {Smith} and E.A. {Grilli} and T.W. {Hoskins}",
+  journal={Journal of Infection},
+  volume={5},
+  pages={151--156},
+  year={1982},
+  publisher={Elsevier}
+}
+
 @article{dawood2012estimated,
   title="Estimated global mortality associated with the first 12 months of 2009 pandemic influenza {A(H1N1)} virus circulation: a modelling study",
   author="F.S. {Dawood} and A.D. {Iuliano} and C. {Reed} and M.I. {Meltzer} and D.K. {Shay} and P. {Cheng} and D. {Bandaranayake} and R.F. {Breiman} and W.A. {Brooks} and P. {Buchy} and others",
@@ -255,6 +380,15 @@
   pages={687--695},
   year={2012},
   publisher={Elsevier}
+}
+
+@article{diekmann2009construction,
+  title={The construction of next-generation matrices for compartmental epidemic models},
+  author="O. {Diekmann} and J.A.P. {Heesterbeek} and M.G. {Roberts}",
+  journal={Journal of the Royal Society Interface},
+  pages={rsif20090386},
+  year={2009},
+  publisher={The Royal Society}
 }
 
 @article{dudas2017virus,
@@ -275,6 +409,16 @@
   pages={84--94},
   year={1995},
   publisher={Cambridge University Press}
+}
+
+@article{dukic2012,
+  title={Tracking epidemics with {G}oogle flu trends data and a state-space {SEIR} model},
+  author="V. {Dukic} and H.F. {Lopes} and N.G. {Polson}",
+  journal={Journal of the American Statistical Association},
+  volume={107},
+  pages={1410--1426},
+  year={2012},
+  publisher={Taylor \& Francis Group}
 }
 
 @article{fearnhead2014,
@@ -300,8 +444,8 @@
 @manual{ECctmc,
 	title = {ECctmc: Simulation from endpoint--conditioned continuous time {M}arkov chains},
 	author = "J. {Fintzi}",
-	year = {2016},
-	note = {R~package, version~0.2.2},
+	year = {2017},
+	note = {R~package, version~0.2.3},
 	howpublished={\url{https://github.com/fintzij/ECctmc}},
 }
 
@@ -402,6 +546,16 @@
   publisher={AIP}
 }
 
+@article{glass2003,
+  title={Interpreting time-series analyses for continuous-time biological models --- measles as a case study},
+  author="K. {Glass} and Y. {Xia} and B. {Grenfell}",
+  journal={Journal of Theoretical Biology},
+  volume={223},
+  pages={19--25},
+  year={2003},
+  publisher={Elsevier}
+}
+
 @article{glynn2017variability,
   title={Variability in intrahousehold transmission of {E}bola virus, and estimation of the household secondary attack rate},
   author="J.R. {Glynn} and H. {Bower} and S. {Johnson} and C. {Turay} and D. {Sesay} and S.H. {Mansaray} and O. {Kamara} and A.J. {Kamara} and M.S. {Bangura} and F. {Checchi}",
@@ -410,6 +564,16 @@
   pages={232--237},
   year={2017},
   publisher={Oxford University Press US}
+}
+
+@article{gibson1998,
+  title={Estimating parameters in stochastic compartmental models using {M}arkov chain methods},
+  author="G.J. {Gibson} and E. {Renshaw}",
+  journal={Mathematical Medicine and Biology},
+  volume={15},
+  pages={19--40},
+  year={1998},
+  publisher={IMA}
 }
 
 @incollection{golightly2013simulation,
@@ -431,6 +595,36 @@
   publisher={Springer}
 }
 
+@article{heffernan2005perspectives,
+  title={Perspectives on the basic reproductive ratio},
+  author="J.M. {Heffernan} and R.J. {Smith} and L.M. {Wahl}",
+  journal={Journal of the Royal Society Interface},
+  volume={2},
+  pages={281--293},
+  year={2005},
+  publisher={The Royal Society}
+}
+
+@article{held2005,
+	title={A statistical framework for the analysis of multivariate infectious disease surveillance counts},
+	author="L. {Held} and M. {H{\"o}hle} and M. {Hofmann}",
+	journal={Statistical modelling},
+	volume={5},
+	pages={187--199},
+	year={2005},
+	publisher={SAGE Publications}
+}
+
+@article{held2012,
+	title={Modeling seasonality in space-time infectious disease surveillance data},
+	author="L. {Held} and M. {Paul}",
+	journal={Biometrical Journal},
+	volume={54},
+	pages={824--843},
+	year={2012},
+	publisher={Wiley Online Library}
+}
+
 @article{held2018forecasting,
   title={Forecasting Based on Surveillance Data},
   author="L. {Held} and S. {Meyer}",
@@ -438,11 +632,60 @@
   year={2018}
 }
 
+@article{hobolth2009,
+  title={Simulation from endpoint-conditioned, continuous-time {M}arkov chains on a finite state space, with applications to molecular evolution},
+  author="A. {Hobolth} and E.A. {Stone}",
+  journal={The Annals of Applied Statistics},
+  volume={3},
+  pages={1204--1231},
+  year={2009},
+  publisher={NIH Public Access}
+}
+
+@techreport{hohle2002,
+  title={Estimating parameters for stochastic epidemics},
+  author="M. {H{\"o}hle} and E. {J{\o}rgensen}",
+  journal={{D}ina {R}esearch {R}eport},
+  number={102},
+  month={November},
+  year={2002},
+  institution={The Royal Veterinary and Agricultural University},
+  publisher={DINA}
+}
+
+@book{hirsch2013differential,
+  title={Differential {E}quations, {D}ynamical {S}ystems, and an {I}ntroduction to {C}haos},
+  author="M.W. {Hirsch} and  S. {Smale} and R.L. {Devaney}",
+  series={Academic Press},
+  year={2013},
+  publisher={Academic Press, Waltham}
+}
+
 @article{ho2016direct,
   title={Direct likelihood-based inference for discretely observed stochastic compartmental models of infectious disease},
   author="L.S.T. {Ho} and F.W. {Crawford} and M.A. {Suchard}",
   journal={arXiv preprint arXiv:1608.06769},
   year={2016}
+}
+
+@article{ionides2006inference,
+  title={Inference for nonlinear dynamical systems},
+  author="E.L. {Ionides} and C. {Bret{\'o}} and A.A. {King}",
+  journal={Proceedings of the National Academy of Sciences},
+  volume={103},
+  pages={18438--18443},
+  year={2006},
+  publisher={National Academy of Sciences}
+}
+
+@article{ionides2011iterated,
+  title={Iterated filtering},
+  author="E.L. {Ionides} and A. {Bhadra} and Y.{Atchad{\'e}} and A.A. {King} and others",
+  journal={The Annals of Statistics},
+  volume={39},
+  pages={1776--1802},
+  year={2011},
+  publisher={Institute of Mathematical Statistics}
 }
 
 @article{iuliano2018estimates,
@@ -455,6 +698,16 @@
   publisher={Elsevier}
 }
 
+@article{jandarov2014,
+  title={Emulating a gravity model to infer the spatiotemporal dynamics of an infectious disease},
+  author="R {Jandarov} and M. {Haran} and O. {Bj{\o}rnstad} and B. {Grenfell}",
+  journal={Journal of the Royal Statistical Society: Series C (Applied Statistics)},
+  volume={63},
+  pages={423--444},
+  year={2014},
+  publisher={Wiley Online Library}
+}
+
 @article{jacks2012influenza,
   title={Influenza-associated hospitalisations in {F}inland from 1996 to 2010: unexpected age-specific burden during the influenza {A(H1N1)pdm09} pandemic from 2009 to 2010},
   author="A. {Jacks} and J. {Ollgren} and T. {Ziegler} and O. {Lyytik{\"a}inen}",
@@ -463,6 +716,25 @@
   pages={20276},
   year={2012},
   publisher={European Centre for Disease Prevention and Control}
+}
+
+@article{jewell2009bayesian,
+  title={Bayesian analysis for emerging infectious diseases},
+  author="C.P. {Jewell} and T. {Kypraios} and P. {Neal} and G.O. {Roberts}",
+  journal={Bayesian Analysis},
+  volume={4},
+  pages={465--496},
+  year={2009},
+  publisher={International Society for Bayesian Analysis}
+}
+
+@article{karcher2015,
+  title={Quantifying and mitigating the effect of preferential sampling on phylodynamic inference},
+  author="M.D. {Karcher} and J.A. {Placios} and T. {Bedford} and M.A. {Suchard} and V.N. {Minin}",
+  year={2015},
+  journal={PLOS Computational Biology},
+  volume={12},
+  pages={e1004789}
 }
 
 @book{keeling2008,
@@ -482,14 +754,14 @@
   publisher={Public Library of Science}
 }
 
-@article{koepke2016predictive,
-  title={Predictive modeling of {Cholera} outbreaks in {Bangladesh}},
-  author="A.A. {Koepke} and I.M. {Longini Jr.} and M.E. {Halloran} and J. {Wakefield} and V.N. {Minin}",
-  journal={The Annals of Applied Statistics},
-  volume={10},
-  pages={575--595},
-  year={2016},
-  publisher={Institute for Mathematical Statistics}
+@inproceedings{kermack1927,
+  title={A contribution to the mathematical theory of epidemics},
+  author="W.O. {Kermack} and A.G. {McKendrick}",
+  booktitle={Proceedings of the Royal Society of London A: Mathematical, Physical and Engineering Sciences},
+  volume={115},
+  pages={700--721},
+  year={1927},
+  organization={The Royal Society}
 }
 
 @Manual{odeintr,
@@ -510,6 +782,16 @@
   publisher={The Royal Society}
 }
 
+@article{koepke2016predictive,
+  title={Predictive modeling of {Cholera} outbreaks in {Bangladesh}},
+  author="A.A. {Koepke} and I.M. {Longini Jr.} and M.E. {Halloran} and J. {Wakefield} and V.N. {Minin}",
+  journal={The Annals of Applied Statistics},
+  volume={10},
+  pages={575--595},
+  year={2016},
+  publisher={Institute for Mathematical Statistics}
+}
+
 @article{pompjss,
     title = "Statistical inference for partially observed {M}arkov processes via the {R} package {pomp}",
     author = "A.A. {King} and D. {Nguyen} and E.L. {Ionides}",
@@ -519,6 +801,16 @@
     pages = {1--43}
   }
 
+@Article{pomp,
+  	title = {Statistical Inference for Partially Observed {M}arkov
+  	Processes via the {R} Package {pomp}},
+  	author = "A.A. {King} and D. {Nguyen} and E.L. {Ionides}",
+  	journal = {Journal of Statistical Software},
+  	year = {2016},
+  	volume = {69},
+  	pages = {1--43}
+}
+
 @article{komorowski2009,
   title="Bayesian inference of biochemical kinetic parameters using the linear noise approximation",
   author="M. {Komorowski} and B. {Finkenst{\"a}dt} and C.V. {Harper} and D.A. {Rand}",
@@ -527,6 +819,16 @@
   pages={343},
   year={2009},
   publisher={BioMed Central}
+}
+
+@article{lange2013fitting,
+  title={Fitting and interpreting continuous-time latent {M}arkov models for panel data},
+  author="J.M. {Lange} and V.N. {Minin}",
+  journal={Statistics in Medicine},
+  volume={32},
+  pages={4581--4595},
+  year={2013},
+  publisher={Wiley Online Library}
 }
 
 @article{lansbury2017effectiveness,
@@ -549,6 +851,26 @@
   publisher={The Royal Society}
 }
 
+@article{lekone2006,
+  title={Statistical inference in a stochastic epidemic {SEIR} model with control intervention: Ebola as a case study},
+  author="P.E. {Lekone} and B.F. {Finkenst{\"a}dt}",
+  journal={Biometrics},
+  volume={62},
+  pages={1170--1177},
+  year={2006},
+  publisher={Wiley Online Library}
+}
+
+@article{lindenstrand2013estimation,
+  title={Estimation of the {M}althusian parameter in an stochastic epidemic model using martingale methods},
+  author="D. {Lindenstrand} and \AA. {Svensson}",
+  journal={Mathematical Biosciences},
+  volume={246},
+  pages={272--279},
+  year={2013},
+  publisher={Elsevier}
+}
+
 @article{lofgren2014opinion,
   title={Opinion: Mathematical models: A key tool for outbreak response},
   author="E.T. {Lofgren} and M.E. {Halloran} and C.M. {Rivers} and J.M. {Drake} and T.C. {Porco} and B. {Lewis} and W. {Yang} and A. {Vespignani} and J. {Shaman} and J.N.S. {Eisenberg} and M.C. {Eisenberg} and M. {Marathe} and S.V. {Scarpino} and K.A. {Alexander} and R. {Meza} and M.J. {Ferrari} and J.M. {Hyman} and L.A. {Meyers} and S. {Eubank}",
@@ -559,6 +881,16 @@
   publisher={National Academy of Sciences}
 }
 
+@article{longini1982,
+  title={Household and community transmission parameters from final distributions of infections in households},
+  author="I.M. {Longini Jr.} and J.S. {Koopman}",
+  journal={Biometrics},
+  volume={38},
+  pages={115--126},
+  year={1982},
+  publisher={JSTOR}
+}
+
 @article{lyytikainen2011surveillance,
   title={Surveillance of influenza in Finland during the 2009 pandemic, 10 May 2009 to 8 March 2010},
   author="O. {Lyytika{\"i}nen} and M. {Kuusi} and M. {Snellman} and M.J. {Virtanen} and J. {Eskola} and E. {R{\"o}nkk{\"o}} and N. {Ikonen} and I. {Julkunen} and T. {Ziegler} and P. {Ruutu}",
@@ -567,6 +899,34 @@
   pages={19908},
   year={2011},
   publisher={European Centre for Disease Prevention and Control}
+}
+
+@article{martinez2015unraveling,
+  title={Unraveling the transmission ecology of polio},
+  author="M. {Martinez-{B}akker} and A. A. {King} and P. {Rohani}",
+  journal={PLoS Biology},
+  volume={13},
+  year={2015},
+  publisher={Public Library of Science}
+}
+
+@article{mckinley2009,
+  title={Inference in epidemic models without likelihoods},
+  author="T. {McKinley} and A.R. {Cook} and R. {Deardon}",
+  journal={The International Journal of Biostatistics},
+  volume={5},
+  pages={1--40},
+  year={2009}
+}
+
+@article{mckinley2014simulation,
+  title={Simulation-based {B}ayesian inference for epidemic models},
+  author="T.J. {McKinley} and J.V. {Ross} and R. {Deardon} and A.R. {Cook}",
+  journal={Computational Statistics \& Data Analysis},
+  volume={71},
+  pages={434--447},
+  year={2014},
+  publisher={Elsevier}
 }
 
 @article{meyer2017incorporating,
@@ -597,6 +957,16 @@
   pages={e1005676},
   year={2017},
   publisher={Public Library of Science}
+}
+
+@article{moler2003nineteen,
+  title={Nineteen dubious ways to compute the exponential of a matrix, twenty-five years later},
+  author="C. {Moler} and C. {Van {L}oan}",
+  journal={SIAM Review},
+  volume={45},
+  pages={3--49},
+  year={2003},
+  publisher={SIAM}
 }
 
 @Misc{polymod,
@@ -634,6 +1004,16 @@
   year={2010}
 }
 
+@article{neal2004statistical,
+  title={Statistical inference and model selection for the 1861 {H}agelloch measles epidemic},
+  author="P.J. {Neal} and G.O. {Roberts}",
+  journal={Biostatistics},
+  volume={5},
+  pages={249--261},
+  year={2004},
+  publisher={Biometrika Trust}
+}
+
 @article{neal2005case,
   title={A case study in non-centering for data augmentation: stochastic epidemics},
   author="P. {Neal} and G.O. {Roberts}",
@@ -649,6 +1029,36 @@
   author="B. {{\O}ksendal}",
   year={2003},
   publisher={Springer, New York}
+}
+
+@article{oneill1999,
+  title="Bayesian inference for partially observed stochastic epidemics",
+  author="P.D. {O'Neill} and G.O. {Roberts}",
+  journal={Journal of the Royal Statistical Society: Series A (Statistics in Society)},
+  volume={162},
+  pages={121--129},
+  year={1999},
+  publisher={Wiley Online Library}
+}
+
+@article{oneill2002,
+  title={A tutorial introduction to {B}ayesian inference for stochastic epidemic models using {M}arkov chain {M}onte {C}arlo methods},
+  author="P.D. {O'Neill}",
+  journal={Mathematical Biosciences},
+  volume={180},
+  pages={103--114},
+  year={2002},
+  publisher={Elsevier}
+}
+
+@article{oneill2009,
+	title="Bayesian inference for stochastic multitype epidemics in structured populations using sample data",
+	author="P.D. {O'Neill}",
+	journal={Biostatistics},
+	volume={10},
+	pages={779--791},
+	year={2009},
+	publisher={Biometrika Trust}
 }
 
 @article{oneill2010,
@@ -699,6 +1109,44 @@ title = {Non-Centered Parameterisations for Hierarchical Models and Data Augment
   publisher={Wiley Online Library}
 }
 
+@article{pooley2015,
+  title={Using model-based proposals for fast parameter inference on discrete state space, continuous-time {M}arkov processes},
+  author="C.M. {Pooley} and S.C. {Bishop} and G. {Marion}",
+  journal={Journal of The Royal Society Interface},
+  volume={12},
+  pages={20150225},
+  year={2015},
+  publisher={The Royal Society}
+}
+
+@inproceedings{QinShe15,
+   author = "Z. {Qin} and C.R. {Shelton}",
+   title = "Auxiliary {G}ibbs Sampling for Inference in Piecewise-Constant Conditional Intensity Models",
+   booktitle = "Proceedings of the Thirty-First Conference on Uncertainty in Artificial Intelligence",
+   booktitleabbr = "UAI",
+   year = 2015,
+}
+
+@article{rabiner1989,
+  title={A tutorial on hidden {M}arkov models and selected applications in speech recognition},
+  author="L. {Rabiner}",
+  journal={Proceedings of the IEEE},
+  volume={77},
+  pages={257--286},
+  year={1989},
+  publisher={IEEE}
+}
+
+@article{roberts2001,
+  title={On inference for partially observed nonlinear diffusion models using the {M}etropolis-{H}astings algorithm},
+  author="G.O. {Roberts} and O. {Stramer}",
+  journal={Biometrika},
+  volume={88},
+  pages={603--621},
+  year={2001},
+  publisher={Biometrika Trust}
+}
+
 @article{scarpino2014epidemiological,
   title={Epidemiological and viral genomic sequence analysis of the 2014 {E}bola outbreak reveals clustered transmission},
   author="S.V. {Scarpino} and A. {Iamarino} and C. {Wells} and D. {Yamin} and M. {Ndeffo-Mbah} and N.S. {Wenzel} and S.J. {Fox} and T. {Nyenswah} and F.L. {Altice} and A.P. {Galvani} and others",
@@ -708,6 +1156,35 @@ title = {Non-Centered Parameterisations for Hierarchical Models and Data Augment
   year={2014},
   publisher={Oxford University Press}
 }
+
+@article{scott2002,
+  title={Bayesian methods for hidden {M}arkov models: {R}ecursive computing in the 21st century},
+  author="S.L. {Scott}",
+  journal={Journal of the American Statistical Association},
+  volume={97},
+  pages={337--351},
+  year={2002},
+  publisher={Taylor \& Francis}
+}
+
+@article{shelton2014,
+  title={Tutorial on structured continuous-time {M}arkov processes},
+  author="C.R. {Shelton} and G. {Ciardo}",
+  journal={Journal of Artificial Intelligence Research},
+  volume={51},
+  pages={725--778},
+  year={2014},
+  publisher={AI Access Foundation}
+}
+
+@article{shestopaloff2016sampling,
+  title={Sampling latent states for high-dimensional non-linear state space models with the embedded {HMM} method},
+  author="A.Y. {Shestopaloff} and R.M. {Neal}",
+  journal={Bayesian Analysis},
+  year={2018},
+  publisher={International Society for Bayesian Analysis}
+}
+
 
 @article{shubin2014estimating,
   title={Estimating the burden of {A(H1N1)} pdm09 influenza in {F}inland during two seasons},
@@ -739,6 +1216,16 @@ title = {Non-Centered Parameterisations for Hierarchical Models and Data Augment
   publisher={Oxford University Press}
 }
 
+@article{sudbury1985proportion,
+  title={The proportion of the population never hearing a rumour},
+  author="A. {Sudbury}",
+  journal={Journal of Applied Probability},
+  volume={22},
+  pages={443--446},
+  year={1985},
+  publisher={Cambridge University Press}
+}
+
 @article{syrjanen2014effectiveness,
   title={Effectiveness of pandemic and seasonal influenza vaccines in preventing laboratory-confirmed influenza in adults: a clinical cohort study during epidemic seasons 2009--2010 and 2010--2011 in {F}inland},
   author="R.K. {Syrj{\"a}nen} and J. {Jokinen} and T. {Ziegler} and J. {Sundman} and M. {Lahdenkari} and T. {Julkunen} and T.M. {Kilpi}",
@@ -747,6 +1234,16 @@ title = {Non-Centered Parameterisations for Hierarchical Models and Data Augment
   pages={e108538},
   year={2014},
   publisher={Public Library of Science}
+}
+
+@article{tian2006lumpability,
+	title={Lumpability and commutativity of {M}arkov processes},
+	author="J.P. {Tian} and D. {Kannan}",
+	journal={Stochastic Analysis and Applications},
+	volume={24},
+	pages={685--702},
+	year={2006},
+	publisher={Taylor \& Francis}
 }
 
 @article{tibbits2014automated,
@@ -759,12 +1256,51 @@ title = {Non-Centered Parameterisations for Hierarchical Models and Data Augment
   publisher={Taylor \& Francis}
 }
 
+@article{titman2010semi,
+  title={Semi--{M}arkov models with phase-type sojourn distributions},
+  author="A.C. {Titman} and L.D. {Sharples}",
+  journal={Biometrics},
+  volume={66},
+  pages={742--752},
+  year={2010},
+  publisher={Wiley Online Library}
+}
+
+@article{toni2009,
+  title={Approximate {B}ayesian computation scheme for parameter inference and model selection in dynamical systems},
+  author="T. {Toni} and D. {Welch} and N. {Strelkowa} and A. {Ipsen} and M.P.H. {Stumpf}",
+  journal={Journal of the Royal Society Interface},
+  volume={6},
+  pages={187--202},
+  year={2009},
+  publisher={The Royal Society}
+}
+
 @misc{un2017popdat,
   title={{U}nited {N}ations, {D}epartment of {E}conomic and {S}ocial {A}ffairs, {P}opulation {Division}. {W}orld {P}opulation {P}rospects: {T}he 2017 {R}evision},
   year={2017},
   key={United Nations},
   howpublished={\url{https://esa.un.org/unpd/wpp/DataQuery/}},
   note={Last accessed: February 28, 2018}
+}
+
+@incollection{van2008further,
+  title={Further notes on the basic reproduction number},
+  author="P. {van den Driessche} and J. {Watmough}",
+  booktitle={Mathematical epidemiology},
+  pages={159--178},
+  year={2008},
+  publisher={Springer}
+}
+
+@article{van2017reproduction,
+  title={Reproduction numbers of infectious disease models},
+  author="P. {van den Driessche}",
+  journal={Infectious Disease Modelling},
+  volume={2},
+  pages={288--303},
+  year={2017},
+  publisher={Elsevier}
 }
 
 @article{van2013estimating,
@@ -815,6 +1351,33 @@ title = {Non-Centered Parameterisations for Hierarchical Models and Data Augment
   pages={102--115},
   year={2012},
   publisher={IET}
+}
+
+@article{watson1981application,
+  title={An application of a martingale central limit theorem to the standard epidemic model},
+  author="R. {Watson}",
+  journal={Stochastic Processes and Their Applications},
+  volume={11},
+  pages={79--89},
+  year={1981},
+  publisher={Elsevier}
+}
+
+@article{wearing2005,
+  title={Appropriate models for the management of infectious diseases},
+  author="H.J. {Wearing} and P. {Rohani} and M.J. {Keeling}",
+  journal={PLOS Medicine},
+  volume={2},
+  pages={e174},
+  year={2005},
+  publisher={Public Library of Science}
+}
+
+@book{wilkinson2011stochastic,
+  title={Stochastic {M}odelling for {S}ystems {B}iology},
+  author="D.J. {Wilkinson}",
+  year={2011},
+  publisher={CRC Press, Boca Raton}
 }
 
 @article{who2014ebola,
