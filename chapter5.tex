@@ -19,7 +19,7 @@ An important aspect of the pandemic response in Finland was the execution of a c
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/fludat_plots}
-	\caption{(Top) Observed incidence (solid lines) and vaccine coverage (lines with points). (Bottom left) Observed incidence by season and age stratum. The 2009--2010 season (dark green) corresponds to the period from April 15, 2009 through April 4, 2010. The 2010--2011 season (light green) corresponds to the period from September 12, 2010 through June 5, 2011. Numbers in points give the attack rate within each stratum for the corresponding season. (Bottom right) Vaccination coverage by age stratum, colored by vaccine coverages at the times of peak incidence in the first season, tail of the major outbreak in the first season, and end of the vaccination campaign. The numbers inside and outside the histograms denote the percentage of individuals in each stratum that were vaccinated and unvaccinated, respectively, by the end of the vaccination campaign. The times at which vaccine coverages are summarized, denoted by colors of histogram bars, are also identified by corresponding triangles above the top figure.}
+	\caption[A(H1N1)pdm09 incidence and vaccination data from Finland, April 15, 2009 --- June 5, 2011.]{(Top) Observed incidence (solid lines) and vaccine coverage (lines with points). (Bottom left) Observed incidence by season and age stratum. The 2009--2010 season (dark green) corresponds to the period from April 15, 2009 through April 4, 2010. The 2010--2011 season (light green) corresponds to the period from September 12, 2010 through June 5, 2011. Numbers in points give the attack rate within each stratum for the corresponding season. (Bottom right) Vaccination coverage by age stratum, colored by vaccine coverages at the times of peak incidence in the first season, tail of the major outbreak in the first season, and end of the vaccination campaign. The numbers inside and outside the histograms denote the percentage of individuals in each stratum that were vaccinated and unvaccinated, respectively, by the end of the vaccination campaign. The times at which vaccine coverages are summarized, denoted by colors of histogram bars, are also identified by corresponding triangles above the top figure.}
 	\label{fig:finland_fludat}
 \end{sidewaysfigure}
 
@@ -64,7 +64,7 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 
 We will model the time series of weekly incidence counts in youths (Y), ages 0--19, and adults (A), ages 20+, over a one year period beginning in epiweek 15, 2009, one month prior to the first observed case in the first season, and a 37 week period beginning in epiweek 37, 2010, one month prior to the first observed case in the second season. Data from the inter--season period, epiweeks 15--36, 2010, over which a total of three cases were observed, were not considered to be informative about the transmission dynamics during the outbreak seasons and were aggregated for computational reasons. Thus, the cases accrued over the inter--season period were indexed at epiweek 36, 2010. We denote the data as, $$ \bY = \left (\left (Y_{Y,1},Y_{A,1}\right ),\dots,\left (Y_{Y,52},Y_{A,52}\right ),\left (Y^\prime_{Y,75},Y^\prime_{A,75}\right ),\dots,\left (Y_{Y,113},Y_{A,113}\right )\right ), $$ with time zero corresponding to epiweek 15, 2009. The observed incidence in age--stratum $ j $ at week $ \ell $ is modeled as a negative binomial sample of the true incidence \begin{equation}
 \label{flu_emit_prob}
-Y_{j,\ell} ~ \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + \Delta N_{SI}^{(v)}(t_\ell)), \sigma^2 = \mu + \mu^2 / \phi_j\right ),
+Y_{j,\ell} \sim \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + \Delta N_{SI}^{(v)}(t_\ell)), \sigma^2 = \mu + \mu^2 / \phi_j\right ),
 \end{equation}
 where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an age--specific overdispersion parameter, and $ \Delta $ is a differencing operator for the cumulative incidence in a age--vaccination stratum, e.g., $ \Delta N_{SI}^{(u)}(t_\ell) = N_{SI}^{(u)}(t_\ell) - N_{SI}^{(u)}(t_{\ell-1}) $ is change in cumulative incidence between times $ t_{\ell-1} $ and $ t_\ell $.
 
@@ -95,6 +95,7 @@ We will use the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fi
 		\textbf{Variable} & \textbf{Interpretation} & \textbf{Time-varying}\\
 		\hline		
 		$ Y_{j,\ell} $ & Observed incidence, age stratum $ j $, time $ t_\ell $ & Yes \\
+		$ \mathcal{T} $ & Observation times, numbered by week:  $ \lbrace t_\ell:\ \ell=1,\dots,52,75,\dots,113\rbrace $& No \\
 		$ N$ & Population size & No\\
 		$ N_{j}^{(k)}(t_\ell) $ & Size of age stratum $ j $ with vaccination status $ k $ in week $ \ell $ & Yes \\
 		$ V_{j}(t_\ell) $ & \# vaccine doses to individuals in age stratum j at week $ \ell $ & Yes\\	
@@ -172,7 +173,7 @@ At weekly intervals, we deterministically force individuals from unvaccinated mo
 \end{align}
 Thus, the vaccination forcing affects the initial condition for the period $ (t_\ell,t_{\ell+1}] $, not the state at time $ t_\ell $. 
 
-The diffusion approximation for the MJP is a real--valued process, $ \bX $, on the analogous state space of compartment volumes, $ \mcS_X^R $, and with corresponding cumulative incidence process, $ \bN $, with state space $ \mcS_N^R $. Note that the boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $, and similarly of $ \bX $ and $ \bN $, ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{Y}^{(u)}(t) + I_{Y}^{(u)}(t) + R_{Y}^{(u)}(t) = N_{Y}^{(u)}(t) $. As in Chapter \ref{chap:lna_for_sems}, we will use the non--centered parameterization of the restarting LNA of the log--transformed SDE to approximate the time--evolution of $ \bX^c $ and $ \bN^c $. Algorithm \ref{alg:elliptss_lna_gmrf} for sampling LNA draws using elliptical slice sampling (ElliptSS) is given in Section \ref{sec:lna_ess_gmrf}.
+The diffusion approximation for the MJP is a real--valued process, $ \bX $, on the analogous state space of compartment volumes, $ \mcS_X^R $, and with corresponding cumulative incidence process, $ \bN $, with state space $ \mcS_N^R $. Note that the boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $, and similarly of $ \bX $ and $ \bN $, ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{Y}^{(u)}(t) + I_{Y}^{(u)}(t) + R_{Y}^{(u)}(t) = N_{Y}^{(u)}(t) $. As in Chapter \ref{chap:lna_for_sems}, we will use the non--centered parameterization of the restarting LNA of the log--transformed SDE to approximate the time--evolution of $ \bX^c $ and $ \bN^c $. Algorithm \ref{alg:doLNA2} details the procedure for mapping standard normal LNA draws onto an LNA sample path with vaccination forcings.
 
 \subsubsection{Reproduction numbers}
 \label{subsubsec:stratmod_repnumbs}
@@ -203,7 +204,7 @@ R_0 = \frac{1}{2}\left (K_{YY} + K_{AA}\right ) + \frac{1}{2}\sqrt{(K_{YY} - K_{
 
 There are a few aspects of this expression that are useful to highlight with respect to prior specification. First, it is possible for the outbreak to persist, i.e., $ R_0 > 1 $, even when the intrinsic reproduction number in one of the strata is below 1, e.g., $ K_{YY} <1$. However, a critical aspect of the contact structure is that most of the infectious contacts for each group are within--group contacts ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $). Therefore, the persistence of an outbreak in both strata suggests that $ K_{11} $ and $ K_{22} $ should not be much less than one. If not, then persistence of the outbreak in the stratum where transmission is not self--sustained implies that either its rate of infectious contact from outside the population is high ($ \alpha_j(t)N_j \gg  1$), and/or that the intrinsic reproduction number in the other stratum is high. This latter possibility could be particularly problematic since it might imply unreasonably high attack rates in the other stratum.
 
-We also note that the basic reproduction number is be greater than the average of intrinsic reproduction numbers, $ K_{YY} $ and $ K_{AA} $, since the second term on the right hand side of (\ref{eqn:sirs_R0}) will typically be positive. Similarly, the variance of $ R_0 $ is also greater than the average of variances of $ K_{YY} $ and $ K_{AA} $. For these reasons, it would not be appropriate to assign priors to $ K_{YY} $ and $ K_{AA} $ without considering how they interact to induce a prior over $ R_0 $. Note that if the cross--stratum contact rates were negligible, $ R_0 $ would behave like the average of intrinsic reproduction number plus a term proportional to the absolute difference between $ K_{YY} $ and $ K_{AA} $. This suggests that prior information about the average and difference of intrinsic reproduction numbers could help identify $ R_0 $. Note that our model is more complicated since the cross stratum terms are not negligible ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $), and 
+We also note that the basic reproduction number is be greater than the average of intrinsic reproduction numbers, $ K_{YY} $ and $ K_{AA} $, since the second term on the right hand side of (\ref{eqn:sirs_R0}) will typically be positive. Similarly, the variance of $ R_0 $ is also greater than the average of variances of $ K_{YY} $ and $ K_{AA} $. For these reasons, it would not be appropriate to assign priors to $ K_{YY} $ and $ K_{AA} $ without considering how they interact to induce a prior over $ R_0 $. Note that if the cross--stratum contact rates were negligible, $ R_0 $ would behave like the average of intrinsic reproduction number plus a term proportional to the absolute difference between $ K_{YY} $ and $ K_{AA} $. This suggests that prior information about the intrinsic reproduction numbers, either individually (our preference) or about their average and difference, could help identify $ R_0 $. Note that our model is more complicated since the cross stratum terms are not negligible ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $), and 
 \begin{align*}
 K_{YA} &= \frac{(1 - C_{YY})}{C_{YY}}\frac{\mu_Y}{\mu_A}K_{YY},\\
 K_{AY} &= \frac{(1 - C_{AA})}{C_{AA}}\frac{\mu_A}{\mu_Y}K_{AA},\\
@@ -232,7 +233,6 @@ Note that $ \psi_{j,\ell}^\prime = \bpsi_{j,\ell} / \left (1 - P^v_j(t_\ell) + P
 
 We denote by $ \Delta $ the first--order forward difference operator, i.e., $ \Delta X_j = X_{j+1} - X_j $. Let $ \sigma^2_{j,\ell} $ denote the variance of first order differences at week $ \ell $, which is assigned a Gaussian prior with mean $ \mu_{\sigma_\ell} $ and variance $ \tau^2_{\sigma_\ell} $. Let $ \mu_{j,\ell}$ and $ \sigma^2_{j,\ell} $ denote the mean and variance of a Gaussian prior for the intrinsic reproduction number for stratum $ j $ at week $ \ell $. The sub--model for intrinsic reproduction numbers in stratum $ j $ is
 \begin{align}
-\label{eqn:flu_Rt_mod}
 \log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\ \sigma_{j,\ell}^2),&\ \ell&= 0,75, \nonumber\\
 \log(\sigma_{j,\ell}) &\sim \mcN(\mu_{\sigma_\ell}, \tau_{\sigma_\ell}^2),&\ \ell&=0,75, \nonumber\\
 \Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ \ell,&=0,\dots,51, \nonumber\\
@@ -254,11 +254,23 @@ Z_{\Delta\log(\psi_{j,\ell})} &\sim \mcN(0,1),&\ \ell&=0,\dots,51,75,\dots,111, 
 \log(\psi_{j,\ell}) &= \psi_{j,75} + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,75+k}),&\ \ell &= 76,\dots,112. \nonumber\\
 \beta_j(t_\ell) &= \exp(\log(\psi_{j,\ell}))N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ \ell&=0,\dots,52,75,\dots,112 \nonumber
 \end{align}
-The initial reproduction numbers, for which we retain the centered parameterization, are blocked with other model parameters using a multivariate normal slice sampler. The non--centered GMRF differences and their standard deviations are updated jointly with the LNA path using elliptical slice sampling (Algorithm \ref{alg:elliptss_lna_gmrf}). 
+The initial reproduction numbers, for which we retain the centered parameterization, are blocked with other model parameters using a multivariate normal slice sampler. The non--centered GMRF differences and their standard deviations are updated jointly with the LNA path using elliptical slice sampling (Algorithm \ref{alg:elliptss_lna_gmrf}). Readers familiar with GMRFs will note the, somewhat unconventional, Gaussian prior for the standard deviation of the random walk increments. This choice was made for computational reasons in order to facilitate joint updates of the GMRF and its hyper--parameters. Alternating between field and hyper--parameter updates is known to results in poorly mixing MCMC chains as large updates to the hyper--parameters quickly result in fields that are not concordant with the data  \cite{knorr2002block,murray2010hyper}. 
 
-\subsection{Tying it All Together}
+\subsection{Sampling from the Posterior}
 \label{subsec:flu_model}
 
-\subsection{Additional Models}
+Let $ \bZ = \left (\bZ^X,\bZ^F,\bZ^{\btheta_F}\right ) $ denote the vector of i.i.d. standard normal draws for the LNA, GMRF increments, and GMRF hyperparameters, and let $ \pi(\btheta) $ be the prior distributions for the other model parameters. Let $ \mathcal{T} = \lbrace t_\ell:\ \ell = 1,\dots,52,75,\dots,113 \rbrace $ denote the set of observation times. Our MCMC will target the posterior
+\begin{align}
+\label{eqn:flu_posterior}
+\pi(\btheta,\bZ | \bY) &\propto \pi(\bZ)\pi(\btheta)\pi(\bY|\btheta,\bZ) \nonumber\\
+&= \pi(\bZ)\pi(\btheta) \prod_{t_\ell\in\mathcal{T}}\prod_{j\in\lbrace Y,A\rbrace} \Pr\left (Y_{j}(t_\ell) | \doLNA2(\bZ,\btheta,\mcI,\bxi)\right )
+\end{align}
+MCMC proceeds by alternately updating $ \bZ|\bY,\btheta $ using elliptical slice (Algorithm \ref{alg:elliptss_lna_gmrf}) and multivariate normal updates for $ \btheta|\bY,\bZ $. 
+
+\section{Results}
+\label{sec:flu_results}
+
+Not complete, models running now.
 
 \section{Discussion}
+\label{sec:flu_discussion}

@@ -54,7 +54,7 @@ We briefly reconcile what might seem like a discrepancy between the SIR model pr
 \begin{figure}
 	\centering
 	\includegraphics[width=0.95\linewidth]{figures/SIRdynamics_HMM}
-	\caption{(a) SIR dynamics in a population of five subjects. The number of infecteds can increase from two to three via an infection of the first or second subject, reaching each of those configurations at rate $ 2\beta $. The number of recovered individuals can increase from one to two via a recovery of the third or fourth subject, reaching each of those configurations at rate $ \mu $. (b) Hidden Markov model for the joint distribution of the latent epidemic process and the data. The observations, $\mathbf{Y}_\ell,\ \ell=1,\dots,L$, are conditionally independent given $\bX(t)$, and $ \bY_\ell | I_{t_\ell}, \rho\sim\mathrm{Binomial}(I_{t_\ell}, \rho) $.}
+	\caption[Diagram of subject--level state transitions and HMM structure for an SIR model.]{(a) SIR dynamics in a population of five subjects. The number of infecteds can increase from two to three via an infection of the first or second subject, reaching each of those configurations at rate $ 2\beta $. The number of recovered individuals can increase from one to two via a recovery of the third or fourth subject, reaching each of those configurations at rate $ \mu $. (b) Hidden Markov model for the joint distribution of the latent epidemic process and the data. The observations, $\mathbf{Y}_\ell,\ \ell=1,\dots,L$, are conditionally independent given $\bX(t)$, and $ \bY_\ell | I_{t_\ell}, \rho\sim\mathrm{Binomial}(I_{t_\ell}, \rho) $.}
 	\label{fig:bda_SIRdynamics_HMM}
 \end{figure}
 
@@ -99,7 +99,7 @@ The MCMC algorithm for constructing a subject--path proposal proceeds in three s
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.95\linewidth]{figures/sampling_diagram.pdf}
-	\caption{Procedure for constructing a subject--path proposal with SIR dynamics. (a) The dashed line depicts the number of infected individuals, excluding $ \bX_j $, the subject whose path is being sampled. The observation times, $ t_1,\dots,t_5 $, and times at which other subjects change disease states, $ \tau_1,\dots,\tau_5 $, are shown on the bottom axis. Rate matrices of the time--inhomogeneous CTMC (top axis) are constant within inter--event intervals (vertical lines). The state space of the subject--level process, $ \bX_j $, is shown on the right axis. (b) \textit{HMM step}: Sample the state of $ \bX_j $ at $ t_1,\dots,t_5 $, conditional on the data and on the disease histories of other subjects. (c) \textit{Discrete time skeleton step}: Sample the infection status at  $ \tau_1,\dots,\tau_5 $, conditional on the sequence of states sampled in the HMM step. (d) \textit{Event time step}: Sample the infection and recovery times from endpoint-conditioned time--homogeneous CTMC distributions, conditional on the sequence of disease states sampled in the HMM and discrete time skeleton steps.}
+	\caption[Diagram of subject--path proposals used in fitting models via Bayesian data augmentation.]{Procedure for constructing a subject--path proposal with SIR dynamics. (a) The dashed line depicts the number of infected individuals, excluding $ \bX_j $, the subject whose path is being sampled. The observation times, $ t_1,\dots,t_5 $, and times at which other subjects change disease states, $ \tau_1,\dots,\tau_5 $, are shown on the bottom axis. Rate matrices of the time--inhomogeneous CTMC (top axis) are constant within inter--event intervals (vertical lines). The state space of the subject--level process, $ \bX_j $, is shown on the right axis. (b) \textit{HMM step}: Sample the state of $ \bX_j $ at $ t_1,\dots,t_5 $, conditional on the data and on the disease histories of other subjects. (c) \textit{Discrete time skeleton step}: Sample the infection status at  $ \tau_1,\dots,\tau_5 $, conditional on the sequence of states sampled in the HMM step. (d) \textit{Event time step}: Sample the infection and recovery times from endpoint-conditioned time--homogeneous CTMC distributions, conditional on the sequence of disease states sampled in the HMM and discrete time skeleton steps.}
 	\label{fig:sampling_diagram}
 \end{figure}
 
@@ -246,7 +246,7 @@ We fit SIR, SEIR, and SIRS dynamics to binomially distributed prevalence counts 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sim1_latent_posts.pdf}
-	\caption{Estimated latent posterior distributions of disease prevalence in outbreaks simulated under SIR (left), SEIR (middle), and SIRS (right) dynamics. Depicted are the true unobserved prevalence (solid line), observed data (dots), pointwise posterior median prevalence (dashed line), and pointwise 95\% credible intervals (shaded region). Latent posterior estimates are based on a thinned sample, with every $250^{th}$ sample retained.}
+	\caption[Estimated latent posteriors for SIR, SEIR, and SIRS models fit to simulated prevalence data.]{Estimated latent posterior distributions of disease prevalence in outbreaks simulated under SIR (left), SEIR (middle), and SIRS (right) dynamics. Depicted are the true unobserved prevalence (solid line), observed data (dots), pointwise posterior median prevalence (dashed line), and pointwise 95\% credible intervals (shaded region). Latent posterior estimates are based on a thinned sample, with every $250^{th}$ sample retained.}
 	\label{fig:sim1_latent_posts}
 \end{figure}
 
@@ -255,7 +255,7 @@ The true epidemic paths and parameter values fell well within the 95\% Bayesian 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sim1_credints.pdf}
-	\caption{Posterior medians and 95\% credible intervals of parameters in the SIR, SEIR, and SIRS models fit with Bayesian data augmentation (BDA) and particle marginal Metropolis--Hastings (PMMH) with particle paths simulated approximately (using $ \tau $--leaping) and exactly (using Gillespie's direct algorithm). Displayed are estimates of the basic reproductive number, $ R_0 $, the rate parameters, and the binomial sampling probability. In all models, $ \beta $ is the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. In the SEIR model, $ \gamma $ denotes the rate at which an exposed individual becomes infectious, while in the SIRS model $ \gamma $ denotes the rate at which immunity is lost.}
+	\caption[Posterior estimates of SIR, SEIR, and SIRS model parameters fit to simualted data using Bayesian data augmentation and PMMH.]]{Posterior medians and 95\% credible intervals of parameters in the SIR, SEIR, and SIRS models fit with Bayesian data augmentation (BDA) and particle marginal Metropolis--Hastings (PMMH) with particle paths simulated approximately (using $ \tau $--leaping) and exactly (using Gillespie's direct algorithm). Displayed are estimates of the basic reproductive number, $ R_0 $, the rate parameters, and the binomial sampling probability. In all models, $ \beta $ is the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. In the SEIR model, $ \gamma $ denotes the rate at which an exposed individual becomes infectious, while in the SIRS model $ \gamma $ denotes the rate at which immunity is lost.}
 	\label{fig:sim1_credint}
 \end{figure}
 
@@ -279,7 +279,7 @@ However, it is precisely the inherent misspecification of SEMs that leads simula
 		&&&&
 	\end{tabular}
 	\captionsetup{labelformat=andtable}
-	\caption{Simulated outbreak with SEIR dynamics that varied over four epochs (shaded regions). Weekly prevalence counts (points) were binomially sampled with sampling probability $ \rho = 0.95 $ from the true unobserved prevalence (solid line). The table presents the effective reproductive number computed based on the number of susceptibles at the beginning of each epoch, $ R_0^{\mathrm{Eff}} = \beta(\tau) S(\tau) / \mu(\tau) $, the mean latent period, $ 1/\gamma $, and the mean infectious period, $ 1/\mu $.}
+	\caption[Simulated outbreak data from an SEIR model with time--varying dynamics.]{Simulated outbreak with SEIR dynamics that varied over four epochs (shaded regions). Weekly prevalence counts (points) were binomially sampled with sampling probability $ \rho = 0.95 $ from the true unobserved prevalence (solid line). The table presents the effective reproductive number computed based on the number of susceptibles at the beginning of each epoch, $ R_0^{\mathrm{Eff}} = \beta(\tau) S(\tau) / \mu(\tau) $, the mean latent period, $ 1/\gamma $, and the mean infectious period, $ 1/\mu $.}
 	\label{fig:misspec_data}
 \end{figure}
 
@@ -290,7 +290,7 @@ Both models fit via DA yield reasonable estimates for the within--subject diseas
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/misspec_latent_posts.pdf}
-	\caption{True epidemic path (solid lines), pointwise posterior median estimate of the numbers of susceptibles (dashed line), exposed (dotted line), and infected individuals (dash--dotted line) and pointwise 95\% credible intervals (shaded regions) under SIR and SEIR dynamics.}
+	\caption[Latent posterior distributions for SIR and SEIR models fit to simulated data from an SEIR model with time--varying dynamics.]{True epidemic path (solid lines), pointwise posterior median estimate of the numbers of susceptibles (dashed line), exposed (dotted line), and infected individuals (dash--dotted line) and pointwise 95\% credible intervals (shaded regions) under SIR and SEIR dynamics.}
 	\label{fig:misspec_latent_posts}
 \end{figure}
 
@@ -301,7 +301,7 @@ Given the limited extent of aggregated prevalence counts, we must consider how o
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/prior_effect_credints.pdf}
-	\caption{Posterior median estimates and 95\% credible intervals for all SIR model parameters under four different prior regimes (Table \ref{tab:prior_effect_priors}). Regimes 1 and 3 set informative priors for the per--contact infectivity and recovery rates. Regimes 1 and 2 set informative priors for the binomial sampling probability. The same mildly informative prior for the initial state probabilities was used in all four regimes.}
+	\caption[Posterior estimates of SIR model parameters under four prior regimes.]{Posterior median estimates and 95\% credible intervals for all SIR model parameters under four different prior regimes (Table \ref{tab:prior_effect_priors}). Regimes 1 and 3 set informative priors for the per--contact infectivity and recovery rates. Regimes 1 and 2 set informative priors for the binomial sampling probability. The same mildly informative prior for the initial state probabilities was used in all four regimes.}
 	\label{fig:prior_credints}
 \end{figure}
 
@@ -310,7 +310,7 @@ The true values for all model parameters fell within the 95\% credible intervals
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\linewidth]{figures/prior_latent_posts.pdf}
-	\caption{Estimated latent posterior distributions of disease prevalence in outbreaks simulated under four prior regimes for SIR model rate parameters and the binomial sampling probability. Depicted are the true unobserved prevalence (solid line), observed data (dots), pointwise posterior median prevalence (dashed line), and pointwise 95\% credible intervals (shaded region). Latent posterior estimates are based on a thinned sample, with every $250^{th}$ sample retained.}
+	\caption[Estimated latent posterior for an SIR model under four prior regimes.]{Estimated latent posterior distributions of disease prevalence in outbreaks simulated under four prior regimes for SIR model rate parameters and the binomial sampling probability. Depicted are the true unobserved prevalence (solid line), observed data (dots), pointwise posterior median prevalence (dashed line), and pointwise 95\% credible intervals (shaded region). Latent posterior estimates are based on a thinned sample, with every $250^{th}$ sample retained.}
 	\label{fig:prior_latent_posts}
 \end{figure}
 
@@ -324,7 +324,7 @@ We used our DA algorithm and PMMH to fit SIR and SEIR models with a binomial emi
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_latent_posts.pdf}
-	\caption{Boarding school data, pointwise posterior median estimates and pointwise 95\% credible intervals (grey shaded areas) under SIR and SEIR dynamics of the numbers of susceptible boys (dashed line), exposed boys (dotted line), and infected boys (solid line). Posterior estimates based on a thinned sample, with every 250$ ^{th} $ configuration retained.}
+	\caption[Boarding school data and latent posterior under SIR and SEIR dynamics.]{Boarding school data, pointwise posterior median estimates and pointwise 95\% credible intervals (grey shaded areas) under SIR and SEIR dynamics of the numbers of susceptible boys (dashed line), exposed boys (dotted line), and infected boys (solid line). Posterior estimates based on a thinned sample, with every 250$ ^{th} $ configuration retained.}
 	\label{fig:bbs_dat}
 \end{figure}
 
@@ -333,7 +333,7 @@ Together, the SIR and SEIR models suggest that cases were detected with high pro
 \begin{figure}
 	\centering
 	\includegraphics[width=0.95\linewidth]{figures/bbs_densities.pdf}
-	\caption{Posterior density estimates for $ R_0 = \beta N /\mu $, the mean latent and infectious periods, $ 1/\gamma $ and $ 1/\mu $, and the binomial sampling probability, $ \rho $, from SIR and SEIR model parameters fit to the British boarding school data (solid lines). The posterior median and 95\% Bayesian credible intervals are drawn below the density plots (solid lines with circles). The implied prior densities (dashed lines) for $ R_0 $ and the latent and infectious periods, and the prior density for the binomial sampling probability, are plotted over the posterior ranges.}
+	\caption[Posterior estimates of SIR and SEIR model parameters fit to British boarding school outbreak data.]{Posterior density estimates for $ R_0 = \beta N /\mu $, the mean latent and infectious periods, $ 1/\gamma $ and $ 1/\mu $, and the binomial sampling probability, $ \rho $, from SIR and SEIR model parameters fit to the British boarding school data (solid lines). The posterior median and 95\% Bayesian credible intervals are drawn below the density plots (solid lines with circles). The implied prior densities (dashed lines) for $ R_0 $ and the latent and infectious periods, and the prior density for the binomial sampling probability, are plotted over the posterior ranges.}
 	\label{fig:bbs_densities}
 \end{figure}
 

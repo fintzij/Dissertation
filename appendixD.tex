@@ -94,6 +94,31 @@ Following \cite{meyer2017incorporating}, we row--normalize the matrix, thus remo
 	20+ & 0.15 & 0.85
 }. \]
 
+\section{Mapping Standard Normal Draws to LNA Sample Paths with Forcings}
+\label{sec:dolna_forcings}
+\begin{algorithm}[htbp]
+	\caption{Mapping standard normal draws onto LNA sample paths with forcings.}
+	\label{alg:doLNA2}
+	\begin{algorithmic}[1]
+		\Procedure{doLNA2}{$ \bZ,\btheta,\mcI,\bxi $}
+		\State \textbf{initialize: }$ \bX(t_0) \gets \bX_0,\ \bN(t_0) \gets \bs{0},\ \bNtil(t_0) \gets \bs{0},\ \bmu(t_0) \gets \bs{0},\ \bSigma(t_0) \gets \bs{0} $
+		\For{$ \ell = 1,\dots,L $}
+		\State $ \bmu(t_\ell),\ \bSigma(t_\ell) \gets $ solutions to (\ref{eqn:lna_ode_drift}) and (\ref{eqn:lna_ode_diffusion}) over $ (t_{\ell-1}, t_\ell] $
+		\State $ \bNtil(t_\ell)\gets \bmu(t_\ell) + \bSigma(t_\ell)^{1/2}\bZ(t_\ell) $ \Comment{non--centered parameterization}
+		\State $ \bN(t_\ell)\gets \bN(t_{\ell-1}) + \exp(\bNtil(t_\ell)) - \bs{1} $
+		\State \textbf{restart initial conditions:} 
+		  \vspace{-0.15in}\hspace{0.2in} \begin{align*}
+			\bX(t_\ell) &\gets \bX(t_{\ell-1}) + \bA^T(\bN(t_\ell)-\bN(t_{\ell-1})) \\
+			\bX(t_\ell^+) &\gets \bX(t_\ell) + \bxi(t_\ell)\\
+			\bNtil(t_\ell) &\gets \bs{0},\ \bmu(t_\ell)\gets\bs{0},\ \bSigma(t_\ell)\gets\bs{0}
+			\end{align*}\vspace{-0.35in}
+		\EndFor
+		\State \hspace{-0.25in}\Return \Comment{return incidence and/or prevalence sample paths}
+		\State$\bN = \left \lbrace\bN(t_0),\bN(t_1),\dots,\bN(t_L)\right \rbrace,\ \bX = \left \lbrace \bX(t_0),\ \bX(t_1),\dots,\bX(t_\ell) \right \rbrace $
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
 \newpage
 \section{Joint Sampling of LNA Paths and Gaussian Markov Random Fields}
 \label{sec:lna_ess_gmrf}

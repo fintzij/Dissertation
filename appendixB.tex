@@ -23,7 +23,7 @@
 			\hline \rule[-2ex]{0pt}{5.5ex} $\mathbf{p}_{t_1}$ & Dirichlet & $a_{S},\ b_{I},\ c_{R}$ & $a_{S} + S_{t_1},\ b_{I} + I_{t_1},\ c_{R} + R_{t_1}$\\ 
 			\hline 
 		\end{tabular}
-		\caption{Prior and full conditional distributions for SIR model parameters. $ \beta $ is the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability, and $ \bp_{t_1} $ is the vector of initial state probabilities. Gamma priors are parameterized with rates, so a Gamma($ a,b $) distribution has mean $ a/b $. The Beta prime prior for $ R_0 = \beta N / \mu $ is the implied prior induced by the prior distributions for $ \beta $ and $ \mu $. The indicators $ \ind{\tau_j \corresponds I} $ and $\ind{\tau_j \corresponds R} $ equal 1 if $ \tau_j $ corresponds to a time when an individual becomes infected or recovers.}
+		\caption[Conjugate priors and full conditionals for SIR model parameters.]{Prior and full conditional distributions for SIR model parameters. $ \beta $ is the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability, and $ \bp_{t_1} $ is the vector of initial state probabilities. Gamma priors are parameterized with rates, so a Gamma($ a,b $) distribution has mean $ a/b $. The Beta prime prior for $ R_0 = \beta N / \mu $ is the implied prior induced by the prior distributions for $ \beta $ and $ \mu $. The indicators $ \ind{\tau_j \corresponds I} $ and $\ind{\tau_j \corresponds R} $ equal 1 if $ \tau_j $ corresponds to a time when an individual becomes infected or recovers.}
 		\label{tab:SIR_priors}
 	\end{center}
 \end{table}
@@ -50,7 +50,7 @@
 			\hline \rule[-2ex]{0pt}{5.5ex} $\mathbf{p}_{t_1}$ & Dirichlet & $a_{S},\ b_{I},\ c_{R}$ & $a_{S} + S_{t_1},\ b_{I} + I_{t_1},\ c_{R} + R_{t_1}$\\ 
 			\hline 
 		\end{tabular}
-		\caption{Prior and full conditional distributions for SEIR model parameters. $ \beta $ is the per--contact infectivity rate, $ \gamma $ is the rate at which an exposed individual becomes infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability, and $ \bp_{t_1} $ is the vector of initial state probabilities. Gamma priors are parameterized with rates, so a Gamma($ a,b $) distribution has mean $ a/b $. The Beta prime prior for $ R_0 = \beta N / \mu $ is the implied prior induced by the prior distributions for $ \beta $ and $ \mu $. The indicators $ \ind{\tau_j \corresponds E} $, $ \ind{\tau_j \corresponds I} $ and $\ind{\tau_j \corresponds R} $ equal 1 if $ \tau_j $ corresponds to a time when an individual becomes exposed, becomes infectious, or recovers.}
+		\caption[Conjugate priors and full conditionals for SEIR model parameters.]{Prior and full conditional distributions for SEIR model parameters. $ \beta $ is the per--contact infectivity rate, $ \gamma $ is the rate at which an exposed individual becomes infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability, and $ \bp_{t_1} $ is the vector of initial state probabilities. Gamma priors are parameterized with rates, so a Gamma($ a,b $) distribution has mean $ a/b $. The Beta prime prior for $ R_0 = \beta N / \mu $ is the implied prior induced by the prior distributions for $ \beta $ and $ \mu $. The indicators $ \ind{\tau_j \corresponds E} $, $ \ind{\tau_j \corresponds I} $ and $\ind{\tau_j \corresponds R} $ equal 1 if $ \tau_j $ corresponds to a time when an individual becomes exposed, becomes infectious, or recovers.}
 		\label{tab:SEIR_priors}
 	\end{center}
 \end{table}
@@ -77,7 +77,7 @@
 			\hline \rule[-2ex]{0pt}{5.5ex} $\mathbf{p}_{t_1}$ & Dirichlet & $a_{S},\ b_{I},\ c_{R}$ & $a_{S} + S_{t_1},\ b_{I} + I_{t_1},\ c_{R} + R_{t_1}$\\ 
 			\hline 
 		\end{tabular}
-		\caption{Prior and full conditional distributions for SIRS model parameters. $ \beta $ is the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which a recovered individual loses immunity, $ \rho $ is the binomial sampling probability, and $ \bp_{t_1} $ is the vector of initial state probabilities. Gamma priors are parameterized with rates, so a Gamma($ a,b $) distribution has mean $ a/b $. The Beta prime prior for $ R_0 = \beta N / \mu $ is the implied prior induced by the prior distributions for $ \beta $ and $ \mu $. The indicators $ \ind{\tau_j \corresponds I} $, $\ind{\tau_j \corresponds R} $, and $ \ind{\tau_j \corresponds L} $  equal 1 if $ \tau_j $ corresponds to a time when an individual becomes infected, recovers, or loses immunity.}
+		\caption[Conjugate priors and full conditionals for SIRS model parameters.]{Prior and full conditional distributions for SIRS model parameters. $ \beta $ is the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which a recovered individual loses immunity, $ \rho $ is the binomial sampling probability, and $ \bp_{t_1} $ is the vector of initial state probabilities. Gamma priors are parameterized with rates, so a Gamma($ a,b $) distribution has mean $ a/b $. The Beta prime prior for $ R_0 = \beta N / \mu $ is the implied prior induced by the prior distributions for $ \beta $ and $ \mu $. The indicators $ \ind{\tau_j \corresponds I} $, $\ind{\tau_j \corresponds R} $, and $ \ind{\tau_j \corresponds L} $  equal 1 if $ \tau_j $ corresponds to a time when an individual becomes infected, recovers, or loses immunity.}
 		\label{tab:SIRS_priors}
 	\end{center}
 \end{table}
@@ -102,7 +102,7 @@ We ran three chains for 100,000 iterations each, sampling the paths for 75 subje
 		$ \rho $ & 0.2 & Beta(2, 7) \\
 		\hline
 	\end{tabular}
-	\caption{Prior distributions for SIR model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
+	\caption[Simulation 1 priors for SIR model parameters.]{Prior distributions for SIR model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
 	\label{tab:sim1_sir_priors}
 \end{table}
 
@@ -127,28 +127,28 @@ We also fit the SIR model to the data using PMMH. We ran two sets of three MCMC 
 		PMMH--E &  3 & 20.5 & 1849.4 & 90.2 \\ 
 		\hline
 	\end{tabular}
-	\caption{Log--posterior run times, effective sample sizes (ESSs), and effective sample sizes per CPU time measure in hours (ESS.per.CPU.time). BDA indicates our Bayesian data augmentation algorithm, PMMH--A indicates PMMH with paths simulated approximately via $ \tau $--leaping algorithm, and PMMH--E indicates PMMH with paths simulated exactly using Gillespie's direct algorithm. The BDA chains were run for 100,000 iterations each, while the PMMH chains were run for 50,000 iterations following a tuning run of 5,000 iterations.}
+	\caption[Simulation 1 log--posterior effective sample sizes and run times.]{Run times, log--posterior effective sample sizes (ESSs), and effective sample sizes per CPU time measure in hours (ESS.per.CPU.time). BDA indicates our Bayesian data augmentation algorithm, PMMH--A indicates PMMH with paths simulated approximately via $ \tau $--leaping algorithm, and PMMH--E indicates PMMH with paths simulated exactly using Gillespie's direct algorithm. The BDA chains were run for 100,000 iterations each, while the PMMH chains were run for 50,000 iterations following a tuning run of 5,000 iterations.}
 	\label{tab:sim1_sir_ess}
 \end{table}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/sir_bda_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using Bayesian data augmentation following an initial burn--in of 10 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIR model fit using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SIR model fit using Bayesian data augmentation following an initial burn--in of 10 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:sirbdatraceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/sir_pomp_approx_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 100 particles and a time step of 8 hours, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIR model fit using PMMH with approximate particle paths.]{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 100 particles and a time step of 8 hours, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:sirpompapproxtraceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/sir_pomp_exact_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 100 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIR model fit using PMMH with exact particle paths.]{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 100 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:sirpompexacttraceplots}
 \end{figure}
 
@@ -173,7 +173,7 @@ We ran three chains for 100,000 iterations each, sampling the paths for 100 subj
 		$ \rho $ & 0.3 & Beta(3.5, 6.5) \\
 		\hline
 	\end{tabular}
-	\caption{Prior distributions for SEIR model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the rate at which an exposed individual becomes infectious is $ \gamma $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
+	\caption[Simulation 1 SEIR model priors.]{Prior distributions for SEIR model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the rate at which an exposed individual becomes infectious is $ \gamma $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
 	\label{tab:sim1_seir_priors}
 \end{table}
 
@@ -198,28 +198,28 @@ We also fit the SEIR model to the data using PMMH. We ran two sets of three MCMC
 		SEIR & PMMH - E &  3 & 14.1 & 466.3 & 33.1 \\ 
 		\hline
 	\end{tabular}
-	\caption{Log--posterior run times, effective sample sizes (ESSs), and effective sample sizes per CPU time measure in hours (ESS.per.CPU.time). BDA indicates our Bayesian data augmentation algorithm, PMMH--A indicates PMMH with paths simulated approximately via $ \tau $--leaping algorithm, and PMMH--E indicates PMMH with paths simulated exactly using Gillespie's direct algorithm. The BDA chains were run for 100,000 iterations each, while the PMMH chains were run for 50,000 iterations following a tuning run of 5,000 iterations.}
+	\caption[Simulation 1 SEIR model log--posterior effective sample sizes and run times.]{Run times, log--posterior effective sample sizes (ESSs), and effective sample sizes per CPU time measure in hours (ESS.per.CPU.time). BDA indicates our Bayesian data augmentation algorithm, PMMH--A indicates PMMH with paths simulated approximately via $ \tau $--leaping algorithm, and PMMH--E indicates PMMH with paths simulated exactly using Gillespie's direct algorithm. The BDA chains were run for 100,000 iterations each, while the PMMH chains were run for 50,000 iterations following a tuning run of 5,000 iterations.}
 	\label{tab:sim1_seir_ess}
 \end{table}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/seir_bda_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using Bayesian data augmentation following an initial burn--in of 10 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which exposed individuals become infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SEIR model fit using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SEIR model fit using Bayesian data augmentation following an initial burn--in of 10 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which exposed individuals become infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:seirbdatraceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/seir_pomp_approx_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 200 particles and a time step of 8 hours, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which exposed individuals become infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SEIR model fit using PMMH with approximate particle paths.]{Traceplots of the log--posterior and model parameters for the SEIR model fit using PMMH with 200 particles and a time step of 8 hours, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which exposed individuals become infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:seirpompapproxtraceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/seir_pomp_exact_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 200 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which exposed individuals become infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIR model fit using PMMH with exact particle paths.]{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 200 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH and an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which exposed individuals become infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:seirpompexacttraceplots}
 \end{figure}
 
@@ -243,7 +243,7 @@ We ran three chains for 300,000 iterations each, sampling the paths for 3 subjec
 		$ \rho $ & 0.95 & Beta(5, 1) \\
 		\hline
 	\end{tabular}
-	\caption{Prior distributions for SIRS model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, the rate at which immunity is lost is $ \gamma $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
+	\caption[Simulation 1 SIRS model priors.]{Prior distributions for SIRS model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, the rate at which immunity is lost is $ \gamma $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
 	\label{tab:sim1_sirs_priors}
 \end{table}
 
@@ -268,35 +268,35 @@ We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with
 		SIRS & PMMH - E &  3 & 48.8 & 592.6 & 12.1 \\ 
 		\hline
 	\end{tabular}
-	\caption{Log--posterior run times, effective sample sizes (ESSs), and effective sample sizes per CPU time measure in hours (ESS.per.CPU.time). BDA indicates our Bayesian data augmentation algorithm, PMMH--A indicates PMMH with paths simulated approximately via $ \tau $--leaping algorithm, and PMMH--E indicates PMMH with paths simulated exactly using Gillespie's direct algorithm. The BDA chains were run for 100,000 iterations each, while the PMMH chains were run for 50,000 iterations following a tuning run of 5,000 iterations.}
+	\caption[Simulation 1 SIRS model run times and log--posterior effective sample sizes.]{Run times, log--posterior effective sample sizes (ESSs), and effective sample sizes per CPU time measure in hours (ESS.per.CPU.time). BDA indicates our Bayesian data augmentation algorithm, PMMH--A indicates PMMH with paths simulated approximately via $ \tau $--leaping algorithm, and PMMH--E indicates PMMH with paths simulated exactly using Gillespie's direct algorithm. The BDA chains were run for 100,000 iterations each, while the PMMH chains were run for 50,000 iterations following a tuning run of 5,000 iterations.}
 	\label{tab:sim1_sirs_ess}
 \end{table}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/sirs_bda_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using Bayesian data augmentation following an initial burn--in of 2,000 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIR model fit using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SIR model fit using Bayesian data augmentation following an initial burn--in of 2,000 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $\gamma$ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:sirsbdatraceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/sirs_pomp_approx_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 500 particles per chain and a time--step of 8 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 5,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIRS model fit using PMMH with approximate particle paths with 500 particles per chain.]{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 500 particles per chain and a time--step of 8 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 5,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $\gamma$ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:sirspompapproxtraceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/sirs_pomp_exact_traceplots}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 500 particles per chain and particle paths simulated exactly via Gillespie's direct algorithm, following a tuning run of 5,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIRS model fit using PMMH with exact particle paths with 500 particles per chain.]{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 500 particles per chain and particle paths simulated exactly via Gillespie's direct algorithm, following a tuning run of 5,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $\gamma$ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:sirspompexacttraceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/sirs_pomp_approx_traceplots_np200}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 200 particles per chain and a time--step of 8 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 5,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 1 MCMC traceplots for an SIRS model fit using PMMH with exact particle paths with 200 particles per chain.]{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 200 particles per chain and a time--step of 8 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 5,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $\gamma$ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:sirspompapproxtraceplotsnp200}
 \end{figure}
 
@@ -305,7 +305,7 @@ We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sim1_latent_posts_all.pdf}
-	\caption{Pointwise posterior medians (dashed lines) and pointwise 95\% credible intervals for the numbers of individuals in each disease state for the SIR, SEIR, and SIRS models. True compartment counts are shown as solid lines. Estimates are based on a thinned sample, retaining the collection of disease histories at the end of every 250$ ^{th} $ MCMC iteration.}
+	\caption[Simulation 1 latent posterior distributions for all models.]{Pointwise posterior medians (dashed lines) and pointwise 95\% credible intervals for the numbers of individuals in each disease state for the SIR, SEIR, and SIRS models. True compartment counts are shown as solid lines. Estimates are based on a thinned sample, retaining the collection of disease histories at the end of every 250$ ^{th} $ MCMC iteration.}
 	\label{fig:sim1_latent_post_all}
 \end{figure}
 
@@ -356,7 +356,7 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 		$ \bX(t_{167}) $ &  $ S_0 = 0, E_0 = 1, I_0 = 52, R_0 = 347 $\\
 		\hline
 	\end{tabular}
-	\caption{Parameter values governing the time--varying SEIR dynamics and binomial emissions process. The epidemic was simulated using Gillespie's direct algorithm and the process was restarted with the new parameter values at the beginning of each epoch.}
+	\caption[Simulation 2 SEIR model parameters.]{Parameter values governing the time--varying SEIR dynamics and binomial emissions process. The epidemic was simulated using Gillespie's direct algorithm and the process was restarted with the new parameter values at the beginning of each epoch.}
 	\label{tab:misspec_sim_params}
 \end{table}
 
@@ -384,7 +384,7 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 		$ \rho $ &  Beta(10, 1) \\
 		\hline
 	\end{tabular}
-	\caption{Prior distributions for the SIR and SEIR model and measurement process parameters for the models fit to the dataset simulated under time--varying SEIR dynamics. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the rate at which an exposed individual becomes infectious is $ \gamma $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
+	\caption[Simulation 2 priors for SIR and SEIR models.]{Prior distributions for the SIR and SEIR model and measurement process parameters for the models fit to the dataset simulated under time--varying SEIR dynamics. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the rate at which an exposed individual becomes infectious is $ \gamma $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $.}
 	\label{tab:misspec_priors}
 \end{table}
 
@@ -414,34 +414,34 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 		$ \rho $ & 0.95 (0.94, 0.97) \\ 
 		\hline
 	\end{tabular}
-	\caption{Posterior median estimates and 95\% credible intervals for SIR and SEIR model parameters fit under a binomial emission distribution to the epidemic simulated with time--varying SEIR dynamics.}
+	\caption[Simulation 2 posterior estimates for SIR and SEIR model parameters.]{Posterior median estimates and 95\% credible intervals for SIR and SEIR model parameters fit under a binomial emission distribution to the epidemic simulated with time--varying SEIR dynamics.}
 \end{table}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/misspec_sir_bda_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 2 MCMC traceplots for SIR model parameters fit using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SIR model fit using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:misspec_sir_bda_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/misspec_sir_pmmh_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 2,500 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 2 MCMC traceplots for SIR model parameters fit using PMMH.]{Traceplots of the log--posterior and model parameters for the SIR model fit using PMMH with 2,500 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:misspec_sir_pmmh_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/misspec_seir_bda_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SEIR model fit using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which an exposed individual becomes infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 2 MCMC traceplots for SEIR model parameters fit using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SEIR model fit using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \gamma $ is the rate at which an exposed individual becomes infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:misspec_seir_bda_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/misspec_seir_pmmh_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SEIR model fit using PMMH with 2,500 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH. $ \beta $ denotes the per--contact infectivity rate,  $ \gamma $ is the rate at which an exposed individual becomes infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simulation 2 MCMC traceplots for SEIR model parameters fit using PMMH.]{Traceplots of the log--posterior and model parameters for the SEIR model fit using PMMH with 2,500 particles, following a tuning run of 5,000 iterations used to estimate the covariance matrix for the RWMH. $ \beta $ denotes the per--contact infectivity rate,  $ \gamma $ is the rate at which an exposed individual becomes infectious, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:misspec_seir_pmmh_traceplots}
 \end{figure}
 
@@ -466,7 +466,7 @@ We ran three chains for 100,000 iterations each under the following assumed popu
 		$ \rho $ & Beta(1,1) \\
 		\hline
 	\end{tabular}
-	\caption{Prior distributions for SIR model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $. The prior for $ \beta $ was scaled in accordance with the assumed population size.}
+	\caption[Simulation 3 SIR model priors.]{Prior distributions for SIR model and measurement process parameters. The prior for $ R_0 $ is the induced prior implied by $ \beta $ and $ \mu $. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, the binomial sampling probability is $ \rho $, and the initial state probabilities are $ \bp_{t_1} $. The prior for $ \beta $ was scaled in accordance with the assumed population size.}
 	\label{tab:popsize_misspec_priors}
 \end{table}
 
@@ -491,7 +491,7 @@ We ran three MCMC chains for each of the SIR models fit under the prior regimes 
 		$\rho = 0.2$ & Beta(21, 75) & Beta(21, 75) & Beta(1,1) & Beta(1,1)\\
 		\hline 
 	\end{tabular} 
-	\caption{True parameter values and prior distributions under four different prior regimes. The prior for $ R_0 $ is the implied prior induced by the priors for $ \beta $ and $ \mu $. In regimes one and three, the central 80\% of the prior mass for $ R_0 $ lay between 1.25 and 4.56, while in regimes two and four, 80\% of the prior mass lay between $ 3.8\times10^{-4} $ and $ 2.7\times 10^4 $. In regimes one and two, 80\% of the prior mass for $ \rho $ lay between 0.17 and 0.27, while in regimes three and four the prior mass for $ \rho $ was uniformly distributed between 0 and 1. We used the same mildly informative Dirichlet(9, 0.2, 0.5) prior for $ \bp_{t_1} $ in all prior regimes.}
+	\caption[Simulation 4 prior regimes.]{True parameter values and prior distributions under four different prior regimes. The prior for $ R_0 $ is the implied prior induced by the priors for $ \beta $ and $ \mu $. In regimes one and three, the central 80\% of the prior mass for $ R_0 $ lay between 1.25 and 4.56, while in regimes two and four, 80\% of the prior mass lay between $ 3.8\times10^{-4} $ and $ 2.7\times 10^4 $. In regimes one and two, 80\% of the prior mass for $ \rho $ lay between 0.17 and 0.27, while in regimes three and four the prior mass for $ \rho $ was uniformly distributed between 0 and 1. We used the same mildly informative Dirichlet(9, 0.2, 0.5) prior for $ \bp_{t_1} $ in all prior regimes.}
 	\label{tab:prior_effect_priors}
 \end{table}
 
@@ -499,28 +499,28 @@ We ran three MCMC chains for each of the SIR models fit under the prior regimes 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/informative_informative_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under informative priors for all model parameters. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simuation 4 MCMC traceplots for SIR model parameters fit under informative priors for all parameters.]{Traceplots of the log--posterior and model parameters for the SIR model fit under informative priors for all model parameters. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:inform_inform_traces}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/diffuse_informative_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under diffuse priors for the rate parameters and an informative prior for the binomial sampling probability. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simuation 4 MCMC traceplots for SIR model parameters fit under informative priors for the measurement process and diffuse priors for rate parameters.]{Traceplots of the log--posterior and model parameters for the SIR model fit under diffuse priors for the rate parameters and an informative prior for the binomial sampling probability. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:diffuse_inform_traces}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/informative_diffuse_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under informative priors for the rate parameters and a diffuse prior for the binomial sampling probability. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simuation 4 MCMC traceplots for SIR model parameters fit under diffuse priors for the measurement process and informative priors for rate parameters.]{Traceplots of the log--posterior and model parameters for the SIR model fit under informative priors for the rate parameters and a diffuse prior for the binomial sampling probability. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:inform_diffuse_traces}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/diffuse_diffuse_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under diffuse priors for all model parameters. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Simuation 4 MCMC traceplots for SIR model parameters fit under diffuse priors for the measurement process and diffuse priors for rate parameters.]{Traceplots of the log--posterior and model parameters for the SIR model fit under diffuse priors for all model parameters. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:diffuse_diffuse_traces}
 \end{figure}
 
@@ -546,7 +546,7 @@ We also fit the SIR and SEIR models using PMMH with paths for 5,000 particles si
 			$\Pr(X_j(t_1) = R)$&  & 0.009 (0.004, 0.017)\\
 			\hline 
 		\end{tabular} 
-		\caption{Prior distributions and posterior estimates for parameters of the SIR model with binomial emissions fit to the British boarding school outbreak data. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, and the binomial sampling probability is $ \rho $. The prior for $ R_0 $ is the implied prior induced by the priors for $ \beta $ and $ \mu $. Effective sample size were $\beta$: 11,304; $\mu$: 16,238; $\rho$: 3,920; $p_{S_{t_1}}$: 26,989; $p_{I_{t_1}}$: 284,431; $p_{R_{t_1}}$: 22,761.}
+		\caption[Prior distributions for an SIR model fit to the British boarding school outbreak data.]{Prior distributions and posterior estimates for parameters of the SIR model with binomial emissions fit to the British boarding school outbreak data. The per--contact infectivity rate is $ \beta $, the recovery rate is $ \mu $, and the binomial sampling probability is $ \rho $. The prior for $ R_0 $ is the implied prior induced by the priors for $ \beta $ and $ \mu $. Effective sample size were $\beta$: 11,304; $\mu$: 16,238; $\rho$: 3,920; $p_{S_{t_1}}$: 26,989; $p_{I_{t_1}}$: 284,431; $p_{R_{t_1}}$: 22,761.}
 		\label{tab:bbs_SIR_prior_binom}
 	\end{center}
 \end{table}
@@ -567,7 +567,7 @@ We also fit the SIR and SEIR models using PMMH with paths for 5,000 particles si
 			$\Pr(X_j(t_1) = R)$&  & 0.009 (0.004, 0.016)\\
 			\hline 
 		\end{tabular}
-		\caption{Prior distributions and posterior estimates for parameters of the SEIR model with binomial emissions fit to the British boarding school outbreak data. The per--contact infectivity rate is $ \beta $, the rate at which an exposed individual becomes infectious is $ \gamma $, the recovery rate is $ \mu $, and the binomial sampling probability is $ \rho $. The prior for $ R_0 $ is the implied prior induced by the priors for $ \beta $ and $ \mu $. Effective sample size were $\beta$: 679; $\gamma$: 658; $\mu$: 10,069; $ \rho $: 3,244; $p_{S_{t_1}}$: 26,868; $p_{I_{t_1}}$: 26,168; $p_{R_{t_1}}$: 273,613.}
+		\caption[Prior distributions for an SEIR model fit to the British boarding school outbreak data.]{Prior distributions and posterior estimates for parameters of the SEIR model with binomial emissions fit to the British boarding school outbreak data. The per--contact infectivity rate is $ \beta $, the rate at which an exposed individual becomes infectious is $ \gamma $, the recovery rate is $ \mu $, and the binomial sampling probability is $ \rho $. The prior for $ R_0 $ is the implied prior induced by the priors for $ \beta $ and $ \mu $. Effective sample size were $\beta$: 679; $\gamma$: 658; $\mu$: 10,069; $ \rho $: 3,244; $p_{S_{t_1}}$: 26,868; $p_{I_{t_1}}$: 26,168; $p_{R_{t_1}}$: 273,613.}
 		\label{tab:bbs_SEIR_prior_binom}
 	\end{center}
 \end{table}
@@ -577,28 +577,28 @@ We also fit the SIR and SEIR models using PMMH with paths for 5,000 particles si
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_sir_bda_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under binomial emissions using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots for SIR model parameters fit to the boarding school data using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SIR model fit under binomial emissions using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_sir_bda_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_seir_bda_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SEIR model fit under binomial emissions via BDA following an initial burn--in of 5,000 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots for SEIR model parameters fit to the boarding school data using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SEIR model fit under binomial emissions via BDA following an initial burn--in of 5,000 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_seir_bda_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_sir_pmmh_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots for SIR model parameters fit to the boarding school data using PMMH.]{Traceplots of the log--posterior and model parameters for the SIR model fit under binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_sir_pmmh_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_seir_pmmh_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SEIR model fit under binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots for SEIR model parameters fit to the boarding school data using PMMH.]{Traceplots of the log--posterior and model parameters for the SEIR model fit under binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_seir_pmmh_traceplots}
 \end{figure}
 
@@ -612,7 +612,7 @@ The PMMH MCMC runs in which SIR and SEIR models were fit to the boarding school 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\linewidth]{figures/bbs_dat_sim.pdf}
-	\caption{British boardings school data and data simulated under SEIR dynamics with time--varying dynamics over three epochs (indicated by different shaded regions). The simulated dataset was generated using the following parameters: in the first epoch (days 1-4), $ \beta = 0.0035,\ \gamma = 1.25,\  \mu = 0.3$. In the second epoch (days 4-8), $ \beta = 0.065,\ \gamma = 0.51,\ \mu = 0.41 $. In the third epoch (days 8-14), $ \beta = 0.06,\ \gamma = 2.5,\ \mu=0.54 $. The data were a binomial sample of the true prevalence with detection probability $ \rho = 0.98 $. There were three exposed individuals and two infected individuals at the beginning of day 1.}
+	\caption[Comparison of boarding school outbreak data and data simulated using an SEIR model with time--varying dynamics.]{British boardings school data and data simulated under SEIR dynamics with time--varying dynamics over three epochs (indicated by different shaded regions). The simulated dataset was generated using the following parameters: in the first epoch (days 1-4), $ \beta = 0.0035,\ \gamma = 1.25,\  \mu = 0.3$. In the second epoch (days 4-8), $ \beta = 0.065,\ \gamma = 0.51,\ \mu = 0.41 $. In the third epoch (days 8-14), $ \beta = 0.06,\ \gamma = 2.5,\ \mu=0.54 $. The data were a binomial sample of the true prevalence with detection probability $ \rho = 0.98 $. There were three exposed individuals and two infected individuals at the beginning of day 1.}
 	\label{fig:bbs_dat_sim}
 \end{figure}
 
@@ -621,7 +621,7 @@ We fit an alternative set of SIR and SEIR models to the data using BDA and PMMH 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_latent_post_negbinom.pdf}
-	\caption{Boarding school data, pointwise posterior median estimates and pointwise 95\% credible intervals under negative binomial emissions (grey shaded areas) for the numbers of infected boys (solid line) and susceptible boys (dashed line). Posterior estimates based on a thinned sample, with every 250$ ^{th} $ configuration retained.}
+	\caption[Latent posterior estimates of prevalence in a boarding school under negative binomial emissions.]{Boarding school data, pointwise posterior median estimates and pointwise 95\% credible intervals under negative binomial emissions (grey shaded areas) for the numbers of infected boys (solid line) and susceptible boys (dashed line). Posterior estimates based on a thinned sample, with every 250$ ^{th} $ configuration retained.}
 	\label{fig:bbs_dat_negbinom}
 \end{figure}
 
@@ -630,7 +630,7 @@ Although the posterior median estimates under binomial and negative binomial emi
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_negbinom_credint_comp.pdf}
-	\caption{Posterior medians and 95\% credible intervals for SIR and SEIR models fit with BDA and PMMH to the British boarding school data under binomial and negative binomial emission distributions.}
+	\caption[Posterior estimates of SIR and SEIR model parameters for models fit under negative binomial emissions.]{Posterior medians and 95\% credible intervals for SIR and SEIR models fit with BDA and PMMH to the British boarding school data under binomial and negative binomial emission distributions.}
 	\label{fig:bbs_negbinom_credint_comp}
 \end{figure}
 
@@ -638,27 +638,27 @@ Although the posterior median estimates under binomial and negative binomial emi
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_sir_bda_negbinom_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under negative binomial emissions using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots of SIR model parameters fit to boarding school data using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SIR model fit under negative binomial emissions using BDA following an initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_sir_bda_negbinom_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_seir_bda_negbinom_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SEIR model fit under negative binomial emissions via BDA following an initial burn--in of 5,000 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots of SEIR model parameters fit to boarding school data using Bayesian data augmentation.]{Traceplots of the log--posterior and model parameters for the SEIR model fit under negative binomial emissions via BDA following an initial burn--in of 5,000 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_seir_bda_negbinom_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_sir_pmmh_negbinom_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SIR model fit under negative binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots of SIR model parameters fit to boarding school data using PMMH.]{Traceplots of the log--posterior and model parameters for the SIR model fit under negative binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_sir_pmmh_negbinom_traceplots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/bbs_seir_pmmh_negbinom_traceplots.pdf}
-	\caption{Traceplots of the log--posterior and model parameters for the SEIR model fit under negative binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
+	\caption[Traceplots of SEIR model parameters fit to boarding school data using PMMH.]{Traceplots of the log--posterior and model parameters for the SEIR model fit under negative binomial emissions using PMMH with 5,000 particles per chain and a time--step of 2 hours in the approximate $ \tau $--leaping algorithm, following a tuning run of 2,000 iterations to estimate the RWMH covariance matrix and in initial burn--in of 100 iterations. $ \beta $ denotes the per--contact infectivity rate, $ \mu $ is the recovery rate, $ \gamma $ is the rate at which immunity is lost, and $ \rho $ is the binomial sampling probability. Traceplots are thinned to display every 50\textsuperscript{th} iteration.}
 	\label{fig:bbs_seir_pmmh_negbinom_traceplots}
 \end{figure}
