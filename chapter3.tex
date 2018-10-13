@@ -49,7 +49,6 @@ L(\bX, \bY | \btheta) &= \Pr(\bY|\bX, \rho)\times \Pr(\bX(t_1)|\bp_{t_1}) \times
 &\hspace{0.2in} \times \prod_{k = 1}^{K}\left \lbrace \left [\beta I_{\tau_k}\times\ind{\tau_k \corresponds I} + \mu\times\ind{\tau_k \corresponds R}\right ] \exp{\left [-\left (\tau_k - \tau_{k-1}\right )\left (\beta I_{\tau_k} S_{\tau_k} + \mu I_{\tau_k}\right )\right ]}\right \rbrace \nonumber \\
 & \hspace{0.2in} \times \exp \left [-\left (t_L - \tau_K\right )\left (\beta I_{\tau_K^+}S_{\tau_K^+} + \mu I_{\tau_K^+}\right )\right ]. 
 \end{align}
-We briefly reconcile what might seem like a discrepancy between the SIR model presented above and the lumped construction of the SIR model (see \cite{andersson2000stochastic}), which is common for a number of computational and analytical reasons. Our model describes the time evolution of the subject--level collection of disease histories, and thus evolves on the state space of individual disease labels. The lumped SIR model describes the time evolution of the vector of compartment counts, the state space of which is defined as the partition of the original state space obtained by aggregating the individuals in each of the model compartments. The lumped construction would have been appropriate had we chosen to augment the data with the compartment counts (for example, as in \cite{pooley2015}). Nonetheless, inference based on the full subject--level model will exactly match inference based on the lumped model. This is discussed in Section \ref{subsec:pop_level_models}.
 
 \begin{figure}
 	\centering
