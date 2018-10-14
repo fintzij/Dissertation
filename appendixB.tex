@@ -1,6 +1,27 @@
 \chapter{Appendix to Chapter 3}
 \label{chap:appendix_ch3}
 
+\section{Computing the matrix exponential}
+\label{sec:mtx_exp}
+The transition probability matrix (TPM), $ \bP(t) $, for a time--homogeneous CTMC over an interval of length $ t $, solves the matrix differential equation \[ \frac{\rmd}{\rmd t}\bP(t) = \bLambda\bP(t),\hspace{0.2in} \mathrm{s.t.\ }\mathbf{P}(0) = \mathbf{I}, \] where $ \bLambda $ is the transition rate matrix for the CTMC and $ \mathbf{I} $ is an identity matrix of the same size as $ \bLambda $ \citep{wilkinson2011stochastic}.  Therefore, $ \bP $ is computed using the matrix exponential solution of the above differential equation, $ \bP = \exp(t\bLambda) $. This is the most intensive step in our algorithm. However, we may lessen the computational burden to a large extent by leveraging the fact that we are computing the matrix exponential for the same rate matrix for possibly many values of $ t $. Therefore, computing the matrix exponential using the eigen decomposition of $ \bLambda $ and caching the resulting eigenvalues and eigenvectors will be relatively efficient \citep{moler2003nineteen}. We outline this computation in the following two cases: when the eigenvalues of $ \bLambda $ are all real (e.g. as with the SIR and SEIR models), and when $ \bLambda $ has complex eigenvalues (e.g. as is possibly the case with the SIRS model).
+
+\subsection{Case 1: $ \bLambda $ has real eigenvalues}
+Suppose that $ \bLambda_{n\times n} =  \mathbf{UVU}^{-1}$, where $ \mathbf{V} $ is a diagonal matrix of eigenvalues, $ v_1,\dots,v_n $, and $ \mathbf{U} $ is the matrix whose columns are the corresponding right eigenvectors. Then, \[ \e^{t\mathbf{V}} = \diag(\e^{v_1t},\dots,\e^{v_nt}). \] That $ \mathbf{U} $ is nonsingular yields \[ \e^{t\bLambda} = \mathbf{U} \e^{t\mathbf{V}}\mathbf{U}^{-1}. \] 
+
+\subsection{Case 2: $ \bLambda $ has complex eigenvalues}
+In the event that $ \bLambda $ has complex eigenvalues, we may obtain a real-valued TPM by transforming $ \bLambda $ into its real canonical form \citep{hirsch2013differential}. Suppose that $ \bLambda $ has $ r $ real eigenvalues, $ v_1,\dots,v_r $, with corresponding real eigenvectors, $ \bu_1,\dots,\bu_r $, and $ n-r $ pairs of complex conjugate eigenvalues. Let $ (\bu_j|\bw_j) $ denote the real and imaginary parts of the eigenvector corresponding to the $ j^{th} $ eigenvalue, $ \alpha_j + i\beta_j $, for $ j = r+1,\dots,n $, and define the matrix $ \mathbf{T} = \left (\bu_1|\dots|\bu_r|\bu_{r+1}|\bw_{r+1}|\dots|\bu_n|\bw_n\right ) $. 
+The real canonical form for a rate matrix with complex eigenvalues can now be written as $ \mathbf{V} = \mathbf{T}^{-1}\bLambda \mathbf{T} $, where $ \mathbf{V} = \diag(v_1,\dots,v_r,\mathbf{B}_{r+1},\dots, \mathbf{B}_n) $, and each $ \mathbf{B}_j,\ j=r+1,\dots,n $ is given by 
+\[ \mathbf{B}_j = \left (\begin{array}{cc}
+\alpha_j & \beta_j \\
+-\beta_j & \alpha_j
+\end{array}\right ), \]
+which implies that 
+\[ \e^{t\mathbf{B}_j} = \e^{\alpha_jt}\left (\begin{array}{cc}
+\cos(\beta_jt) & \sin(\beta_jt) \\
+-\sin(\beta_jt) & \cos(\alpha_j)
+\end{array}\right ), \]
+and hence $ \e^{t\mathbf{V}} = \diag(\e^{v_1t},\dots,\e^{v_rt},\e^{t\mathbf{B}_{r+1}},\dots, \e^{t\mathbf{B}_n}) $. Therefore, we can compute the matrix exponential of $ t\bLambda $ as $ \e^{t\bLambda} = \mathbf{T}\e^{t\mathbf{V}}\mathbf{T}^{-1}. $
+
 \section{Conjugate priors for SIR, SEIR, and SIRS model parameters}
 \label{sec:bda_priors}
 

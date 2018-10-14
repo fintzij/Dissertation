@@ -39,7 +39,7 @@ The waiting times between subject--level transition events are typically taken t
 0,\ & \text{for all other configurations }\bX\ \text{and }\bX^\prime.
 \end{array}\right.
 \end{equation}
-with per--contact infection rate,  $ \beta $, and recovery rate, $ \mu $. That $ \bX $ is a \textit{Markov} process means that its forward--time evolution depends on its history only through its current state, i.e.,
+with per--contact infection rate,  $ \beta $, and recovery rate, $ \mu $. Note that $ 1/\mu $ is interpreted as the mean infectious period duration. That $ \bX $ is a \textit{Markov} process means that its forward--time evolution depends on its history only through its current state, i.e.,
 \begin{equation}
 \label{eqn:sir_markov}
 \Pr\left (\bX(\tau + \dtau) = \bx | \lbrace\bX(\tau) = \bx(\tau),\ \tau\in[0,\tau]\rbrace, \btheta\right ) = \Pr\left (\bX(\tau + \dtau) = \bx | \bX(\tau) = \bx(\tau),\btheta\right ).
@@ -58,13 +58,13 @@ $ \bX $ is \textit{time--homogeneous} since the rates of transition between conf
 	\caption{Very useful properties of exponential random variables.}
 	\label{fig:exp_props}
 	\begin{itemize}
-		\item (Memoryless property) If $ Z\sim\mr{Exp}(\lambda)$, then $ \forall t,\dt\geq0 $  we have \begin{equation}
+		\item (Memoryless property) If $ Z\sim\mr{Exp}(\lambda)$, then $ \forall t,\dt\geq0 $  we have \begin{equation}\label{eqn:memoryless_prop}
 		 \Pr(Z > t+\dt | Z>t) = \Pr(Z>\dt).
 		\end{equation}
-		\item (Racing exponentials) If $ Z_i\sim\mr{Exp}(\lambda_i),\ i=1,\dots,n $, are independent, then \begin{equation}
+		\item (Racing exponentials) If $ Z_i\sim\mr{Exp}(\lambda_i),\ i=1,\dots,n $, are independent, then \begin{equation}\label{eqn:racing_exponentials}
 		\underset{i}{\mr{min}}(Z_i) \sim \mr{Exp}\left (\lambda = \sum_i\lambda_i\right ).
 		\end{equation}
-		\item (Index of minimum) If $ Z_i\sim\mr{Exp}(\lambda_i),\ i=1,\dots,n $, are independent, then the index $ k $ of the minimum of $ Z_i $ is a random variable with probability mass function \begin{equation}
+		\item (Index of minimum) If $ Z_i\sim\mr{Exp}(\lambda_i),\ i=1,\dots,n $, are independent, then the index $ k $ of the minimum of $ Z_i $ is a random variable with probability mass function \begin{equation}\label{eqn:ind_of_min}
 		\Pr(k|Z_k = \min(Z_1,\dots,Z_n)) = \frac{\lambda_k}{\sum_j\lambda_j}.
 		\end{equation} 
 	\end{itemize}
@@ -79,68 +79,70 @@ L(\bX| \btheta) &= \prod_{k = 1}^{K}\left \lbrace \left [\beta I_{\tau_k}\times\
 
 \subsection{A Population--Level Susceptible--Infected--Recovered Model}
 \label{subsec:sir_population_mod}
-The subject--level SIR model is exactly equivalent to the population--level SIR model that is often preferred for various computational reasons \cite{andersson2000stochastic,allen2008introduction}. This equivalence derives from a property of Markov processes called \textit{lumpability} \cite{tian2006lumpability}. 
+The subject--level SIR model is exactly equivalent to the population--level SIR model that is often preferred for various computational reasons \cite{allen2008introduction, andersson2000stochastic}. This equivalence derives from two properties of Markov processes, \textit{lumpability} and \textit{commutativity}. The population--level SIR model is usually presented for computational reasons since discarding the subject labels for infection and recovery events substantially reduces the computational burden of caching subject--level paths. We refer to \cite{tian2006lumpability} for a more formal presentation of the following discussion. 
 
-Given a Markov process, $ \bX $ with state space $ \mcS = \lbrace s_1,\dots,s_P\rbrace $ and initial probability vector $ \pi $, we define a new process, $ \overline{\bX} $ on state space $ \overline{\mcS} = \lbrace S_1,\dots,S_\mathcal{L}\rbrace $, a partition of $ \mcS $. The jump chain of this new chain is obtained by taking the sequence of subsets of $ \overline{\mcS} $ that contain the corresponding states of the original jump chain. The initial probability distribution of $ \overline{\bX}(t) $ is \begin{equation*}
+Given a Markov process, $ \bX $ with state space $ \mcS = \lbrace s_1,\dots,s_P\rbrace $ and initial probability vector $ \pi $, we define another process, $ \overline{\bX} $ on the state space $ \overline{\mcS} = \lbrace S_1,\dots,S_\mathcal{L}\rbrace $, which is a \textit{partition} of $ \mcS $. In our setting, the partitioning will map a configuration in $ \mcS $ to a set in $ \overline{\mcS} $ by counting the number of people in each model compartment. The jump chain of the new process is obtained by partitioning the jump chain of the complete process. We want to establish conditions under which $ \overline{\bX} $ is stochastically coupled to $ \bX $. 
+
+Suppose the initial distribution of $ \overline{\bX}(t_0) $, induced by the distribution of $ \bX(t_0) $, is \begin{equation*}
 \Pr(\overline{\bX}(t_0) = S_i) = \mathrm{Pr}_\pi(\bX(t_0) \in S_i)
 \end{equation*}
-and its transition probabilities are given by
+and that its transition probabilities are
 \begin{equation*}
 \Pr(\overline{\bX}(t+\Delta t) = S_j | \overline{\bX}(t)=\overline{\bx}(t^\prime), t^\prime \leq t) = \Pr(\overline{\bX}(t+\Delta t) \in S_j | \bX(t)=\bx(t^\prime), t^\prime \leq t),
 \end{equation*}
-where $ \overline{\bx}(t^\prime) $  and $ \bx(t^\prime) $ denote the paths of the original process and the new process. The new process is called the \textit{lumped process}. We say that the original process is \textit{lumpable} with respect to a partition $ \overline{\mcS} $ of $ \mcS $, and that $ \overline{\bX}(t) $ is the \textit{lumped Markov process} corresponding to $ \bX(t) $, if for every choice of $ \pi $ we have that $ \overline{\bX}(t) $ is Markov and the transition probabilities do not depend on $ \pi $. A necessary and sufficient condition for a CTMC to be lumpable is that its rate matrix, $ \bLambda = (\lambda_{a,b}) $, where $ \lambda_{a,b} $ being the rate of transition from $ s_a $ to $ s_b $, satisfies
+where $ \overline{\bx}(t^\prime) $  and $ \bx(t^\prime) $ denote the paths of the complete Markov process and the new process. We say that the complete Markov process is \textit{lumpable} with respect to a partition, $ \overline{\mcS} $, of its state space if lumping the complete process results in a Markov process with respect to the lumped state space for every choice of $ \pi $ whose transition probabilities do not depend on $ \pi $. We refer to the process obtained by lumping as the \textit{lumped} Markov process. If the jump chain of the lumped Markov process is the same as the lumped jump chain of the complete Markov process, we say that the complete process is \textit{commutative} with respect to lumping.  
+
+Let $ S_A $ and $ S_B $ be elements of $ \overline{\mcS} $, i.e., sets of states $ s_j \in \mcS $. The rate matrix of a CTMC is lumpable if
 \begin{equation*}
-\sum_{s_b \in S_B}\lambda_{a,b} = \sum_{s_b \in S_B}\lambda_{c,b}
+\sum_{s_b \in S_B}\lambda_{s_a,s_b} = \sum_{s_b \in S_B}\lambda_{s_c,s_b}
 \end{equation*}
-for any pair of sets $S_A$ and $ S_B$ and for any pair of states  $(s_a, s_c)$  in $S_A \in \overline{\mcS} $. 
+for any pair of sets $S_A,S_B \in \overline{\mcS} $ and any pair of states  $(s_a, s_c) \in S_A$. A Markov process $ \bX $ is lumpable with respect to a partition of its state space if and only if its rate matrix is lumpable. Lumpability implies that transition probabilities for the lumped chain can be computed based on the lumped rate matrix  \cite{tian2006lumpability}.
+
+Suppose $ \bX $ is lumpable with respect to the partition $ \overline{\mcS} $ of $ \mcS $. Then $ \bX $ is commutative with respect to the partition if and only if the rate matrix of $ \bX $ satisfies
+$$\lambda_{s_a,s_b} = 0,\ \text{if}\ s_a,s_b\in S_A,\ \text{and} s_a\neq s_b. $$ In our context, commutativity means that the transition rate is zero between different configurations $ \bx_a $ and $ \bx_b $ with equal compartment counts. Commutativity implies that lumped quantities of interest for $ \bX $, such as transition rates or transition probabilities, can be equivalently computed based on $ \bX $, or based on the lumped process, $ \overline{\bX} $ \cite{tian2006lumpability}. 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.9\linewidth]{figures/SIR_representations}
+	\includegraphics[width=\linewidth]{figures/SIR_representations}
 	\caption{Complete and lumped representations of SIR dynamics in a population of five individuals. The per--contact infectivity rate, $ \beta $, and the recovery rate, $ \mu $, parameterize exponential waiting time distributions between transition events. The complete Markov jump process evolves on the state space of subject state labels, $ \mcS = \lbrace S,I,R\rbrace^N $, with dynamics determined by the subject--level transition rates. Each susceptible may contact two infected individuals, while each infected individual recovers independently. The lumped process evolves on the state space of compartment counts, $ \widebar{\mcS} = \lbrace N_S,N_I,N_R:\ N_S + N_I+N_R=N\rbrace $, with dynamics determined by lumped transition rates. The waiting time distributions between transitions are derived by noting that if $ \tau_1\sim \exp(\lambda_1) $ and $ \tau_2\sim\exp(\lambda_2) $, then $ \tau_{\min} = \min(\tau_1,\tau_2)\sim\exp(\lambda_1+\lambda_2) $.}
 	\label{fig:sirrepresentations}
 \end{figure}
 
-In Section \ref{sec:methods_sir}, we defined the latent process, $ \bX(\tau) = (\bX_1,\dots,\bX_N)$, with state space $ \mcS = \lbrace S, I, R\rbrace^N $. Let $ c_u = (x_1,\dots,x_N) $ denote a configuration of the state labels (e.g. $ c_u = (S, I, S, R, I) $), and denote the set of configurations that correspond to a vector of compartment counts by $$ \mcC_{lmn} = \left \lbrace c_u:l=\sum_{i=1}^N\ind{x_i = S},m=\sum_{i=1}^N\ind{x_i=I},n = \sum_{i=1}^N\ind{x_i=R},\ l+m+n=N \right \rbrace. $$ 
-The state space of count vectors, 
-$$ \overline{\mcS} = \left \lbrace \mcC_{lmn}: l,m,n \in \lbrace1,\dots,N\rbrace, l+m+n = N \right \rbrace, $$ 
-defines a partition of $ \mcS $ that is obtained by stripping away the subject labels and summing the number of individuals in each disease state. 
+Turning back to the SIR model, we defined the epidemic process, $ \bX(\tau) = (\bX_1,\dots,\bX_N)$, with state space $ \mcS = \lbrace S, I, R\rbrace^N $. Let $ \bx = (x_1,\dots,x_N) $ denote a configuration of the state labels (e.g. $ \bx = (S, I, S, R, I) $), and let $$ \overline{\bx} = h(\bx) = \left (l=\sum_{i=1}^N\ind{x_i = S},m=\sum_{i=1}^N\ind{x_i=I},n = \sum_{i=1}^N\ind{x_i=R}\right ) $$ be the corresponding vector of compartment counts. The lumped state space is 
+$$ \overline{\mcS} = \left \lbrace \overline{\bx} = (l,m,n): l,m,n \in \lbrace0,\dots,N\rbrace,\  l+m+n = N \right \rbrace, $$ 
+which partitions $ \mcS $ by summing the number of individuals in each disease state. 
 
-Given the partition $ \overline{\mcS} $ of $ \mcS $, we may define the CTMC for the canonical SIR model, $ \overline{\bX} = (N_S, N_I, N_R) $, where $ N_S + N_I + N_R = N $ and $ N_S,N_I,N_R \in \lbrace0,\dots,N\rbrace $, on the state space of compartment counts, depicted in Figure \ref{fig:sirrepresentations}. This construction is usually presented for computational reasons since discarding the subject labels for infection and recovery events substantially reduces the computational overhead. When the sojourn times are exponentially distributed, the transition rates for the time-homogeneous CTMC are 
+The population--level SIR model expressed in terms of compartment counts, $ \overline{\bX} = (S, I, R) \in \overline{\mcS} $ (depicted in Figure \ref{fig:sirrepresentations}), evolves as a CTMC on the lumped state space $ \overline{\mcS} $ with transition rates
 \begin{equation*}
 \begin{array}{cc}
-\underline{\text{Transition}} & \underline{\text{Rate}} \\
-(N_S,N_I,N_R) \longrightarrow (N_S-1,N_I+1,N_R) & \beta N_S N_I ,\\
-(N_S,N_I,N_R) \longrightarrow (N_S,N_I-1,N_R+1) & \mu N_I .
+\underline{\text{Transition}} & \underline{\text{Lumped Rate}} \\
+(S,I,R) \longrightarrow (S-1,I+1,R) & \beta S I ,\\
+(S,I,R) \longrightarrow (S,I-1,R+1) & \mu I .
 \end{array}
 \end{equation*}
-
-The state space $ \overline{\mathcal{S}} $ partitions the state space $ \mathcal{S} $ into groups of configurations for which the triple of compartment counts are the same. The CTMC $\overline{\bX}$ trivially satisfies the condition for lumpability, and thus is the lumped Markov chain of $ \bX $ with respect to this partition.
-
-A Markov process is lumpable with respect to a partition of its state space if there exists another Markov process  A Markov process is \textit{commutative} with respect to a lumping of its state space if the lumped jump chain of the original process has the same distribution as the jump chain of the lumped process on the partitioned state space. We now explain these two very confusing sentences, but refer to \cite{tian2006lumpability} for a more thorough discussion. 
-
- 
-
-there is a lumped Markov process taking values 
-
-with a state space that groups together, or lumps, elements of the original state space, and that is has jum
+To see how we arrive at these rates, note that in a population with $ S $ susceptibles, each of whom is independently infected at rate $ \beta I $, the time until the first infection is exponentially distributed with rate $ \lambda_{SI} = \beta SI $ by the racing exponentials property (\ref{eqn:racing_exponentials}). Similarly, the time to the first recovery in a population with $ I $ infected individuals is exponentially distributed with rate $\lambda_{IR} = \mu I $. Note that the mean infectious period duration is still $ 1/\mu $, as it was in the case of the subject--level SIR model. 
 
 \subsection{A Dubiously Brief Review of CTMCs}
 \label{subsec:ctmc_overview}
-We interrupt our regularly scheduled broadcasting to 
+
+We digress from our discussion of infectious disease models to review basic definitions and properties of CTMCs. The following discussion is emphatically not intended to be comprehensive, but rather to provide a somewhat general overview of some results that are used in this dissertation. We refer to \cite{bremaud1999markov,fuchs2013inference,guttorp1995stochastic,wilkinson2011stochastic} for more comprehensive and rigorous discussions of the material in this section. 
 
 
-\subsection{Deterministic Representations}
+- time homogeneity
+- chapman-kolmogorov equations
+- transition probabilities and matrix exponentials
+- 
+
+\subsection{Approximation of Markov Jump Processes}
+\label{subsec:sem_approximations}
+
+\subsubsection{Deterministic Representations}
 \label{subsec:deterministic_models}
 
-
-\subsection{Large--Population Approximations}
-\label{subsec:large_pop_approx}
-
-\subsubsection{Diffusion approximations of Markov jump processes}
+\subsubsection{Diffusion approximations of Markov Jump Processes}
 \label{subsubsec:diff_approx}
 
-\subsubsection{Linear noise approximation}
+\subsubsection{Linear Noise Approximation}
 \label{subsubsec:lna_background}
 
 \section{Computational Approaches to Fitting Stochastic Epidemic Models}
