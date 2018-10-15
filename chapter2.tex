@@ -42,17 +42,9 @@ The waiting times between subject--level transition events are typically taken t
 with per--contact infection rate,  $ \beta $, and recovery rate, $ \mu $. Note that $ 1/\mu $ is interpreted as the mean infectious period duration. That $ \bX $ is a \textit{Markov} process means that its forward--time evolution depends on its history only through its current state, i.e.,
 \begin{equation}
 \label{eqn:sir_markov}
-\Pr\left (\bX(\tau + \dtau) = \bx | \lbrace\bX(\tau) = \bx(\tau),\ \tau\in[0,\tau]\rbrace, \btheta\right ) = \Pr\left (\bX(\tau + \dtau) = \bx | \bX(\tau) = \bx(\tau),\btheta\right ).
+\Pr\left (\bX(\tau + \dtau) = \bx^\prime | \lbrace\bX(\tau) = \bx,\ \tau\in[0,\tau]\rbrace, \btheta\right ) = \Pr\left (\bX(\tau + \dtau) = \bx^\prime | \bX(\tau) = \bx,\btheta\right ),
 \end{equation}
-$ \bX $ is \textit{time--homogeneous} since the rates of transition between configurations in the state space of $ \bX $ are constant over time. In contrast, the subject--level subprocess, $ \bX_j $, is a \textit{time--inhomogeneous} CTMC with transition rate matrix
-\begin{equation} 
-\label{eqn:sir_subj_rate_mtx}
-\bLambda^{j}(\btheta)(\tau) = \bordermatrix{ & S & I & R \cr
-	S & -\beta I^{(-j)}(\tau) & \beta I^{(-j)}(\tau) & 0 \cr 
-	I & 0 & -\mu & \mu \cr
-	R & 0 & 0 & 0 },
-\end{equation}
- since $ I^{(-j)}(\tau) $, the number of infected individuals in the population at time $ \tau $, excluding individual $ j $, changes over time. 
+where $ \bx^\prime,\bx \in \mcS$. $ \bX $ is \textit{time--homogeneous} since the rates of transition between configurations in the state space of $ \bX $ are constant over time. 
 
 \begin{figure}[htbp]
 	\caption{Very useful properties of exponential random variables.}
@@ -76,6 +68,16 @@ Let $ \btau = \lbrace\tau_0,\dots,\tau_{K+1}\rbrace $, be the (ordered) set of $
 L(\bX| \btheta) &= \prod_{k = 1}^{K}\left \lbrace \left [\beta I_{\tau_k}\times\ind{\tau_k \corresponds I} + \mu\times\ind{\tau_k \corresponds R}\right ] \exp{\left [-\left (\tau_k - \tau_{k-1}\right )\left (\beta I_{\tau_k} S_{\tau_k} + \mu I_{\tau_k}\right )\right ]}\right \rbrace \nonumber \\
 & \hspace{0.2in} \times \exp \left [-\left (t_L - \tau_K\right )\left (\beta I_{\tau_K^+}S_{\tau_K^+} + \mu I_{\tau_K^+}\right )\right ]. 
 \end{align}
+
+In contrast with the population--level CTMC, $ \bX $, the subject--level subprocess, $ \bX_j $, is a \textit{time--inhomogeneous} CTMC with transition rate matrix
+\begin{equation} 
+\label{eqn:sir_subj_rate_mtx}
+\bLambda^{j}(\btheta)(\tau) = \bordermatrix{ & S & I & R \cr
+	S & -\beta I^{(-j)}(\tau) & \beta I^{(-j)}(\tau) & 0 \cr 
+	I & 0 & -\mu & \mu \cr
+	R & 0 & 0 & 0 },
+\end{equation}
+since $ I^{(-j)}(\tau) $, the number of infected individuals in the population at time $ \tau $, excluding individual $ j $, changes over time. We could also characterize $ \bX_j $ as piecewise--homogeneous since the rate of infection for subject $ j $ is constant between times at which other individuals become infected and recover. 
 
 \subsection{A Population--Level Susceptible--Infected--Recovered Model}
 \label{subsec:sir_population_mod}
@@ -125,13 +127,46 @@ To see how we arrive at these rates, note that in a population with $ S $ suscep
 \subsection{A Dubiously Brief Review of CTMCs}
 \label{subsec:ctmc_overview}
 
-We digress from our discussion of infectious disease models to review basic definitions and properties of CTMCs. The following discussion is emphatically not intended to be comprehensive, but rather to provide a somewhat general overview of some results that are used in this dissertation. We refer to \cite{bremaud1999markov,fuchs2013inference,guttorp1995stochastic,wilkinson2011stochastic} for more comprehensive and rigorous discussions of the material in this section. 
+We briefly digress from our discussion of epidemic models to review some basic properties of CTMCs in a bit more generality. The following discussion is not intended to be comprehensive, but rather to provide an overview of some results that will be useful in this dissertation. We refer to \cite{bremaud1999markov,fuchs2013inference,guttorp1995stochastic,wilkinson2011stochastic} for more complete and rigorous discussions of the following material. For simplicity, we will focus on CTMCs with finite state spaces. 
 
+The forward--time evolution of a CTMC is described by its transition kernel $$\Pr(\bX(\tau^\prime) = \bx^\prime | \bX(\tau) = \bx) = P_{\bx,\bx^\prime}(\tau,\tau^\prime),$$
+where $ \bx,\bx^\prime\in\mcS $ and $ 0\leq\tau\leq\tau^\prime $. The transition kernel only depends on the time--elapsed when the process is time--homogeneous $ P_{\bx,\bx^\prime}(\tau,\tau^\prime) = P_{\bx,\bx^\prime}(|\tau^\prime - \tau|) \equiv P_{\bx,\bx^\prime}(\tau_\prime) $. In matrix form, the transition kernel, $ P $, is an $ r\times r $ stochastic matrix, where $ r = |\mcS| $, the rows of $ P $ sum to one, and $ P_{ii} = -\sum_{j\neq i}P_{ij}$. Trivially, $ P_{\bx,\bx^\prime}(0) = I $, i.e., the probability that there are no state changes in a time interval of zero length, almost surely. By the Markov property, the probability of transitioning from state $ i $ to state $ k $ in time $ s+t $ is 
+\begin{equation}
+\label{eqn:chapman_kolmogorov}
+P_{ik}(s+t) = \sum_{j\in\mcS}P_{ij}(s)P_{jk(t)},
+\end{equation}
+or in matrix form, $$P(s+t) = P(s)P(t).$$
+Equation (\ref{eqn:chapman_kolmogorov}) is known as the \textit{Chapman--Kolmogorov} equation. 
 
-- time homogeneity
-- chapman-kolmogorov equations
-- transition probabilities and matrix exponentials
-- 
+The transition rate matrix (or \textit{infinitesimal generator}) of $ \bX $ is defined as the derivative of $ P(\tau) $ at $ \tau = 0 $, i.e.,
+\begin{align*}
+\label{eqn:ctmc_generator}
+\bLambda &= \underset{\dtau \rightarrow 0}{\lim}\frac{P(\dtau) - P(0)}{\dtau} \\
+&= \underset{\dtau \rightarrow 0}{\lim}\frac{P(\dtau) - I}{\dtau}, \\
+\shortintertext{which implies that the infinitesimal transition matrix is} P(\dtau) &= I + \bLambda\dtau.
+\end{align*}
+Thus, for example, the infinitesimal transition probabilities for the population--level SIR model are
+\begin{align*}
+\Pr(\bX(\tau+\dtau) = (S-1, I+1, R) | \bX(\tau) = (S,I,R)) &= \beta SI + o(\dtau), \\
+\Pr(\bX(\tau+\dtau) = (S, I-1, R+1) | \bX(\tau) = (S,I,R)) &= \mu I + o(\dtau).
+\end{align*}
+The transition probability matrix over an interval of arbitrary length, $ \tau $, solves the matrix differential equation,  \begin{equation}\label{eqn:kolmogorov_forward}
+\deriv{}{\tau}P(\tau) = \bLambda P(\tau),\hspace{0.2in} s.t.\  P(0) = I.
+\end{equation} 
+Thus, $ P(\tau) = \exp(\bLambda\tau) $, can be computed using the matrix exponential. There are at least 19 dubious ways of computing the matrix exponential \cite{moler2003nineteen}. We will typically do so by diagonalizing $ \bLambda\tau $ and exponentiating the eigenvalues. Section \ref{sec:mtx_exp} outlines this procedure in the case when $ \bLambda$ has real--valued eigenvalues, and also in the case when the eigenvalues are complex. Equation (\ref{eqn:kolmogorov_forward}) is known as the \textit{forward} Kolmogorov equation, and is obtained by computing the derivative
+\begin{align*}
+\deriv{}{\tau}P(\tau) &= \frac{P(\tau + \dtau) - P(\tau)}{\dtau} \\
+&= \frac{P(\dtau)P(\tau) - P(\tau)}{\dtau} \\
+&= \frac{P(\dtau) - I}{\dtau}P(\tau)\\
+&= \bLambda P(\tau).
+\end{align*}
+The \textit{backward} Kolmogorov equation is similarly obtained by
+\begin{align}
+\deriv{}{\tau}P(\tau) &= \frac{P(\tau + \dtau) - P(\tau)}{\dtau} \nonumber \\
+&= \frac{P(\tau)P(\dtau) - P(\tau)}{\dtau} \nonumber \\
+&= P(\tau)\frac{P(\dtau) - I}{\dtau}\nonumber\\
+&= P(\tau)\bLambda .
+\end{align}
 
 \subsection{Approximation of Markov Jump Processes}
 \label{subsec:sem_approximations}
