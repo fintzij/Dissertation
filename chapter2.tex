@@ -143,7 +143,7 @@ where $ \bx,\bx^\prime\in\mcS $ and $ 0\leq\tau\leq\tau^\prime $. The transition
 P_{ik}(s+t) = \sum_{j\in\mcS}P_{ij}(s)P_{jk}(t),
 \end{equation}
 or in matrix form, $$P(s+t) = P(s)P(t).$$
-Equation (\ref{eqn:chapman_kolmogorov}) is known as the \textit{Chapman--Kolmogorov} equation. 
+Equation (\ref{eqn:chapman_kolmogorov}) is known as the \textit{Chapman--Kolmogorov} master equation. 
 
 The transition rate matrix (or \textit{infinitesimal generator}) of $ \bX $ is defined as the derivative of $ P(\tau) $ at $ \tau = 0 $, i.e.,
 \begin{align*}
@@ -180,7 +180,7 @@ The \textit{backward} Kolmogorov equation is similarly obtained by
 
 It is often infeasible to work with the CTMC formulation of a SEM when modeling an outbreak in a large population, particularly when working within a Bayesian MCMC framework. The cardinality of model's state space grows polynomially in the population size. This makes it difficult to efficiently sample from the posterior or to explore the likelihood surface, even when fitting SEMs with relatively simple dynamics. A second challenge is that as the population size grows, so too do the numbers of transition events. Hence, repeatedly evaluating the likelihoods (\ref{eqn:sir_subj_likelihood}) and (\ref{eqn:sir_pop_likelihood}) is prohibitively expensive. 
 
-Two commonly used approximations of the MJP representation of a SEM are through a system of ordinary differential equations (ODEs) and through a system of stochastic differential equations (SDEs). We will not go into detail on the derivations of these representations, except to give some intuition about the conditions under which they are appropriate. However, it is interesting to note that the Kolmogorov equations for the ODE, SDE, and MJP formulations of a SEM arise as special cases of a \textit{differential Chapman--Kolmogorov equation} that generalizes (\ref{eqn:chapman_kolmogorov}) \cite{fuchs2013inference}. 
+Two commonly used approximations of the MJP representation of a SEM are through a system of ordinary differential equations (ODEs) and through a system of stochastic differential equations (SDEs). We will not go into detail on the derivations of these representations, except to give some intuition about the conditions under which they are appropriate. However, it is interesting to note that the Kolmogorov equations for the ODE, SDE, and MJP formulations of a SEM arise as special cases of a \textit{differential Chapman--Kolmogorov master equation} that generalizes (\ref{eqn:chapman_kolmogorov}) \cite{fuchs2013inference}. 
 
 We presented the MJP representation of the SIR model as an \textit{extensive}, $ \bX $, where transition events led to jumps of size one in the compartment counts. We could have equivalently defined the model in terms of an \textit{intensive} process, $ \bXtil = \bX / N = (S/N,I/N,R/N) $, where transition events led to jumps of size $ 1/N $. As $ N\longrightarrow \infty$ , it becomes reasonable to consider approximating $ \bXtil $ by a process with continuous sample paths. The large population stochastic \textit{approximation} is the solution to an It\^{o} diffusion whose sample paths are continuous but nowhere differentiable. The infinite population deterministic functional \textit{limit} solves a system of ODEs and has smooth sample paths. We will present extensive forms of the SDE and ODE models, which are obtained by simply rescaling the intensive processes from which the approximations derive. 
 
@@ -195,31 +195,81 @@ In the infinite population limit, sample paths of the SIR model are solutions to
 \end{align*}
 The state space of the ODE representation of the SIR model is $$ \mcS^R =  \lbrace(j,k,l:\ j,k,l\in[0,N], j+k+l = N)\rbrace. $$ Note that the ODE model implies that if $ I(\tau) > 0 $ at any time $ \tau $, then $ I(\tau) > 0\ \forall\ \tau\in[0,\infty)$. Therefore, the ODE model is dubious if we are interested in answering questions about the stochastic emergence or extinction of an outbreak.
 
-- reproduction numbers
+ODE formulations of SEMs are particularly useful, in part, because they more easily lend themselves mathematical analysis. One important quantity that is straightforwardly derived for ODE models is the basic reproduction number, $ R_0 $, which is interpreted as the expected number of secondary infections attributable to a single index case in an otherwise susceptible population (of infinite size). The basic reproduction number can be related to both the final size distribution and to the probability of a major outbreak \cite{allen2017primer,miller2012note}. Estimation of $ R_0 $ is more complicated for stochastic models, though it can be derived from a branching process approximation for the early behavior of an outbreak \cite{allen2008introduction}. In the case of deterministic models, $ R_0 $ is easily obtained as the spectral radius of the next generation matrix (NGM) for the linearized system of ODEs at the disease free equilibrium \cite{diekmann2009construction,van2017reproduction}. Other methods exist, e.g., by analyzing the survival function or by fitting phenomenological models when the growth rate of the outbreak is observed to be subexponential \cite{van2017reproduction}.
+
+As an example, we will demonstrate the NGM method for computing $ R_0 $ for an outbreak with SIR dynamics where a fraction of the population, $ p_v $, is vaccinated and vaccine efficacy (VE)  modifies the per--contact rate of infection (VE for susceptibility: $ \nu_s $), the infectiousness of carriers (VE for infectiousnes{(s: $ \nu_i $), and the rate of recovery (VE for recovery: $ \nu_r $). We will write $ N^{u} = (1-p_v)N $ and $ N^{v} = p_vN $. The disease free equilibrium (DFE) is $$ \bX_{DFE} =  (S^{(u)}_{DFE} = \left ((1 - p_v)N,\ I^{(u)}_{DFE} = 0,\  R^{(u)}_{DFE} = 0,\ S^{(v)}_{DFE} = p_vN,\ I^{(v)}_{DFE} = 0,\ R^{(v)}_{DFE} = 0)\right ). $$ 
+The linearized system of ODEs at the DFE is 
+\begin{align*}
+\deriv{I^{(u)}}{t} &= \beta \left (I^{(u)} + \nu_iI^{(v)}\right )N^{(u)} - \mu I^{(u)}\\
+\deriv{I^{(u)}}{t} &= \beta \nu_s\left (I^{(u)} + \nu_iI^{(v)}\right )N^{(v)} - \mu\nu_r I^{(v)}
+\end{align*}
+The NGM is constructed as $K=-T\Sigma^{-1}$, where $T$ gives the rates of infectious contact between states at infection, $ I^{(u)} $ and $ I^{(v)} $, and $\Sigma$ contains the recovery rates out of states at infection. Here,
+\begin{align*}
+T &= \kbordermatrix{ & I^{(u)} & I^{(v)} \\
+	I^{(u)} & \beta N^{u} & \nu_i\beta N^u\\
+	I^{(v)} & \nu_s \beta N^{v} & \nu_s\nu_i\beta N^v}, & &\hspace{-2in}
+\Sigma = \kbordermatrix{ & I^{(u)} & I^{(v)} \\
+I^{(u)}&-\mu & 0 \\
+I^{(v)}& 0 & -\mu\nu_r},\\
+&\hspace{1.25in} K =\kbordermatrix{ & I^{(u)} & I^{(v)} \\
+	I^{(u)} & \frac{\beta N^{u}}{\mu} & \frac{\nu_i\beta N^u}{\nu_r\mu}\\
+	I^{(v)} & \frac{\nu_s \beta N^{v}}{\mu} & \frac{\nu_s\nu_i\beta N^v}{\nu_r\mu}}.
+\end{align*}
+Thus, $ R_0 = \sigma(K) = \frac{1}{2}\left (Tr(K) + \sqrt{Tr(K)^2 - 4\det(K)}\right )  = \frac{\beta N^{u}}{\mu} + \frac{\nu_s\nu_i\beta N^v}{\nu_r\mu}$.
 
 \subsubsection{Diffusion approximations of Markov Jump Processes}
 \label{subsubsec:diff_approx}
 
 We will give the diffusion approximation for the SIR model after a, somewhat colloquial, review of diffusions based on material in \cite{fuchs2013inference,oksendal2003stochastic,wilkinson2011stochastic}. We begin with an SDE of the form \begin{equation}
 \deriv{\bX_t}{t} = \bmu(\bX_t,t) + \bSigma(\bX_t,t)\bZ_t,\hspace{0.1in} t\geq s;\hspace{0.1in} \bX_x = \bx,\end{equation}
-with \textit{drift vector} $ \bmu:\mathbb{R}^d\rightarrow\mathbb{R}^d $ and  \textit{diffusion matrix} $ \bSigma:\mathbb{R}^d\rightarrow \mathbb{R}^d\times\mathbb{R}^d $, which are very loosely interpretable as the infinitesimal first and second moments of increments of the process. $ \bZ_t $ is $ d $--dimensional Gaussian white noise. We denote by $ \rmd\bW_t = \bZ_t\dt$ standard $ d $--dimensional Brownian motion (see \cite{oksendal2003stochastic} for a formal definition). An \textit{It\^{o} diffusion} is a stochastic process, $ (\bX_t)_{t\geq0} $, that satisfies the It\^{o} stochastic integral equation
+with \textit{drift vector} $ \bmu:\mathbb{R}^d\rightarrow\mathbb{R}^d $ and  \textit{diffusion matrix} $ \bSigma:\mathbb{R}^d\rightarrow \mathbb{R}^d\times\mathbb{R}^d $, which are interpretable as the infinitesimal first and second moments of the process innovations. $ \bZ_t $ is $ d $--dimensional Gaussian white noise. We denote by $ \rmd\bW_t = \bZ_t\dt$ standard $ d $--dimensional Brownian motion (see \cite{oksendal2003stochastic} for a formal definition). An \textit{It\^{o} diffusion} is a stochastic process, $ (\bX_t)_{t\geq0} $, that satisfies the It\^{o} stochastic integral equation
 \begin{equation}
 \bX_t = \bX_0 + \int_0^t\bmu(\bX_t,t)\dt + \int_0^t\bSigma(\bX_t,t)\rmd\bW_t,\end{equation}
-or equivalently in differential form, the SDE
+which we can express equivalently in differential form,
 \begin{equation}
+\label{eqn:general_sde}
 \rmd\bX_t = \bmu(\bX_t,t)\dt + \bSigma(\bX_t,t)\rmd\bW_t.
 \end{equation}
+The SDE (\ref{eqn:general_sde}) can be interpreted as the limit of a difference equation, $ \Delta\bX_t = \bmu(\bX_t,t)\Delta t + \bSigma(\bX_t,t)\Delta\bW_t $, with infinitely small time steps, $ \Delta t \rightarrow 0$. Hence, we can simulate approximate sample paths using an \textit{Euler--Maruyama} scheme by taking $ \Delta t = \epsilon>0 $ and sampling the innovations from ,
+$$\Delta\bX_t\sim MVN\left (\bmu(\bX_t,t)\Delta t,\ \bSigma(\bX_t,t)\bSigma(\bX_t,t)^T\Delta t\right ).$$
 
-- many ways of deriving SDE approximation
-- CLE - match moments
-- SIR approximation
-- Ito's lemma
+Given a $ d $--dimensional It\^{o} process of the form (\ref{eqn:general_sde}), \textit{It\^{o}'s Lemma} gives us a formula for the SDE satisfied by a transformation of the original process. The general formula is as follows \cite{oksendal2003stochastic}: let $ g(\bx, t) = \left (g_1(\bx,t),\dots,g_p(\bx,t)\right ) $ be a twice continuously differentiable map from $ \mathbb{R}^d\times[0,\infty)\rightarrow\mathbb{R}^p $. Then the transformed process, $ \bY(\bW,t) = g(\bX_t, t)$, is also an It\^{o} process with component $ Y_k,\ k=1,\dots,p $, given by
+$$\rmd Y_k, = \pdiv{g_k}{t}(\bX, t) + \sum_i\pdiv{g_k(\bX,t)}{x_i}\rmd X_i + \frac{1}{2}\sum_i\sum_j\pdiv{^2g_k(\bX,t)}{x_i\partial x_j}\rmd X_i\rmd X_j,$$
+where $ \rmd W_i\rmd W_j = \dt\rmd W_i = \rmd W_i\dt = 0 $ and $ \rmd W_i\rmd W_i = \dt. $
+
+The SDE approximation of a density dependent MJP can be rigorously derived in a number of ways. These include proving the convergence of the MJP Kolmogorov master equation to its SDE counterpart, convergence of the infinitesimal generator, and through a number of different system size expansions applied to the master equation \cite{fuchs2013inference}. An intuitive approach yielding an equivalent result, referred to as the \textit{Langevin approach}, postulates that the SDE approximation is obtained by matching the infinitesimal moments of the diffusion to those of the MJP \cite{fuchs2013inference,gillespie2000chemical,wallace2012linear}. 
+
+We proceed by approximating the numbers of infections and recoveries in a small time interval, $ (t, t+\dt] $. Suppose that we can choose $ \dt $ such that the following two \textit{leap} conditions hold:
+\begin{enumerate}
+	\item $ \dt $ is sufficiently \textit{small} that the $ \bX^c $ is essentially unchanged over $ (t,t+\dt] $, so that the rates of infections and recoveries are approximately constant: 
+	\begin{equation}\label{eqn:tau_cond_1_background}
+	\blambda(\bX^c(t^\prime)) \approx \blambda(\bx^c(t)),\ \forall t^\prime \in (t,t+\dt].
+	\end{equation}
+	\item $ \dt $ is sufficiently \textit{large} that we can expect many disease state transitions of each type:
+	\begin{equation}\label{eqn:tau_cond_2_backgroun}
+	\blambda(\bx^c(t)) \gg \bs{1}.
+	\end{equation}
+\end{enumerate}
+Condition (\ref{eqn:tau_cond_1_background}) can be trivially satisfied by choosing $ \dt $ to be infinitesimally small, and implies that the numbers of infections and recoveries in $ (t,t+\dt] $ are essentially independent of one another since the rates at which they occur are approximately constant within the interval \cite{gillespie2000chemical}. Furthermore, (\ref{eqn:tau_cond_1_background}) implies that the numbers of infections and recoveries in the interval are independent Poisson random variables with rates $ \blambda(\bx^c(t)\dt) $. For the SIR model, the numbers of infections and recoveries in an infinitesimal time increment are $ N_{SI}(\dt) \sim \mr{Poisson}(\beta S(t)I(t)\dt) $ and $ N_{IR}(t+\dt) \sim \mr{Poisson}(\mu I(t)\dt) $. Condition (\ref{eqn:tau_cond_2_background}), which we can reasonably expect to be satisfied in large populations where there are many infections and recoveries \cite{wallace2012linear}, implies that the Poisson distributed increments can be well approximated by independent Gaussian random variables. 
+
+We now give the SDE approximation for the SIR model. Let $ \blambda(\bX) = (\lambda_{SI}, \lambda_{IR}) $ denote the rates at which individuals become infected and recover, and let $ \bA $ denote the matrix whose rows specify changes in counts of susceptible, infected, and recovered individuals corresponding to one infection or recovery event:
+\begin{equation*}
+\bA = \kbordermatrix{& S & I &  R\\
+	S\rightarrow I& -1& 1 & 0\\
+	I \rightarrow R & 0& -1 & 1
+}.
+\end{equation*}
+The SDE for the SIR model is 
+\begin{equation}
+\label{eqn:sir_sde}
+\rmd\bX(t) = \bA^T\blambda(\bX)\dt + \sqrt{\bA^T\diag(\blambda(\bX))\bA}\rmd\bW_t.
+\end{equation}
+Note that this SDE is given in a somewhat general form. If we wanted to change the model dynamics, the expressions for $ \bA $ and $ \blambda $ would differ, but the diffusion approximation would take the same form (with the caveat that $ \blambda $ must satisfy a set of Lipschitz conditions to ensure existence of the SDE, see \cite{fuchs2013inference}, Chapter 3). 
 
 \subsubsection{Linear Noise Approximation}
 \label{subsubsec:lna_background}
 
-- LNA derivation, in brief
-- LNA in the recent lit
+While it is straightforward to simulate sample paths for SDEs, 
 
 \section{Computational Approaches to Fitting Stochastic Epidemic Models}
 \label{sec:computational_background}

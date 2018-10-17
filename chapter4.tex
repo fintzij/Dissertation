@@ -56,7 +56,6 @@ where $ \pi(\btheta) $ specifies the prior density of the model parameters. Howe
 As outlined in Section \ref{subsubsec:diff_approx}, there are a variety of methods for arriving at a diffusion approximation for a Markov jump process, which under certain conditions yield equivalent results (for a comprehensive reference, see \cite{fuchs2013inference}). In the interest of clarity, we follow \cite{fearnhead2014,golightly2013simulation,golightly2015delayed,wilkinson2011stochastic} and appeal to an intuitive, though somewhat informal, construction of the CLE by matching its drift and diffusion with the approximate moments of increments of the MJP path in infinitesimal time intervals. For more detailed presentations see \cite{fuchs2013inference,gillespie2000chemical,wallace2012linear}. 
 
 Suppose that, at the current time, the compartment counts are given by $ \bX^c(t) = \bx^c_t $. We are interested in approximating the numbers of infections and recoveries in a small time interval, $ (t, t+\dt] $, i.e., $ \bN^c(t+\dt) - \bN(t)$. Now, suppose that we can choose $ \dt $ such that the following two \textit{leap} conditions hold:
-
 \begin{enumerate}
 	\item $ \dt $ is sufficiently \textit{small} that the $ \bX^c $ is essentially unchanged over $ (t,t+\dt] $, so that the rates of infections and recoveries are approximately constant: 
 	\begin{equation}\label{eqn:tau_cond_1}
@@ -67,7 +66,6 @@ Suppose that, at the current time, the compartment counts are given by $ \bX^c(t
 	\blambda(\bx^c(t)) \gg \bs{1}.
 	\end{equation}
 \end{enumerate}
-
 Condition (\ref{eqn:tau_cond_1}), which can be trivially satisfied just by choosing $ \dt $ to be infinitesimally small, implies that the numbers of infections and recoveries in $ (t,t+\dt] $ are essentially independent of one another since the rates at which they occur are approximately constant within the interval \cite{gillespie2000chemical}. This condition also carries the stronger implication that the numbers of infections and recoveries in the interval are independent Poisson random variables with rates $ \blambda(\bx^c(t)\dt) $, i.e., $ N^c_{SI}(\dt) \sim \mr{Poisson}(\beta S(t)I(t)\dt) $ and $ N^c_{IR}(t+\dt) \sim \mr{Poisson}(\mu I(t)\dt) $. Condition (\ref{eqn:tau_cond_2}), which we can reasonably expect to be satisfied in large populations where transmission dynamics are near their deterministic ODE limits \cite{wallace2012linear}, implies that the Poisson distributed increments can be well approximated by independent Gaussian random variables. 
 
 When (\ref{eqn:tau_cond_1}) and (\ref{eqn:tau_cond_2}) are satisfied, we  approximate the integer--valued processes, $ \bX^c $ and $ \bN^c $, with the real--valued processes, $ \bX $ and $ \bN $. For the SIR model, the state space of $ \bX $ is $$ \mcS_X^R = \lbrace (l,m,n):l,m,n \in [0,N],\ l+m+n=P\rbrace, $$ and the state space  of $ \bN $ is $$ \mcS_N^R = \lbrace (j,k): j,k \in [0,N],\ \bX(\mcV_{jk})\in\mcS_X^R \rbrace. $$ In words, the state space of $ \bX $ will be the set of compartment volumes that are non--negative and that sum to the population size, while the state space of $ \bN $ is the set of non--decreasing and non--negative incidence paths, constrained so that they do not lead to invalid prevalence paths (e.g., if at some point there are more recoveries than infections, which would lead to a negative number of infected individuals). For now, we will ignore the constraints on $ \mcS_N^R $ and $ \mcS_X^R $, and approximate the changes in cumulative incidence of infections and recoveries in an infinitesimal time step as 
@@ -83,7 +81,7 @@ where $ \bW_t $ is a vector of independent Brownian motion and $ \bLambda(\bX(t)
 
 \subsubsection{Reparameterizating the CLE in terms of incidence}
 \label{subsubsec:cle_repar}
-The LNA of (\ref{eqn:sir_cle_X}) will involve derivatives of the rates, $ \blambda $, with respect to the incidence process, $ \bN $. In order to enable us to compute these derivatives, we borrow from \cite{breto2011compound,ho2016direct} a reparameterization for $ \bX (t)$ in terms of $ \bN(t) $, conditional on the initial conditions $ \bX(t) = \bX_0 $ and $ \bN(t) = \bs{0} $. Let $ \bA $ denote the matrix whose rows specify changes in counts of susceptible, infected, and recovered individuals corresponding to one infection or recovery event:
+The LNA of (\ref{eqn:sir_cle_X}) will involve derivatives of the rates, $ \blambda $, with respect to the incidence process, $ \bN $. We borrow from \cite{breto2011compound,ho2016direct} a reparameterization for $ \bX (t)$ in terms of $ \bN(t) $, conditional on the initial conditions $ \bX(t) = \bX_0 $ and $ \bN(t) = \bs{0} $. Let $ \bA $ denote the matrix whose rows specify changes in counts of susceptible, infected, and recovered individuals corresponding to one infection or recovery event:
 \begin{equation}
 \label{eqn:sir_stoich}
 \bA = \kbordermatrix{& S & I &  R\\
