@@ -10,6 +10,8 @@ Mechanistic compartmental models prescribe physical laws that govern the transmi
 
 Mechanistic compartmental models can be specified at varying levels of fidelity to the underlying epidemic process. Our models will range in granularity, from agent--based models in which we explicitly track the disease histories of individuals, to population--level models defined by the aggregate flow of individuals between model compartments. We refer to a mechanistic model as a stochastic epidemic model (SEM) when we model stochasticity in the epidemic process. Compartmental models with complex dynamics have historically represented the epidemic process as a deterministic system of ordinary differential equations \cite{keeling2008}. All of the models in this work will treat the epidemic process as evolving continuously in time, but observed at discrete times. The decision to work with continuous--time models is advantageous when observation times are not evenly spaced, or when various sub--processes evolve on different time scales \cite{glass2003,shelton2014}. Discrete time models can be problematic when the epidemic and observation processes are misaligned, and do not necessarily produce results that are independent of the choice time--step (see \cite{shelton2014} for examples). One (very) compelling reason to prefer discrete time models is that the computational effort required to fit a discrete time model is typically much lower than what is required in the continuous time setting. 
 
+- Computational challenges of fitting compartmental models
+
 \subsection{An Agent--Based Susceptible--Infected--Recovered Model}
 \label{subsec:sir_individual_mod}
 For clarity of exposition, we will present the technical background on epidemic models in terms of the susceptible--infected--recovered (SIR model). Formal treatments that deal with this material in greater generality can be found in \cite{andersson2000stochastic,britton2018,brauer2008compartmental,fuchs2013inference,wilkinson2011stochastic}. The SIR model classifies individuals in a population of size $ N $ into one of three infection states: susceptible(S), infected (I), and recovered (R). Individuals are assumed to become infectious immediately upon entering the infected state, and acquire lasting immunity upon recovery. To simplify matters, we will assume the population is closed, meaning that there are no demographic changes or immigration, and that individuals are exchangeable. This latter assumption implies that individuals mix homogeneously and are alike in their infection dynamics. 
@@ -175,6 +177,8 @@ The \textit{backward} Kolmogorov equation is similarly obtained by
 &= P(\tau)\bLambda .
 \end{align}
 
+\subsection{Exact Methods for Fitting SEMs}
+
 \subsection{Large Population Approximations}
 \label{subsec:sem_approximations}
 
@@ -271,8 +275,15 @@ Note that this SDE is given in a somewhat general form. If we wanted to change t
 
 While it is straightforward to simulate sample paths for SDEs, 
 
-\section{Computational Approaches to Fitting Stochastic Epidemic Models}
+- LNA derivation, refer somewhere else for solution
+
+- use of the LNA in recent literature
+
+\subsection{Computational Approaches to Fitting Stochastic Epidemic Models}
 \label{sec:computational_background}
+
+- computation with SDEs
+- largely dependent on particle filter methods, cauchemez and ferguson use CIR process
 
 \section{Bayesian Computation and Markov Chain Monte Carlo}
 \label{sec:bayesian_computation}
