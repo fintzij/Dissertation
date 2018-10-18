@@ -785,7 +785,6 @@ We fit two models to the simulated data, the true model where migration was mode
 \subsection{Details and Supplementary Results for Single--Country Models}
 \label{subsec:ebola_single_country_supplement}
 
-
 \begin{table}[htbp]
 	\caption[Transmission rates for single country SEIR models for Ebola in West Africa.]{Rates of transitions between compartments of single country SEIR models, diagrammed in Figure \ref{fig:ebola_single_diag}, for the spread of Ebola in Guinea, Liberia, and Sierra Leone with constant rate of infectious contact from outside the population. Subscripts in the rates denote model compartments, superscripts denote countries. Subscripts for parameters denote countries. The number of susceptible individuals is equal to the effective population size, estimated as a parameter in the model, minus the numbers of exposed, infected, and recovered individuals. The rate at which susceptibles in Guine become infected is time varying with one changepoint at 33 weeks. Transmission in Liberia and Sierra Leone prior to weeks 10 and 19 is expressed in the initial compartment volumes at those times, but is not modeled explicitly.}
 	\label{tab:ebola_rates_single}
@@ -810,7 +809,7 @@ We fit two models to the simulated data, the true model where migration was mode
 \subsubsection{Priors and MCMC details}
 \label{subsubsec:ebola_single_mcmc}
 
-We fit country specific SEIR models to the Ebola incidence data from Guinea, Liberia, and Sierra Leone under two prior regimes given in Tables \ref{tab:ebola_priors_single_tight} and \ref{tab:ebola_priors_single_diff}. The model fitting procedure and priors were the same for all models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was adapted over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between two ElliptSS and one MVNSS update per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of adjusted reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. The models took between 8 hours and 34 hours to run, depending on the speed of the cluster cores. 
+We fit country specific SEIR models via the LNA and ODE to Ebola incidence data from Guinea, Liberia, and Sierra Leone under two prior regimes given in Tables \ref{tab:ebola_priors_single_tight} and \ref{tab:ebola_priors_single_diff}. The model fitting procedure and priors were the same for all models. We ran five chains for each model, initialized at random parameter values, for 200,000 iterations per chain. The model parameters, not including the initial compartment volumes, were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was adapted over the first 100,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. The initial compartment volumes were updated jointly with the LNA paths in an EllipSS step. The MCMC alternated between two ElliptSS and one MVNSS update per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for each country were parameterized as in Table \ref{tab:seir_params_est3} with the one addition being the log ratio of adjusted reproductive numbers, subtract one, for Guinea, $ \log\left ((R_{eff,G}^{(2)}-1)/(R_{eff,G}^{(1)}-1)\right ) $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}. The models took between 8 hours and 34 hours to run, depending on the speed of the cluster cores. 
 
 \begin{table}[htbp]
 	\caption[Priors for initial compartment volumes for single country models fit to data from the Ebola outbreak in West Africa.]{Priors for the initial compartment volumes at the times when transmission commenced in each country for single country models fit to data from the Ebola outbreak in West Africa. The initial compartment volumes for each country are assigned independent truncated multivariate normal priors that respect the boundary conditions on the state space of compartment volumes for that country (explained in Section \ref{sec:lna_init_volumes}). If the population size for country A is $ N_A $, and the initial state probability is denoted $ \bp_{0,A} = \bX_{0,A}/N_A  = (S_{0,A}, E_{0,A}, I_{0,A}, R_{0,A})/N_A$, the prior is a truncated multivariate normal approximation of a multinomial distribution with mean $ N_A\bp_{0,A}$ and covariance $ N_A(\bP_{0,A} - \bp_{0,A}\bp_{0,A}^T) $.} 
@@ -860,7 +859,7 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
-		\caption[Parameters and priors for supplementary single country SEIR models fit to the West Africa Ebola outbreak.]{Parameters for a single country SEIR models fit to the West Africa Ebola outbreak, prior distributions used in the supplementary analysis, 95\% prior intervals, and references that informed the choice of priors. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Adjusted reproduction numbers are defined with respect to the effective population size as $ R_{adj} = \beta N_{eff} /\mu $. Prior distributions for parameters controlling the outbreak dynamics for the supplementary models were more diffuse vis--a--vis the priors in the main analysis.}
+		\caption[Parameters and priors for supplementary country--specific SEIR models fit to the West Africa Ebola outbreak.]{Parameters for a country--specific SEIR models fit to the West Africa Ebola outbreak, prior distributions used in the supplementary analysis, 95\% prior intervals, and references that informed the choice of priors. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $ if a prior is shared. Adjusted reproduction numbers are defined with respect to the effective population size as $ R_{adj} = \beta N_{eff} /\mu $. Prior distributions for parameters controlling the outbreak dynamics for the supplementary models were more diffuse vis--a--vis the priors in the main analysis.}
 		\label{tab:ebola_priors_single_diff}
 		\scriptsize
 		\centering
@@ -890,12 +889,11 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 	\end{fullpage}
 \end{sidewaystable}
 
-\subsubsection{Additional results}
+\subsubsection{Additional LNA results}
 \label{subsubsec:ebola_single_res}
 
-
 \begin{table}[htbp]
-	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for country--specific SEIR models fit to Ebola outbreak data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for the main country specfic SEIR models fit to Ebola data from the West Africa outbreak under tight priors. The effective number of susceptibles is equal to the effective population size, reported in Table \ref{tab:ebola_single_ests}, minus the numbers of exposed, infected, and recovered individuals, but is not reported since the effective population size is not marginally identifiable.}
+	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for country--specific SEIR LNA models fit to Ebola outbreak data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for the main country specfic SEIR LNA models fit to Ebola data from the West Africa outbreak under tight priors. The effective number of susceptibles is equal to the effective population size, reported in Table \ref{tab:ebola_single_ests}, minus the numbers of exposed, infected, and recovered individuals, but is not reported since the effective population size is not marginally identifiable.}
 	\label{tab:ebola_single_initdist_res}
 	\centering
 	\begin{tabular}{ll}
@@ -918,7 +916,7 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 \end{table}
 
 \begin{table}[htbp]
-	\caption[Posterior parameter estimates for country--specific SEIR models fit Ebola outbreak data.]{Posterior medians (95\% Bayesian credible intervals) for parameters of the country--specific SEIR models (Figure \ref{fig:ebola_single_diag}) fit to Ebola outbreak data. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $. Adjusted reproduction numbers are defined with respect to the effective population size as $ R_{adj} = \beta N_{eff} /\mu $. Parameter interpretations and priors are given in Tables \ref{tab:ebola_priors_single_tight} and \ref{tab:ebola_priors_single_diff}. The more informative of the two prior regimes was presented as the main model in Section \ref{subsubsec:ebola_single_models}.}
+	\caption[Posterior parameter estimates for country--specific SEIR LNA models fit Ebola outbreak data.]{Posterior medians (95\% Bayesian credible intervals) for parameters of the country--specific SEIR LNA models (Figure \ref{fig:ebola_single_diag}) fit to Ebola outbreak data. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $. Adjusted reproduction numbers are defined with respect to the effective population size as $ R_{adj} = \beta N_{eff} /\mu $. Parameter interpretations and priors are given in Tables \ref{tab:ebola_priors_single_tight} and \ref{tab:ebola_priors_single_diff}. The more informative of the two prior regimes was presented as the main model in Section \ref{subsubsec:ebola_single_models}.}
 	\label{tab:ebola_single_ests}
 	\centering\footnotesize
 	\begin{tabular}{lrr}
@@ -952,36 +950,36 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 \end{table}
 
 \begin{table}[htbp]
-	\caption{Effective sample sizes and potential scale reduction factors for the main stratified SEIR model with virtual migration of infecteds fit to data from the West Africa Ebola outbreak under tight priors.}
+	\caption{Effective sample sizes and potential scale reduction factors for the main stratified SEIR LNA model with virtual migration of infecteds fit to data from the West Africa Ebola outbreak under tight priors.}
 	\centering\footnotesize
 	\begin{tabular}{lrr}
 		\hline
 		\textbf{Parameter} & \textbf{ESS} & \textbf{PSRF} \\ 
 		\hline
-		& 1512 & 1.01 \\ 
-		& 2992 & 1.00 \\ 
-		& 2573 & 1.00 \\ 
-		& 4953 & 1.00 \\ 
-		& 3323 & 1.00 \\ 
-		& 2564 & 1.00 \\ 
-		& 1865 & 1.01 \\ 
-		& 1335 & 1.01 \\
+		$ \log(1000\alpha_G) $ & 1512 & 1.01 \\ 
+		$ \log(R_{adj,G}^{(2)} / R_{adj,G}^{(1)}) $& 2992 & 1.00 \\ 
+		$ \log(R_{adj,G}^{(2)}) $& 2573 & 1.00 \\ 
+		$ \log(\omega_G/\mu_G) $ & 4953 & 1.00 \\ 
+		$ \log(1/mu_G) $& 3323 & 1.00 \\ 
+		$ \logit(\rho_G) $ & 2564 & 1.00 \\ 
+		$ \log(\phi_G) $& 1865 & 1.01 \\ 
+		$ \log(N_{eff,G}\rho_G) $& 1335 & 1.01 \\
 		\hline 
-		& 1812 & 1.00 \\ 
-		& 3595 & 1.00 \\ 
-		& 3061 & 1.00 \\ 
-		& 4278 & 1.00 \\ 
-		& 3495 & 1.00 \\ 
-		& 1534 & 1.00 \\ 
-		& 4333 & 1.00 \\ 
+		$ \log(1000\alpha_L) $ & 1812 & 1.00 \\ 
+		$ \log(R_{adj,L}^{(2)}) $& 3595 & 1.00 \\ 
+		$ \log(\omega_L/\mu_L) $ & 3061 & 1.00 \\ 
+		$ \log(1/mu_L) $ & 4278 & 1.00 \\ 
+		$ \logit(\rho_L) $ & 3495 & 1.00 \\ 
+		$ \log(\phi_L) $ & 1534 & 1.00 \\ 
+		$ \log(N_{eff,L}\rho_L) $ & 4333 & 1.00 \\ 
 		\hline
-		& 1503 & 1.00 \\ 
-		& 949 & 1.01 \\ 
-		& 2268 & 1.00 \\ 
-		& 1432 & 1.00 \\ 
-		& 958 & 1.01 \\ 
-		& 2124 & 1.00 \\ 
-		& 969 & 1.00 \\ 
+		$ \log(1000\alpha_S) $ & 1503 & 1.00 \\ 
+		$ \log(R_{adj,S}^{(2)}) $ & 949 & 1.01 \\ 
+		$ \log(\omega_S/\mu_S) $ & 2268 & 1.00 \\ 
+		$ \log(1/mu_S) $ & 1432 & 1.00 \\ 
+		$ \logit(\rho_S) $ & 958 & 1.01 \\ 
+		$ \log(\phi_S) $ & 2124 & 1.00 \\ 
+		$ \log(N_{eff,S}\rho_S) $ & 969 & 1.00 \\ 
 		\hline
 	\end{tabular}
 \end{table}
@@ -990,7 +988,7 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=\linewidth]{figures/ebola_single_posts}
-		\caption[Posterior distributions of parameters of the main country--specific SEIR models fit to data from the West Africa Ebola outbreak.]{Posterior distributions of parameters for the main country--specific SEIR models fit to data from the West Africa Ebola outbreak. We show posterior medians (solid gray lines), 95\% Bayesian credible intervals (light gray areas under the posterior densities), prior densities (induced priors for the reporting rate and latent period durations) over the posterior ranges (dashed green curves). $ R_{adj} = \beta N_{eff}/\mu $ is the adjusted reproductive number, where $ \beta $ is the per--contact infection rate, $ N_{eff} $ is the effective population size, and $ \mu $ is the recovery rate. The latent and infectious period durations, $ 7/\omega $ and $ 7/\mu $, respectively, are given in days. The scaled effective number of baseline infectious contacts in country $ A $ is $ 1000\alpha_{A} $. The effective reporting rate is $ \rho N_{eff} $, and $ \phi $ is the negative binomial over--dispersion parameter. Subscripts indicate countries.}
+		\caption[Posterior distributions of parameters of the main country--specific SEIR LNA models fit to data from the West Africa Ebola outbreak.]{Posterior distributions of parameters for the main country--specific SEIR LNA models fit to data from the West Africa Ebola outbreak. We show posterior medians (solid gray lines), 95\% Bayesian credible intervals (light gray areas under the posterior densities), prior densities (induced priors for the reporting rate and latent period durations) over the posterior ranges (dashed green curves). $ R_{adj} = \beta N_{eff}/\mu $ is the adjusted reproductive number, where $ \beta $ is the per--contact infection rate, $ N_{eff} $ is the effective population size, and $ \mu $ is the recovery rate. The latent and infectious period durations, $ 7/\omega $ and $ 7/\mu $, respectively, are given in days. The scaled effective number of baseline infectious contacts in country $ A $ is $ 1000\alpha_{A} $. The effective reporting rate is $ \rho N_{eff} $, and $ \phi $ is the negative binomial over--dispersion parameter. Subscripts indicate countries.}
 		\label{fig:ebola_single_posts}
 	\end{fullpage}
 \end{sidewaysfigure}
@@ -998,42 +996,42 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/guin_tight_traces}
-	\caption{Posterior traceplots for the SEIR model fit to data from the Ebola outbreak in Guinea.}
+	\caption{Posterior traceplots for the SEIR LNA model fit to data from the Ebola outbreak in Guinea.}
 	\label{fig:guineatraces}
 \end{sidewaysfigure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/guin_tight_pairs}
-	\caption{Scatterplots of parameters for the SEIR model fit to data from the Ebola outbreak in Guinea.}
+	\caption{Scatterplots of parameters for the SEIR LNA model fit to data from the Ebola outbreak in Guinea.}
 	\label{fig:guineapairs}
 \end{figure}
 
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/lib_tight_traces}
-	\caption{Posterior traceplots for the SEIR model fit to data from the Ebola outbreak in Liberia.}
+	\caption{Posterior traceplots for the SEIR LNA model fit to data from the Ebola outbreak in Liberia.}
 	\label{fig:liberiatraces}
 \end{sidewaysfigure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/lib_tight_pairs}
-	\caption{Scatterplots of parameters for the SEIR model fit to data from the Ebola outbreak in Liberia.}
+	\caption{Scatterplots of parameters for the SEIR LNA model fit to data from the Ebola outbreak in Liberia.}
 	\label{fig:liberiapairs}
 \end{figure}
 
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_tight_traces}
-	\caption{Posterior traceplots for the SEIR model fit to data from the Ebola outbreak in Sierra Leone.}
+	\caption{Posterior traceplots for the SEIR model LNA fit to data from the Ebola outbreak in Sierra Leone.}
 	\label{fig:sierraleonetraces}
 \end{sidewaysfigure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sln_tight_pairs}
-	\caption{Scatterplots of parameters for the SEIR model fit to data from the Ebola outbreak in Sierra Leone.}
+	\caption{Scatterplots of parameters for the SEIR LNA model fit to data from the Ebola outbreak in Sierra Leone.}
 	\label{fig:sierraleonepairs}
 \end{figure}
 
@@ -1041,7 +1039,7 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=0.8\linewidth]{figures/ebola_single_pacfs}
-		\caption[Posterior predictive distributions of partial autocorrelations for the main country--specific SEIR models fit to data from the West Africa Ebola outbreak.]{Distributions of partial autocorrelations at lags 1, 2, and 3 for datasets generated under the full and partial posterior predictive distributions for the main country--specific SEIR models fit to data from the West Africa Ebola outbreak. Vertical red lines are the partial autocorrelations for the observed incidence data at the respective lags.}
+		\caption[Posterior predictive distributions of partial autocorrelations for the main country--specific SEIR LNA models fit to data from the West Africa Ebola outbreak.]{Distributions of partial autocorrelations at lags 1, 2, and 3 for datasets generated under the full and partial posterior predictive distributions for the main country--specific SEIR LNA models fit to data from the West Africa Ebola outbreak. Vertical red lines are the partial autocorrelations for the observed incidence data at the respective lags.}
 		\label{fig:ebola_single_pacfs}
 	\end{fullpage}
 \end{figure}
@@ -1050,10 +1048,156 @@ We fit country specific SEIR models to the Ebola incidence data from Guinea, Lib
 	\begin{fullpage}
 		\centering
 		\includegraphics[width=\linewidth]{figures/ebola_single_drawplots}
-		\caption[Posterior distributions of LNA draws for the main country--specific SEIR models fit to data from the West Africa Ebola outbreak.]{Posterior distributions of the LNA draws for exposures, infections, and recoveries (blue boxplots) in the main country--specific SEIR models fit data from the Ebola outbreak in Guinea, Liberia, and Sierra Leone. The lower and upper whisker tips correspond to the $ 2.5^\mr{th} $ and $ 97.5^\mr{th} $ posterior quantiles, the lower and upper hinges to the $ 25^\mr{th} $ and $ 75^\mr{th} $ quantiles, and the middle hash mark to the posterior median. The solid red lines are the theoretical quantiles of the posterior predictive distribution (or equivalently, the prior distribution) of the LNA draws, drawn at the quantiles of a standard normal distribution corresponding to the boxplot quantiles. The green ticks are the estimated quantiles of the posterior predictive distributions of the LNA draws, accounting for boundary conditions on the state space of the latent process and obtained by simulating LNA paths from the posterior predictive distribution.  The posterior distributions of LNA draws are shaded according to the level of posterior shrinkage, computed as one minus the ratio of standard deviations of LNA draws in the posterior and prior.}
+		\caption[Posterior distributions of LNA draws for the main country--specific SEIR models fit to data from the West Africa Ebola outbreak.]{Posterior distributions of the LNA draws for exposures, infections, and recoveries (blue boxplots) in the main country--specific SEIR LNA models fit data from the Ebola outbreak in Guinea, Liberia, and Sierra Leone. The lower and upper whisker tips correspond to the $ 2.5^\mr{th} $ and $ 97.5^\mr{th} $ posterior quantiles, the lower and upper hinges to the $ 25^\mr{th} $ and $ 75^\mr{th} $ quantiles, and the middle hash mark to the posterior median. The solid red lines are the theoretical quantiles of the posterior predictive distribution (or equivalently, the prior distribution) of the LNA draws, drawn at the quantiles of a standard normal distribution corresponding to the boxplot quantiles. The green ticks are the estimated quantiles of the posterior predictive distributions of the LNA draws, accounting for boundary conditions on the state space of the latent process and obtained by simulating LNA paths from the posterior predictive distribution.  The posterior distributions of LNA draws are shaded according to the level of posterior shrinkage, computed as one minus the ratio of standard deviations of LNA draws in the posterior and prior.}
 		\label{fig:ebola_single_drawplots}
 	\end{fullpage}
 \end{sidewaysfigure}
+
+\subsubsection{Additional ODE results}
+\label{subsubsec:ebola_single_res_ode}
+
+\begin{table}[htbp]
+	\caption[Posterior estimates of initial numbers of exposed, infected, and recovered individuals for country--specific SEIR ODE models fit to Ebola outbreak data.]{Posterior estimates of initial numbers of exposed, infected, and recovered individuals for the main country specfic SEIR ODE models fit to Ebola data from the West Africa outbreak under tight priors. The effective number of susceptibles is equal to the effective population size, reported in Table \ref{tab:ebola_single_ests_ode}, minus the numbers of exposed, infected, and recovered individuals, but is not reported since the effective population size is not marginally identifiable.}
+	\label{tab:ebola_single_initdist_res_ode}
+	\centering
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Parameter} & \textbf{Estimate }\\ 
+		\hline
+		$ E_{0,G} $& 4 (0.6, 7.9) \\ 
+		$ I_{0,G} $& 3 (0.3, 6.3) \\ 
+		$ R_{0,G} $& 0.1 (0.1, 0.2) \\ 
+		\hline
+		$ E_{0,L} $& 2.6 (0.2, 6) \\ 
+		$ I_{0,L} $& 1.8 (0.1, 4.4) \\ 
+		$ R_{0,L} $& 0.1 (0, 0.2) \\
+		\hline
+		$ E_{0,S} $& 9.6 (3.5, 15.8) \\ 
+		$ I_{0,S} $& 5.1 (1.1, 9.3) \\  
+		$ R_{0,S} $& 0.3 (0, 0.8) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption[Posterior parameter estimates for country--specific SEIR ODE models fit Ebola outbreak data.]{Posterior medians (95\% Bayesian credible intervals) for parameters of the country--specific SEIR ODE models (Figure \ref{fig:ebola_single_diag}) fit to Ebola outbreak data. Subscripts, $ G,L,S, $ indicate specific countries, or generic countries $ A,B $. Adjusted reproduction numbers are defined with respect to the effective population size as $ R_{adj} = \beta N_{eff} /\mu $. Parameter interpretations and priors are given in Tables \ref{tab:ebola_priors_single_tight} and \ref{tab:ebola_priors_single_diff}. The more informative of the two prior regimes was presented as the main model in Section \ref{subsubsec:ebola_single_models}.}
+	\label{tab:ebola_single_ests_ode}
+	\centering\footnotesize
+	\begin{tabular}{lrr}
+		\hline
+		& \multicolumn{2}{c}{\textbf{Posterior median (95\% BCI)}}\\\cline{2-3}
+		\textbf{Parameter} & \textit{Tight Priors} & \textit{Loose Priors} \\ 
+		\hline
+		$ R_{eff,G}^{(1)} $& 1.2 (1.1, 1.4) & 1.2 (1.1, 1.5) \\  
+		$ R_{eff,G}^{(2)} $&1.5 (1.3, 1.9) & 1.6 (1.2, 2.3) \\ 
+		$ 7/\omega_G $& 10.4 (5.1, 19.9) & 11.3 (4.8, 26.3) \\ 
+		$ 7/\mu_G $& 10 (6.8, 14.4) & 11 (5.7, 21) \\ 
+		$ 1000\alpha_{G} $&  0.3 (0.1, 0.6) & 0.3 (0.1, 1) \\ 
+		$ \rho_GN_{eff,G} $& 6500 (4800, 9400) & 6200 (4300, 10200) \\
+		$ \phi_{G} $& 3.7 (2.5, 5.5) & 3.7 (2.5, 5.4) \\ 
+		\hline
+		$ R_{eff,L} $& 2.4 (1.7, 3.5) & 2.9 (1.8, 4.8) \\ 
+		$ 7/\omega_L $& 11.9 (5.6, 20.5) & 15.8 (6.7, 24.3) \\ 
+		$ 7/\mu_L $&  10.2 (7.1, 14.6) & 12.9 (7.1, 21.7) \\ 
+		$ 1000\alpha_L $& 0.0 (0.0, 0.0) & 0.0 (0.0, 0.0) \\ 
+		$ \rho_LN_{eff,L} $& 5500 (4500, 7000) & 5200 (4400, 6700) \\ 
+		$ \phi_L $&7.6 (3.6, 16.5) & 8.6 (3.9, 19.2) \\ 
+		\hline
+		$ R_{eff,S} $& 1.8 (1.5, 2.2) & 1.9 (1.4, 2.8) \\
+		$ 7/\omega_S $& 10.8 (5.8, 18.2) & 12.5 (5.7, 22.6) \\ 
+		$ 7/\mu_S $& 10.1 (6.9, 14.3) & 11.6 (6.1, 20.7) \\ 
+		$ 1000\alpha_S $& 0.4 (0.1, 0.8) & 0.5 (0.1, 1.1) \\ 
+		$ \rho_SN_{eff,S} $&  16700 (13300, 22300) & 15600 (12000, 22900) \\ 
+		$ \phi_S $& 5.2 (2.9, 9) & 5.2 (2.9, 9) \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption{Effective sample sizes and potential scale reduction factors for the main stratified SEIR ODE model with virtual migration of infecteds fit to data from the West Africa Ebola outbreak under tight priors.}
+	\centering\footnotesize
+	\begin{tabular}{lrr}
+		\hline
+		\textbf{Parameter} & \textbf{ESS} & \textbf{PSRF} \\ 
+		\hline
+		$ \log(1000\alpha_G) $ & 7815 & 1.00 \\ 
+		$ \log(R_{adj,G}^{(2)} / R_{adj,G}^{(1)}) $& 9581 & 1.00 \\ 
+		$ \log(R_{adj,G}^{(2)}) $& 10113 & 1.00 \\ 
+		$ \log(\omega_G/\mu_G) $ & 9720 & 1.00 \\ 
+		$ \log(1/mu_G) $& 10004 & 1.00 \\ 
+		$ \logit(\rho_G) $ & 9839 & 1.00 \\ 
+		$ \log(\phi_G) $& 8836 & 1.01 \\ 
+		$ \log(N_{eff,G}\rho_G) $& 9390 & 1.01 \\
+		\hline 
+		$ \log(1000\alpha_L) $ & 4633 & 1.00 \\ 
+		$ \log(R_{adj,L}^{(2)}) $& 7385 & 1.00 \\ 
+		$ \log(\omega_L/\mu_L) $ & 5803 & 1.00 \\ 
+		$ \log(1/mu_L) $ & 9443 & 1.00 \\ 
+		$ \logit(\rho_L) $ & 7308 & 1.00 \\ 
+		$ \log(\phi_L) $ & 4723 & 1.00 \\ 
+		$ \log(N_{eff,L}\rho_L) $ & 8263 & 1.00 \\ 
+		\hline
+		$ \log(1000\alpha_S) $ & 4096 & 1.00 \\ 
+		$ \log(R_{adj,S}^{(2)}) $ & 10004 & 1.01 \\ 
+		$ \log(\omega_S/\mu_S) $ & 9824 & 1.00 \\ 
+		$ \log(1/mu_S) $ & 9330 & 1.00 \\ 
+		$ \logit(\rho_S) $ & 9798 & 1.01 \\ 
+		$ \log(\phi_S) $ & 6459 & 1.00 \\ 
+		$ \log(N_{eff,S}\rho_S) $ & 10005 & 1.00 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/guin_tight_traces_ode}
+	\caption{Posterior traceplots for the SEIR ODE model fit to data from the Ebola outbreak in Guinea.}
+	\label{fig:guineatracesode}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/guin_tight_pairs_ode}
+	\caption{Scatterplots of parameters for the SEIR ODE model fit to data from the Ebola outbreak in Guinea.}
+	\label{fig:guineapairsode}
+\end{figure}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/lib_tight_traces_ode}
+	\caption{Posterior traceplots for the SEIR ODE model fit to data from the Ebola outbreak in Liberia.}
+	\label{fig:liberiatracesode}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/lib_tight_pairs_ode}
+	\caption{Scatterplots of parameters for the SEIR ODE model fit to data from the Ebola outbreak in Liberia.}
+	\label{fig:liberiapairsode}
+\end{figure}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sln_tight_traces_ode}
+	\caption{Posterior traceplots for the SEIR model ODE fit to data from the Ebola outbreak in Sierra Leone.}
+	\label{fig:sierraleonetracesode}
+\end{sidewaysfigure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sln_tight_pairs_ode}
+	\caption{Scatterplots of parameters for the SEIR ODE model fit to data from the Ebola outbreak in Sierra Leone.}
+	\label{fig:sierraleonepairsode}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{fullpage}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figures/ebola_single_pacfs_ode}
+		\caption[Posterior predictive distributions of partial autocorrelations for the main country--specific SEIR ODE models fit to data from the West Africa Ebola outbreak.]{Distributions of partial autocorrelations at lags 1, 2, and 3 for datasets generated under the full and partial posterior predictive distributions for the main country--specific SEIR ODE models fit to data from the West Africa Ebola outbreak. Vertical red lines are the partial autocorrelations for the observed incidence data at the respective lags.}
+		\label{fig:ebola_single_pacfs_ode}
+	\end{fullpage}
+\end{figure}
 
 \newpage
 \subsection{Details and Supplementary Results for Multi--Country Models}
