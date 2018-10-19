@@ -8,9 +8,39 @@ Compartmental epidemic models are used to describe the dynamics of an outbreak, 
 
 Mechanistic compartmental models prescribe physical laws that govern the transmission dynamics of an outbreak. For example, the model might specify the rates of infectious contact between groups of people, or with an environmental reservoir that is a vector for transmission. Infection incidence and prevalence data are modeled conditionally on the mechanistic structure of the model, which specifies a functional form for the temporal and spatial evolution of the epidemic process. In contrast with their mechanistic counterparts, phenomenological models describe the data generating mechanism without explicit reference to the physical system that is under observation \cite{chowell2017fitting}. The price we pay for adopting a mechanistic approach is that our models will be obviously ``wrong", at least in the sense that all models are wrong, so it will be our responsibility to justifying their reasonableness. Our reward is that mechanistic models provide us with interpretable, multifaceted descriptions of outbreak dynamics. Moreover, the ubiquity of mechanistic models in the epidemiological literature enables us to incorporate information about specific aspects of transmission dynamics from other studies and settings into our own models. Historical overviews of mechanistic models for disease transmission may be found in \cite{anderson1992infectious,brauer2017mathematical,keeling2008,lessler2016mechanistic}.
 
-Mechanistic compartmental models can be specified at varying levels of fidelity to the underlying epidemic process. Our models will range in granularity, from agent--based models in which we explicitly track the disease histories of individuals, to population--level models defined by the aggregate flow of individuals between model compartments. We refer to a mechanistic model as a stochastic epidemic model (SEM) when we model stochasticity in the epidemic process. Compartmental models with complex dynamics have historically represented the epidemic process as a deterministic system of ordinary differential equations \cite{keeling2008}. All of the models in this work will treat the epidemic process as evolving continuously in time, but observed at discrete times. The decision to work with continuous--time models is advantageous when observation times are not evenly spaced, or when various sub--processes evolve on different time scales \cite{glass2003,shelton2014}. Discrete time models can be problematic when the epidemic and observation processes are misaligned, and do not necessarily produce results that are independent of the choice time--step (see \cite{shelton2014} for examples). One (very) compelling reason to prefer discrete time models is that the computational effort required to fit a discrete time model is typically much lower than what is required in the continuous time setting. 
+Mechanistic compartmental models can be specified at varying levels of fidelity to the underlying epidemic process. Our models will range in granularity, from agent--based models in which we explicitly track the disease histories of individuals, to population--level models defined by the aggregate flow of individuals between model compartments. We refer to a mechanistic model as a stochastic epidemic model (SEM) when we model stochasticity in the epidemic process. Compartmental models with complex dynamics have historically represented the epidemic process as a deterministic system of ordinary differential equations \cite{keeling2008}. All of the models in this dissertation will treat the epidemic process as evolving continuously in time, but observed at discrete times. The decision to work with continuous--time models is advantageous when observation times are not evenly spaced, or when various sub--processes evolve on different time scales \cite{glass2003,shelton2014}. Discrete time models can be problematic when census interval of the data and generation time of the epidemic are misaligned, and generally produce results that are not independent of the choice time--step (see \cite{shelton2014} for examples). One (very) compelling reason to prefer discrete time models is that the computational effort required to fit a discrete time model is typically much lower than what is required in the continuous time setting. 
 
-- Computational challenges of fitting compartmental models
+The task of fitting a SEM is complicated by the limited extent of epidemiological data, which are recorded at discrete observation times, commonly describe just one aspect of the disease process, e.g., infections, and usually capture only a fraction of cases. Complete subject--level data, which would consist of full transmission chains and exact times at which individuals transition through disease states, are often unavailable \cite{oneill2010}. Systematic underreporting, which may result from asymptomatic cases  makes it difficult to disentangle whether the data arose from a severe outbreak observed with low fidelity, or a mild outbreak where most cases were detected. This is all to say nothing of heterogeneities in outbreak dynamics or detection. Fitting SEMs in the absence of complete data can mildly be described as a complicated latent variable problem. 
+
+Our objective will be to estimate the posterior distribution of parameters, $ \btheta $, that govern the dynamics of an outbreak, given the data $ \bY $. One challenge is that there are complicated dependencies in the data, hence
+\begin{align*}
+\pi(\btheta|\bY) &\propto\ L(\bY|\btheta)\pi(\btheta) \\
+&= \prod_{\ell = 1}^{L} \pi(\bY_\ell|\bY_{1,\dots,\ell-1},\btheta)\pi(\btheta) \neq \prod_{\ell = 1}^{L} \pi(\bY_\ell|\btheta)\pi(\btheta).
+\end{align*}
+ Furthermore, the transition density, $ \pi(\bY_{\ell}|\bY_{1,\dots,\ell-1}) $, involves a high dimensional integral over the unobserved epidemic process, $ \bX $, 
+\begin{equation}
+\label{eqn:sem_post}
+\pi(\btheta|\bY) \propto \int L(\bY|\bX,\btheta) \pi(\bX|\btheta)\pi(\btheta)\rmd\pi(\bX).
+\end{equation}
+This integral is analytically intractable when the state space of $ \bX $ is of even moderate size. 
+
+In this dissertation, we use model the latent epidemic process using models that possess the Markov property, meaning that the forward--time evolution of the process depends on its history only through its current state. This choice simplifies the structure of (\ref{eqn:sem_post}) to that of a hidden Markov model where the data are conditionally independent given the latent epidemic process (diagrammed in Figure \ref{fig:semhmm}). The simplified posterior is  
+\begin{align}
+\label{eqn:sem_post_hmm}
+\pi(\btheta|\bY) &\propto\int \prod_{\ell = 1}^{L} L\left (\bY_\ell|\bX(t_{\ell}),\btheta\right ) \pi\left (\bX(t_\ell)|\bX(t_{\ell-1}),\btheta\right )\pi(\btheta)\rmd\pi(\bX).
+\end{align}
+On its own, simplifying the structure of the SEM solves nothing. The integral in (\ref{eqn:sem_post_hmm}) is still analytically intractable. Moreover, the size of the state space of $ \bX $ presents additional challenges if we choose to work with the augmented posterior, 
+\begin{equation}
+\pi(\btheta,\bX|\bY)\propto L(\bY|\bX,\btheta)\pi(\bX|\btheta)\pi(\btheta).
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.5\linewidth]{figures/SEM_HMM}
+	\caption[Diagram of a Hidden Markov model.]{Diagram of a Hidden Markov model. The data are conditionally independent given the latent epidemic process.}
+	\label{fig:semhmm}
+\end{figure}
+
 
 \subsection{An Agent--Based Susceptible--Infected--Recovered Model}
 \label{subsec:sir_individual_mod}
@@ -29,7 +59,7 @@ where $ \tau_I^{(j)} $ and $ \tau_{R}^{(j)} $ are the infection and recovery tim
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/subject_sample_paths}
-	\caption{Diagram of subject--level paths (colored lines) for an SIR model in a population of size $ N=4 $. Individuals transition through infection states continuously in time. The epidemic process is defined in terms of the infection states of individuals in the population.}
+	\caption[Diagram of subject--level SIR paths.]{Diagram of subject--level paths (colored lines) for an SIR model in a population of size $ N=4 $. Individuals transition through infection states continuously in time. The epidemic process is defined in terms of the infection states of individuals in the population.}
 	\label{fig:subjectsamplepaths}
 \end{figure}
 
@@ -41,7 +71,7 @@ The waiting times between subject--level transition events are typically taken t
 0,\ & \text{for all other configurations }\bX\ \text{and }\bX^\prime.
 \end{array}\right.
 \end{equation}
-with per--contact infection rate,  $ \beta $, and recovery rate, $ \mu $. Note that $ 1/\mu $ is interpreted as the mean infectious period duration. That $ \bX $ is a \textit{Markov} process means that its forward--time evolution depends on its history only through its current state, i.e.,
+with per--contact infection rate,  $ \beta $, and recovery rate, $ \mu $. The quantity, $ 1/\mu $, is interpreted as the mean infectious period duration. That $ \bX $ is a \textit{Markov} process means that its forward--time evolution depends on its history only through its current state, i.e.,
 \begin{equation}
 \label{eqn:sir_markov}
 \Pr\left (\bX(\tau + \dtau) = \bx^\prime | \lbrace\bX(\tau) = \bx,\ \tau\in[0,\tau]\rbrace, \btheta\right ) = \Pr\left (\bX(\tau + \dtau) = \bx^\prime | \bX(\tau) = \bx,\btheta\right ),
@@ -79,11 +109,11 @@ In contrast with the population--level CTMC, $ \bX $, the subject--level subproc
 	I & 0 & -\mu & \mu \cr
 	R & 0 & 0 & 0 },
 \end{equation}
-since $ I^{(-j)}(\tau) $, the number of infected individuals in the population at time $ \tau $, excluding individual $ j $, changes over time. We could also characterize $ \bX_j $ as piecewise--homogeneous since the rate of infection for subject $ j $ is constant between times at which other individuals become infected and recover. 
+since $ I^{(-j)}(\tau) $, the number of infected individuals in the population at time $ \tau $, excluding individual $ j $, changes over time. We could also describe $ \bX_j $ as piecewise--homogeneous since the rate of infection for subject $ j $ is constant between times at which other individuals become infected and recover. 
 
 \subsection{A Population--Level Susceptible--Infected--Recovered Model}
 \label{subsec:sir_population_mod}
-The subject--level SIR model is exactly equivalent to the population--level SIR model that is often preferred for various computational reasons \cite{allen2008introduction, andersson2000stochastic}. This equivalence derives from two properties of Markov processes, \textit{lumpability} and \textit{commutativity}. The population--level SIR model is usually presented for computational reasons since discarding the subject labels for infection and recovery events substantially reduces the computational burden of caching subject--level paths. We refer to \cite{tian2006lumpability} for a more formal presentation of the following discussion. 
+The subject--level SIR model is equivalent to an aggregated SIR model, expressed in terms of compartment counts, that is often preferred for various computational reasons \cite{allen2008introduction, andersson2000stochastic}. This equivalence derives from two properties of Markov processes, \textit{lumpability} and \textit{commutativity}. The population--level SIR model is usually presented for computational reasons since discarding the subject labels for infection and recovery events substantially reduces the computational burden of caching subject--level paths. We refer to \cite{tian2006lumpability} for a more formal presentation of the following discussion. 
 
 Given a Markov process, $ \bX $ with state space $ \mcS = \lbrace s_1,\dots,s_P\rbrace $ and initial probability vector $ \pi $, we define another process, $ \overline{\bX} $ on the state space $ \overline{\mcS} = \lbrace S_1,\dots,S_\mathcal{L}\rbrace $, which is a \textit{partition} of $ \mcS $. In our setting, the partitioning will map a configuration in $ \mcS $ to a set in $ \overline{\mcS} $ by counting the number of people in each model compartment. The jump chain of the new process is obtained by partitioning the jump chain of the complete process. We want to establish conditions under which $ \overline{\bX} $ is stochastically coupled to $ \bX $. 
 
@@ -108,7 +138,7 @@ $$\lambda_{s_a,s_b} = 0,\ \text{if}\ s_a,s_b\in S_A,\ \text{and} s_a\neq s_b. $$
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{figures/SIR_representations}
-	\caption{Complete and lumped representations of SIR dynamics in a population of five individuals. The per--contact infectivity rate, $ \beta $, and the recovery rate, $ \mu $, parameterize exponential waiting time distributions between transition events. The complete Markov jump process evolves on the state space of subject state labels, $ \mcS = \lbrace S,I,R\rbrace^N $, with dynamics determined by the subject--level transition rates. Each susceptible may contact two infected individuals, while each infected individual recovers independently. The lumped process evolves on the state space of compartment counts, $ \widebar{\mcS} = \lbrace N_S,N_I,N_R:\ N_S + N_I+N_R=N\rbrace $, with dynamics determined by lumped transition rates. The waiting time distributions between transitions are derived by noting that if $ \tau_1\sim \exp(\lambda_1) $ and $ \tau_2\sim\exp(\lambda_2) $, then $ \tau_{\min} = \min(\tau_1,\tau_2)\sim\exp(\lambda_1+\lambda_2) $.}
+	\caption[Individual and lumped representations of SIR dynamics.]{Complete and lumped representations of SIR dynamics in a population of five individuals. The per--contact infectivity rate, $ \beta $, and the recovery rate, $ \mu $, parameterize exponential waiting time distributions between transition events. The complete Markov jump process evolves on the state space of subject state labels, $ \mcS = \lbrace S,I,R\rbrace^N $, with dynamics determined by the subject--level transition rates. Each susceptible may contact two infected individuals, while each infected individual recovers independently. The lumped process evolves on the state space of compartment counts, $ \widebar{\mcS} = \lbrace N_S,N_I,N_R:\ N_S + N_I+N_R=N\rbrace $, with dynamics determined by lumped transition rates. The waiting time distributions between transitions are derived by noting that if $ \tau_1\sim \exp(\lambda_1) $ and $ \tau_2\sim\exp(\lambda_2) $, then $ \tau_{\min} = \min(\tau_1,\tau_2)\sim\exp(\lambda_1+\lambda_2) $.}
 	\label{fig:sirrepresentations}
 \end{figure}
 
@@ -177,7 +207,15 @@ The \textit{backward} Kolmogorov equation is similarly obtained by
 &= P(\tau)\bLambda .
 \end{align}
 
-\subsection{Exact Methods for Fitting SEMs}
+\subsection{Inference and Computation for Stochastic Epidemic Models}
+\label{subsec:sem_exact_inf}
+Inference for SEMs based on CTMC representations of the epidemic process have historically fallen into three categories: Martingale methods, simulation--based methods, and data augmentation \cite{oneill2010}. 
+
+Martingale methods estimate the parameters of interest using estimating equations based on martingales for counting processes embedded within the SEM, e.g., for infections and recoveries \citep{becker1977general, watson1981application, sudbury1985proportion, andersson2000stochastic, lindenstrand2013estimation}. However, these methods are not easily implemented for SEMs with complex dynamics fit to partially observed count data.
+
+Simulation based methods use the SEM to generate latent epidemic paths that serve as the basis for inference. This class of methods includes approximate Bayesian computation (ABC) methods \citep{mckinley2009,toni2009}, pseudo--marginal methods \citep{mckinley2014simulation}, and sequential Monte Carlo (or particle filter) methods \cite{toni2009, andrieu2010particle, ionides2011iterated, dukic2012,koepke2016predictive,golightly2018efficient}. Within this class, the particle marginal Metropolis--Hastings (PMMH) algorithm of \cite{andrieu2010particle} stands out as a general method for Bayesian inference and is used as a benchmark method in Chapter \ref{chap:bda_for_fitting_sems_to_prevalence_data}. Although simulation--based methods have been used to fit complex models, the computational cost of simulating from CTMCs can become prohibitive for complex models. Furthermore, simulation--based methods suffer from well known pitfalls. ABC methods are sensitive to the choice of summary statistic, rejection threshold, and prior  \cite{toni2009}. Sequential Monte Carlo methods, on which pseudo--marginal methods often rely, are prone to ``particle impoverishment" problems \cite{cappe2006inference, dukic2012}. Examples of particle degeneracy are presented in supplementary Chapter \ref{chap:appendix_ch3}, and an inability to fit models  with complex dynamics with reasonable effort led us to abandon PMMH as a benchmark for the more complex models in Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions}. 
+
+Agent--based data augmentation (DA) methods for fitting SEMs, first presented in \cite{gibson1998,oneill1999}, target the joint posterior distribution of the missing data and model parameters to obtain a tractable complete data likelihood. That the augmentation is agent--based refers to the introduction of subject--level disease histories, rather than population--level epidemic paths, as latent variables in the model. An advantage of the agent--based approach is that household structure and subject--level covariates may be incorporated into the model \cite{auranen2000,hohle2002,cauchemez2004bayesian, neal2004statistical,oneill2009}. Development of DA methods for SEMs is of continuing interest, and recent works by \cite{pooley2015}, \cite{QinShe15}, and \cite{shestopaloff2016sampling} have presented methods that could possibly be applied to epidemic count data. However, their algorithms forgo the flexibility of agent--based DA and, in the case of the latter two papers, have not been applied to SEMs.
 
 \subsection{Large Population Approximations}
 \label{subsec:sem_approximations}
@@ -193,11 +231,11 @@ We presented the MJP representation of the SIR model as an \textit{extensive}, $
 
 In the infinite population limit, sample paths of the SIR model are solutions to the following system of ODEs, subject to the initial constraint that $ \bX(\tau_0) = \bx_0 $:
 \begin{align*}
-\deriv{S}{\dt} &= -\beta S I \\
-\deriv{I}{\dt} &= \beta S I - \mu I \\
-\deriv{R}{\dt} &= \mu I.
+\deriv{S}{t} &= -\beta S I \\
+\deriv{I}{t} &= \beta S I - \mu I \\
+\deriv{R}{t} &= \mu I.
 \end{align*}
-The state space of the ODE representation of the SIR model is $$ \mcS^R =  \lbrace(j,k,l:\ j,k,l\in[0,N], j+k+l = N)\rbrace. $$ Note that the ODE model implies that if $ I(\tau) > 0 $ at any time $ \tau $, then $ I(\tau) > 0\ \forall\ \tau\in[0,\infty)$. Therefore, the ODE model is dubious if we are interested in answering questions about the stochastic emergence or extinction of an outbreak.
+The state space of the ODE representation of the SIR model is $$ \mcS^R =  \lbrace(j,k,l):\ j,k,l\in[0,N], j+k+l = N\rbrace. $$ Note that the ODE model implies that if $ I(\tau) > 0 $ at any time $ \tau $, then $ I(\tau) > 0\ \forall\ \tau\in[0,\infty)$. Therefore, the ODE model is dubious if we are interested in answering questions about the stochastic emergence or extinction of an outbreak.
 
 ODE formulations of SEMs are particularly useful, in part, because they more easily lend themselves mathematical analysis. One important quantity that is straightforwardly derived for ODE models is the basic reproduction number, $ R_0 $, which is interpreted as the expected number of secondary infections attributable to a single index case in an otherwise susceptible population (of infinite size). The basic reproduction number can be related to both the final size distribution and to the probability of a major outbreak \cite{allen2017primer,miller2012note}. Estimation of $ R_0 $ is more complicated for stochastic models, though it can be derived from a branching process approximation for the early behavior of an outbreak \cite{allen2008introduction}. In the case of deterministic models, $ R_0 $ is easily obtained as the spectral radius of the next generation matrix (NGM) for the linearized system of ODEs at the disease free equilibrium \cite{diekmann2009construction,van2017reproduction}. Other methods exist, e.g., by analyzing the survival function or by fitting phenomenological models when the growth rate of the outbreak is observed to be subexponential \cite{van2017reproduction}.
 
@@ -268,16 +306,12 @@ The SDE for the SIR model is
 \label{eqn:sir_sde}
 \rmd\bX(t) = \bA^T\blambda(\bX)\dt + \sqrt{\bA^T\diag(\blambda(\bX))\bA}\rmd\bW_t.
 \end{equation}
-Note that this SDE is given in a somewhat general form. If we wanted to change the model dynamics, the expressions for $ \bA $ and $ \blambda $ would differ, but the diffusion approximation would take the same form (with the caveat that $ \blambda $ must satisfy a set of Lipschitz conditions to ensure existence of the SDE, see \cite{fuchs2013inference}, Chapter 3). 
+This SDE, sometimes referred to as the \textit{chemical Langevin equation} (CLE), is given in a somewhat general form. If we wanted to change the model dynamics, the expressions for $ \bA $ and $ \blambda $ would differ, but the diffusion approximation would take the same form (with the caveat that $ \blambda $ must satisfy a set of Lipschitz conditions to ensure existence of the SDE, see \cite{fuchs2013inference,oksendal2003stochastic}). 
 
 \subsubsection{Linear Noise Approximation}
 \label{subsubsec:lna_background}
 
-While it is straightforward to simulate sample paths for SDEs, 
-
-- LNA derivation, refer somewhere else for solution
-
-- use of the LNA in recent literature
+While it is straightforward to simulate sample paths for SDEs, the CLE transition density is generally intractable. We can approximate the CLE by Taylor expanding (\ref{eqn:sir_sde}) around its deterministic drift and discarding higher order terms. This leads to a decomposition of CLE paths as  Taylor expanding the SDE around its deterministic drift. 
 
 \subsection{Computational Approaches to Fitting Stochastic Epidemic Models}
 \label{sec:computational_background}
