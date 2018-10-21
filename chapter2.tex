@@ -8,11 +8,11 @@ Compartmental epidemic models are used to describe the dynamics of an outbreak, 
 
 Mechanistic compartmental models prescribe physical laws that govern the transmission dynamics of an outbreak. For example, the model might specify the rates of infectious contact between groups of people, or with an environmental reservoir that is a vector for transmission. Infection incidence and prevalence data are modeled conditionally on the mechanistic structure of the model, which specifies a functional form for the temporal and spatial evolution of the epidemic process. In contrast with their mechanistic counterparts, phenomenological models describe the data generating mechanism without explicit reference to the physical system that is under observation \cite{chowell2017fitting}. The price we pay for adopting a mechanistic approach is that our models will be obviously ``wrong", at least in the sense that all models are wrong, so it will be our responsibility to justifying their reasonableness. Our reward is that mechanistic models provide us with interpretable, multifaceted descriptions of outbreak dynamics. Moreover, the ubiquity of mechanistic models in the epidemiological literature enables us to incorporate information about specific aspects of transmission dynamics from other studies and settings into our own models. Historical overviews of mechanistic models for disease transmission may be found in \cite{anderson1992infectious,brauer2017mathematical,keeling2008,lessler2016mechanistic}.
 
-Mechanistic compartmental models can be specified at varying levels of fidelity to the underlying epidemic process. Our models will range in granularity, from agent--based models in which we explicitly track the disease histories of individuals, to population--level models defined by the aggregate flow of individuals between model compartments. We refer to a mechanistic model as a stochastic epidemic model (SEM) when we model stochasticity in the epidemic process. Compartmental models with complex dynamics have historically represented the epidemic process as a deterministic system of ordinary differential equations \cite{keeling2008}. All of the models in this dissertation will treat the epidemic process as evolving continuously in time, but observed at discrete times. The decision to work with continuous--time models is advantageous when observation times are not evenly spaced, or when various sub--processes evolve on different time scales \cite{glass2003,shelton2014}. Discrete time models can be problematic when census interval of the data and generation time of the epidemic are misaligned, and generally produce results that are not independent of the choice time--step (see \cite{shelton2014} for examples). One (very) compelling reason to prefer discrete time models is that the computational effort required to fit a discrete time model is typically much lower than what is required in the continuous time setting. 
+Mechanistic compartmental models can be specified at varying levels of fidelity to the underlying epidemic process. Our models will range in granularity, from agent--based models in which we explicitly track the disease histories of individuals, to population--level models defined by the aggregate flow of individuals between model compartments. We refer to a mechanistic model as a stochastic epidemic model (SEM) when we model stochasticity in the epidemic process. Compartmental models with complex dynamics have historically represented the epidemic process as deterministic systems of ordinary differential equations \cite{keeling2008}. All of the models in this dissertation will treat the epidemic process as evolving continuously in time, but observed at discrete times. The decision to work with continuous--time models is advantageous when observation times are not evenly spaced, or when various sub--processes evolve on different time scales \cite{glass2003,shelton2014}. Discrete time models can be problematic when the census interval of the data and the generation time of the epidemic are misaligned, and generally produce results that are not independent of the choice time--step (see \cite{shelton2014} for examples). One (very) compelling reason to prefer discrete time models is that the computational effort required to fit a discrete time model is typically much lower than what is required in the continuous time setting. 
 
-The task of fitting a SEM is complicated by the limited extent of epidemiological data, which are recorded at discrete observation times, commonly describe just one aspect of the disease process, e.g., infections, and usually capture only a fraction of cases. Complete subject--level data, which would consist of full transmission chains and exact times at which individuals transition through disease states, are often unavailable \cite{oneill2010}. Systematic underreporting, which may result from asymptomatic cases  makes it difficult to disentangle whether the data arose from a severe outbreak observed with low fidelity, or a mild outbreak where most cases were detected. This is all to say nothing of heterogeneities in outbreak dynamics or detection. Fitting SEMs in the absence of complete data can mildly be described as a complicated latent variable problem. 
+The task of fitting a SEM is complicated by the limited extent of epidemiological data, which are recorded at discrete observation times, commonly describe just one aspect of the disease process, e.g., infections, and usually capture only a fraction of cases. Complete subject--level data, which would consist of full transmission chains and exact times at which individuals transition through disease states, are often unavailable \cite{oneill2010}. Systematic underreporting, which may result from asymptomatic cases or surveillance failures, makes it difficult to disentangle whether the data arose from a severe outbreak observed with low fidelity, or a mild outbreak where most cases were detected. This is all to say nothing of heterogeneities in outbreak dynamics or detection. Fitting SEMs in the absence of complete data can mildly be described as a complicated latent variable problem. 
 
-Our objective will be to estimate the posterior distribution of parameters, $ \btheta $, that govern the dynamics of an outbreak, given the data $ \bY $. One challenge is that there are complicated dependencies in the data, hence
+Our objective will be to estimate the posterior distribution of parameters, $ \btheta $, that govern the dynamics of an outbreak, given the data $ \bY $. One challenge is that there are complicated temporal (and spatial) dependencies in the data, hence
 \begin{align*}
 \pi(\btheta|\bY) &\propto\ L(\bY|\btheta)\pi(\btheta) \\
 &= \prod_{\ell = 1}^{L} \pi(\bY_\ell|\bY_{1,\dots,\ell-1},\btheta)\pi(\btheta) \neq \prod_{\ell = 1}^{L} \pi(\bY_\ell|\btheta)\pi(\btheta).
@@ -22,17 +22,18 @@ Our objective will be to estimate the posterior distribution of parameters, $ \b
 \label{eqn:sem_post}
 \pi(\btheta|\bY) \propto \int L(\bY|\bX,\btheta) \pi(\bX|\btheta)\pi(\btheta)\rmd\pi(\bX).
 \end{equation}
-This integral is analytically intractable when the state space of $ \bX $ is of even moderate size. 
+This integral is analytically intractable when the state space of $ \bX $ is of even moderate size. Simply put, it is difficult to enumerate how the data could have arisen, given the vastness of possibilities for how an unseen outbreak might have evolved. 
 
-In this dissertation, we use model the latent epidemic process using models that possess the Markov property, meaning that the forward--time evolution of the process depends on its history only through its current state. This choice simplifies the structure of (\ref{eqn:sem_post}) to that of a hidden Markov model where the data are conditionally independent given the latent epidemic process (diagrammed in Figure \ref{fig:semhmm}). The simplified posterior is  
+In this dissertation, we will describe the latent epidemic process using continuous--time models that possess the Markov property, meaning that the forward--time evolution of the process depends on its history only through its current state. This choice reduces the structure of (\ref{eqn:sem_post}) to that of a hidden Markov model wherein the data are conditionally independent given the latent epidemic process (diagrammed in Figure \ref{fig:semhmm}). The simplified posterior is 
 \begin{align}
 \label{eqn:sem_post_hmm}
 \pi(\btheta|\bY) &\propto\int \prod_{\ell = 1}^{L} L\left (\bY_\ell|\bX(t_{\ell}),\btheta\right ) \pi\left (\bX(t_\ell)|\bX(t_{\ell-1}),\btheta\right )\pi(\btheta)\rmd\pi(\bX).
 \end{align}
-On its own, simplifying the structure of the SEM solves nothing. The integral in (\ref{eqn:sem_post_hmm}) is still analytically intractable. Moreover, the size of the state space of $ \bX $ presents additional challenges if we choose to work with the augmented posterior, 
+On its own, this might seem to solve nothing. The integral in (\ref{eqn:sem_post_hmm}) is still analytically intractable, and the state space of $ \bX $ is still too large to easily work with the augmented posterior, 
 \begin{equation}
 \pi(\btheta,\bX|\bY)\propto L(\bY|\bX,\btheta)\pi(\bX|\btheta)\pi(\btheta).
 \end{equation}
+However, this choice also creates symmetries in the ways that individuals interact and contribute to the outbreak dynamics. This additional structure is critical in facilitating efficient computation. In the following sections, we present a number of representations for the latent epidemic process, and conclude with a brief overview of computational approaches for inference.  
 
 \begin{figure}[htbp]
 	\centering
@@ -40,7 +41,6 @@ On its own, simplifying the structure of the SEM solves nothing. The integral in
 	\caption[Diagram of a Hidden Markov model.]{Diagram of a Hidden Markov model. The data are conditionally independent given the latent epidemic process.}
 	\label{fig:semhmm}
 \end{figure}
-
 
 \subsection{An Agent--Based Susceptible--Infected--Recovered Model}
 \label{subsec:sir_individual_mod}
@@ -207,16 +207,6 @@ The \textit{backward} Kolmogorov equation is similarly obtained by
 &= P(\tau)\bLambda .
 \end{align}
 
-\subsection{Inference and Computation for Stochastic Epidemic Models}
-\label{subsec:sem_exact_inf}
-Inference for SEMs based on CTMC representations of the epidemic process have historically fallen into three categories: Martingale methods, simulation--based methods, and data augmentation \cite{oneill2010}. 
-
-Martingale methods estimate the parameters of interest using estimating equations based on martingales for counting processes embedded within the SEM, e.g., for infections and recoveries \citep{becker1977general, watson1981application, sudbury1985proportion, andersson2000stochastic, lindenstrand2013estimation}. However, these methods are not easily implemented for SEMs with complex dynamics fit to partially observed count data.
-
-Simulation based methods use the SEM to generate latent epidemic paths that serve as the basis for inference. This class of methods includes approximate Bayesian computation (ABC) methods \citep{mckinley2009,toni2009}, pseudo--marginal methods \citep{mckinley2014simulation}, and sequential Monte Carlo (or particle filter) methods \cite{toni2009, andrieu2010particle, ionides2011iterated, dukic2012,koepke2016predictive,golightly2018efficient}. Within this class, the particle marginal Metropolis--Hastings (PMMH) algorithm of \cite{andrieu2010particle} stands out as a general method for Bayesian inference and is used as a benchmark method in Chapter \ref{chap:bda_for_fitting_sems_to_prevalence_data}. Although simulation--based methods have been used to fit complex models, the computational cost of simulating from CTMCs can become prohibitive for complex models. Furthermore, simulation--based methods suffer from well known pitfalls. ABC methods are sensitive to the choice of summary statistic, rejection threshold, and prior  \cite{toni2009}. Sequential Monte Carlo methods, on which pseudo--marginal methods often rely, are prone to ``particle impoverishment" problems \cite{cappe2006inference, dukic2012}. Examples of particle degeneracy are presented in supplementary Chapter \ref{chap:appendix_ch3}, and an inability to fit models  with complex dynamics with reasonable effort led us to abandon PMMH as a benchmark for the more complex models in Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions}. 
-
-Agent--based data augmentation (DA) methods for fitting SEMs, first presented in \cite{gibson1998,oneill1999}, target the joint posterior distribution of the missing data and model parameters to obtain a tractable complete data likelihood. That the augmentation is agent--based refers to the introduction of subject--level disease histories, rather than population--level epidemic paths, as latent variables in the model. An advantage of the agent--based approach is that household structure and subject--level covariates may be incorporated into the model \cite{auranen2000,hohle2002,cauchemez2004bayesian, neal2004statistical,oneill2009}. Development of DA methods for SEMs is of continuing interest, and recent works by \cite{pooley2015}, \cite{QinShe15}, and \cite{shestopaloff2016sampling} have presented methods that could possibly be applied to epidemic count data. However, their algorithms forgo the flexibility of agent--based DA and, in the case of the latter two papers, have not been applied to SEMs.
-
 \subsection{Large Population Approximations}
 \label{subsec:sem_approximations}
 
@@ -231,20 +221,23 @@ We presented the MJP representation of the SIR model as an \textit{extensive}, $
 
 In the infinite population limit, sample paths of the SIR model are solutions to the following system of ODEs, subject to the initial constraint that $ \bX(\tau_0) = \bx_0 $:
 \begin{align*}
-\deriv{S}{t} &= -\beta S I \\
-\deriv{I}{t} &= \beta S I - \mu I \\
-\deriv{R}{t} &= \mu I.
+\deriv{S}{t} = -\beta S I,\hspace{0.25in} 
+\deriv{I}{t} = \beta S I - \mu I,\hspace{0.25in} 
+\deriv{R}{t} = \mu I.
 \end{align*}
 The state space of the ODE representation of the SIR model is $$ \mcS^R =  \lbrace(j,k,l):\ j,k,l\in[0,N], j+k+l = N\rbrace. $$ Note that the ODE model implies that if $ I(\tau) > 0 $ at any time $ \tau $, then $ I(\tau) > 0\ \forall\ \tau\in[0,\infty)$. Therefore, the ODE model is dubious if we are interested in answering questions about the stochastic emergence or extinction of an outbreak.
 
 ODE formulations of SEMs are particularly useful, in part, because they more easily lend themselves mathematical analysis. One important quantity that is straightforwardly derived for ODE models is the basic reproduction number, $ R_0 $, which is interpreted as the expected number of secondary infections attributable to a single index case in an otherwise susceptible population (of infinite size). The basic reproduction number can be related to both the final size distribution and to the probability of a major outbreak \cite{allen2017primer,miller2012note}. Estimation of $ R_0 $ is more complicated for stochastic models, though it can be derived from a branching process approximation for the early behavior of an outbreak \cite{allen2008introduction}. In the case of deterministic models, $ R_0 $ is easily obtained as the spectral radius of the next generation matrix (NGM) for the linearized system of ODEs at the disease free equilibrium \cite{diekmann2009construction,van2017reproduction}. Other methods exist, e.g., by analyzing the survival function or by fitting phenomenological models when the growth rate of the outbreak is observed to be subexponential \cite{van2017reproduction}.
 
-As an example, we will demonstrate the NGM method for computing $ R_0 $ for an outbreak with SIR dynamics where a fraction of the population, $ p_v $, is vaccinated and vaccine efficacy (VE)  modifies the per--contact rate of infection (VE for susceptibility: $ \nu_s $), the infectiousness of carriers (VE for infectiousnes{(s: $ \nu_i $), and the rate of recovery (VE for recovery: $ \nu_r $). We will write $ N^{u} = (1-p_v)N $ and $ N^{v} = p_vN $. The disease free equilibrium (DFE) is $$ \bX_{DFE} =  (S^{(u)}_{DFE} = \left ((1 - p_v)N,\ I^{(u)}_{DFE} = 0,\  R^{(u)}_{DFE} = 0,\ S^{(v)}_{DFE} = p_vN,\ I^{(v)}_{DFE} = 0,\ R^{(v)}_{DFE} = 0)\right ). $$ 
+As an example, we will demonstrate the NGM method for computing $ R_0 $ for an outbreak with SIR dynamics where a fraction of the population, $ p_v $, is vaccinated and vaccine efficacy (VE)  modifies the per--contact rate of infection (VE for susceptibility: $ \nu_s $), the infectiousness of carriers (VE for infectiousness: $ \nu_i $), and the rate of recovery (VE for recovery: $ \nu_r $). We will write $ N^{u} = (1-p_v)N $ and $ N^{v} = p_vN $. The disease free equilibrium (DFE) is $$ \bX_{DFE} =  (S^{(u)}_{DFE} = \left ((1 - p_v)N,\ I^{(u)}_{DFE} = 0,\  R^{(u)}_{DFE} = 0,\ S^{(v)}_{DFE} = p_vN,\ I^{(v)}_{DFE} = 0,\ R^{(v)}_{DFE} = 0)\right ). $$ 
 The linearized system of ODEs at the DFE is 
+\begin{small}
 \begin{align*}
 \deriv{I^{(u)}}{t} &= \beta \left (I^{(u)} + \nu_iI^{(v)}\right )N^{(u)} - \mu I^{(u)}\\
 \deriv{I^{(u)}}{t} &= \beta \nu_s\left (I^{(u)} + \nu_iI^{(v)}\right )N^{(v)} - \mu\nu_r I^{(v)}
-\end{align*}
+\end{align*}	
+\end{small}
+
 The NGM is constructed as $K=-T\Sigma^{-1}$, where $T$ gives the rates of infectious contact between states at infection, $ I^{(u)} $ and $ I^{(v)} $, and $\Sigma$ contains the recovery rates out of states at infection. Here,
 \begin{align*}
 T &= \kbordermatrix{ & I^{(u)} & I^{(v)} \\
@@ -311,7 +304,7 @@ This SDE is referred to as the \textit{chemical Langevin equation} (CLE). If we 
 \subsubsection{Linear Noise Approximation}
 \label{subsubsec:lna_background}
 
-The intractability of the CLE transition density is problematic when using the CLE as a basis for inference. Absent additional simplifying approximations, e.g., as in \cite{cauchemez2008}, inference with SDEs typically relies on simulation based methods, e.g., \cite{dukic2012,golightly2013simulation,golightly2018efficient}. An attractive alternative, dating to at least the 1970s \cite{kurtz1970solutions,kurtz1971limit}, but that has received attention in recent years, involves approximating the CLE by a Gaussian state space model, the moments of which are solutions to systems of ODEs that are related to the transition rates of the MJP and its SDE approximation. This approximation is known as the \textit{linear noise approximation} (LNA) and it will be the methodological basis for Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of this dissertation. Our derivation of the LNA follows \cite{golightly2013simulation,wilkinson2011stochastic}. Rigorous derivations can be found in \cite{elf2003fast,kurtz1981approximation,vankampen2007stochastic,wallace2012linear}.
+The intractability of the CLE transition density is problematic when using the CLE as a basis for inference. Absent additional simplifying approximations, e.g., as in \cite{cauchemez2008}, inference with SDEs typically relies on simulation based methods, e.g., \cite{dukic2012,golightly2013simulation,golightly2018efficient}. An attractive alternative, dating to at least the 1970s \cite{kurtz1970solutions,kurtz1971limit}, but that has received attention in recent years, involves approximating the CLE by a Gaussian state space model, the moments of which are solutions to systems of ODEs that are related to the transition rates of the MJP and its SDE approximation. This approximation is known as the \textit{linear noise approximation} (LNA) and it will be the methodological basis for Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of this dissertation. Our informal derivation of the LNA follows \cite{golightly2013simulation,wilkinson2011stochastic}. Rigorous derivations can be found in \cite{elf2003fast,kurtz1981approximation,vankampen2007stochastic,wallace2012linear}.
 
 We take the SDE (\ref{eqn:sir_sde}) as our starting point and express the transition rates in terms of intensive concentrations. Letting $ \bXtil \equiv \bXtil(t) = \bX(t)/N $ and suppressing the dependence on $ \btheta $, we have $  \blambda(\bX) = N\lambda(\bXtil) $. The rescaled CLE is 
 \begin{align}
@@ -345,22 +338,47 @@ where $ \bFtil $ is the Jacobian of $ \blambda(\cdot) $ evaluated at $ \boetatil
 \label{eqn:lna_sde}
 \rmd\bMtil_t &= \bA^T\bFtil_t\bMtil_t\dt + \sqrt{\bA^T\diag\left (\blambda(\boetatil_t)\right )\bA}\rmd\bW_t.
 \end{align}
-This final equation is LNA of the CLE; it is a linear SDE for the residual process of the decomposition (\ref{eqn:lna_ansatz}). 
+This final equation is the LNA; it is a linear SDE for the residual process in the decomposition (\ref{eqn:lna_ansatz}). Therefore, the CLE is approximated by the sum of a non--linear deterministic ODE for its drift, and a linear SDE for the residual variability. 
 
-\subsection{Computational Approaches to Fitting Stochastic Epidemic Models}
-\label{sec:computational_background}
+The SDE (\ref{eqn:lna_sde}) for the residual process is linear in $ \bMtil_t $ with time--inhomogeneous drift and diffusion. For fixed or Gaussian initial conditions, $ \bMtil_0 = \bmtil_0 $, the distribution of $ \bMtil_t|\bmtil(t_0),\ t\geq t_0 $ is Gaussian,
+\begin{equation}
+\label{eqn:lna_resid_dist}
+\bMtil_t|\bmtil(t_0) \sim MVN(\bmu_t,\bSigma_t),
+\end{equation}
+and the moments of (\ref{eqn:lna_resid_dist}) are obtained by solving the coupled ODEs,
+\begin{align}
+\label{eqn:lna_drift_gen}
+\deriv{\boetatil_t}{t} &= \bA^T\blambda(\boetatil_t), & \boetatil(t_0) = \boetatil_0,\\
+\label{eqn:lna_resid_gen}
+\deriv{\bmu_t}{t} &= \bA^T\bFtil_t\bmu_t, & \bmu(t_0) = \bmtil_0, \\
+\label{eqn:lna_diff_gen}
+\deriv{\bSigma_t}{t} &= \bA\bFtil_t\bSigma_t + \bA^T\diag(\blambda(\boetatil_t))\bA + \bSigma_t\bFtil_t^T\bA^T, & \bSigma(t_0) = \bsigma_0. 
+\end{align}
+Hence,
+\begin{equation}
+\bXtil_t|\bxtil(t_0) \sim MVN(\boetatil_t + \bmu_t,\bSigma_t).
+\end{equation}
+Note that we have suppressed the dependence of $ \bFtil $ and $ \bSigma $ on $ \boetatil $ for clarity. Derivations of the LNA solution are presented in \cite{vankampen2007stochastic,wallace2012linear,whitaker2016bayesian}. In general, the LNA ODEs (\ref{eqn:lna_drift_gen}), (\ref{eqn:lna_resid_gen}), and (\ref{eqn:lna_diff_gen}), need to be solved numerically. 
 
-- computation with SDEs
-- largely dependent on particle filter methods, cauchemez and ferguson use CIR process
+\subsection{Inference and Computation for Stochastic Epidemic Models}
+\label{subsec:sem_exact_inf}
+Inference for SEMs based on CTMC representations of the epidemic process has historically relied on four, not mutually exclusive, classes of methods \cite{oneill2010}: martingale methods, simulation--based methods, data augmentation, and approximation of the CTMC. 
+
+Martingale methods estimate the parameters of interest using estimating equations based on martingales for counting processes embedded within the SEM, e.g., for infections and recoveries \citep{becker1977general, watson1981application, sudbury1985proportion, andersson2000stochastic, lindenstrand2013estimation}. However, these methods are not easily implemented for SEMs with complex dynamics fit to partially observed count data.
+
+Simulation based methods use the SEM to generate latent epidemic paths that serve as the basis for inference. This class of methods includes approximate Bayesian computation (ABC) methods \citep{mckinley2009,toni2009,mckinley2018approximate}, pseudo--marginal methods \citep{mckinley2014simulation,shubin2016revealing}, and sequential Monte Carlo (or particle filter) methods \cite{andrieu2010particle, dukic2012,golightly2018efficient,ionides2011iterated,koepke2016predictive,toni2009}. Within this class, the particle marginal Metropolis--Hastings (PMMH) algorithm of \cite{andrieu2010particle} stands out as a general method for Bayesian inference and is used as a benchmark method in Chapter \ref{chap:bda_for_fitting_sems_to_prevalence_data}. Although simulation--based methods have been used to fit complex models, the computational cost of simulating from CTMCs can become prohibitive for complex models. Furthermore, simulation--based methods suffer from well known pitfalls. ABC methods are sensitive to the choice of summary statistic, rejection threshold, and prior  \cite{toni2009}. Sequential Monte Carlo methods, on which pseudo--marginal methods often rely, are prone to ``particle impoverishment" problems \cite{cappe2006inference, dukic2012}. Examples of particle degeneracy are presented in supplementary Chapter \ref{chap:appendix_ch3}, and an inability to fit models  with complex dynamics with reasonable effort led us to abandon PMMH as a benchmark for the more complex models in Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions}. 
+
+Approximation methods replace the CTMC representation of a SEM with a model whose likelihood is more tractable. A common simplification is to discretize time and to construct a transition model for the population flow between model compartments over inter--observation intervals \cite{longini1982, held2005, lekone2006, held2012,shubin2016revealing}. Among continuous--time approximations, the ODE and SDE representations stand out as being the most prevalent. ODE models are typically quite easy to work with from a computational standpoint, and MCMC can proceed in a relatively straightforward manner without relying on specialized machinery. Inference based on the SDE representation of a SEM typically requires either simulation--based MCMC machinery, as discussed in the previous paragraph, or further simplification of the SEM. For example, \cite{cauchemez2004bayesian,roberts2001} and \cite{cauchemez2008} use diffusion processes that approximate the SEM dynamics, while \cite{jandarov2014} use a Gaussian process approximation of a related gravity model. As is the case for any approximation, the price of improved computational efficiency and tractability is that simplifying assumptions used in the various approximations must be justified. For instance, the diffusion approximation may not be valid in small populations where the system is far from its deterministic limit \cite{andersson2000stochastic}.
+
+The LNA has been a fixture in the literature on biochemical reaction networks since at least the 1970s when it appeared in a series of papers on approximations of density dependent Markov jump processes \cite{kurtz1970solutions,kurtz1971limit}. The LNA has been broadly applied in the analysis of gene regulatory networks, e.g., \cite{finkenstadt2013quantifying,giagos2010inference,hey2015stochastic,komorowski2009,stathopoulos2013markov,thomas2012slow,zimmer2015deterministic}. A review of the LNA, along with related approximations that derive from various system size expansions of the MJP Kolmogorov forward equation, can be found in \cite{schnoerr2017approximation,wallace2012linear}. The LNA has recently found applications in outbreak modeling in \cite{black2010stochastic,fearnhead2014,golightly2015delayed,golightly2018bridge,zimmer2017likelihood}. Comparison of the LNA with other moment--closure approximations in \cite{grima2012study} and \cite{buckingham2018gaussian}, who benchmarked the LNA in the context of the SIR model. In this dissertation, we will use the a restarting version of the LNA where the ODEs of the LNA transition density are restarted as data accumulates. Resetting the LNA ODEs has been established to improve accuracy over long time intervals \cite{fearnhead2014,folia2017trajectory,giagos2010inference}. 
+
+Finally, agent--based data augmentation (DA) methods for fitting SEMs, first presented in \cite{gibson1998,oneill1999}, target the joint posterior distribution of the missing data and model parameters to obtain a tractable complete data likelihood. That the augmentation is agent--based refers to the introduction of subject--level disease histories, rather than population--level epidemic paths, as latent variables in the model. An advantage of the agent--based approach is that household structure and subject--level covariates may be incorporated into the model \cite{auranen2000,hohle2002,cauchemez2004bayesian, neal2004statistical,oneill2009}. Development of DA methods for SEMs is of continuing interest, both in settings where the data consist of aggregate counts \cite{pooley2015,QinShe15,shestopaloff2016sampling}, and when the data reflect subject--level transition events \cite{kypraios2018bayesian,xu2016bayesian}.
 
 \section{Bayesian Computation and Markov Chain Monte Carlo}
 \label{sec:bayesian_computation}
 
 \subsection{Markov Chain Monte Carlo}
 \label{subsec:mcmc}
-
-\subsubsection{Bayesian Data Augmentation}
-\label{subsec:data_augmentation}
 
 \subsubsection{Slice sampling}
 \label{subsubsec:slice_sampling}
@@ -370,3 +388,5 @@ This final equation is LNA of the CLE; it is a linear SDE for the residual proce
 
 \subsubsection{Adaptive multivariate normal slice sampling}
 \label{subsubsec:mvn_slice_sampling}
+
+\subsection{Adaptive MCMC}
