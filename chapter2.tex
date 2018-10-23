@@ -231,13 +231,10 @@ ODE formulations of SEMs are particularly useful, in part, because they more eas
 
 As an example, we will demonstrate the NGM method for computing $ R_0 $ for an outbreak with SIR dynamics where a fraction of the population, $ p_v $, is vaccinated and vaccine efficacy (VE)  modifies the per--contact rate of infection (VE for susceptibility: $ \nu_s $), the infectiousness of carriers (VE for infectiousness: $ \nu_i $), and the rate of recovery (VE for recovery: $ \nu_r $). We will write $ N^{u} = (1-p_v)N $ and $ N^{v} = p_vN $. The disease free equilibrium (DFE) is $$ \bX_{DFE} =  (S^{(u)}_{DFE} = \left ((1 - p_v)N,\ I^{(u)}_{DFE} = 0,\  R^{(u)}_{DFE} = 0,\ S^{(v)}_{DFE} = p_vN,\ I^{(v)}_{DFE} = 0,\ R^{(v)}_{DFE} = 0)\right ). $$ 
 The linearized system of ODEs at the DFE is 
-\begin{small}
 \begin{align*}
-\deriv{I^{(u)}}{t} &= \beta \left (I^{(u)} + \nu_iI^{(v)}\right )N^{(u)} - \mu I^{(u)}\\
-\deriv{I^{(u)}}{t} &= \beta \nu_s\left (I^{(u)} + \nu_iI^{(v)}\right )N^{(v)} - \mu\nu_r I^{(v)}
+\deriv{I^{(u)}}{t} &= \beta \left (I^{(u)} + \nu_iI^{(v)}\right )N^{(u)} - \mu I^{(u)},\hspace{0.2in} 
+\deriv{I^{(v)}}{t} = \beta \nu_s\left (I^{(u)} + \nu_iI^{(v)}\right )N^{(v)} - \mu\nu_r I^{(v)}.
 \end{align*}	
-\end{small}
-
 The NGM is constructed as $K=-T\Sigma^{-1}$, where $T$ gives the rates of infectious contact between states at infection, $ I^{(u)} $ and $ I^{(v)} $, and $\Sigma$ contains the recovery rates out of states at infection. Here,
 \begin{align*}
 T &= \kbordermatrix{ & I^{(u)} & I^{(v)} \\
@@ -250,7 +247,7 @@ I^{(v)}& 0 & -\mu\nu_r},\\
 	I^{(u)} & \frac{\beta N^{u}}{\mu} & \frac{\nu_i\beta N^u}{\nu_r\mu}\\
 	I^{(v)} & \frac{\nu_s \beta N^{v}}{\mu} & \frac{\nu_s\nu_i\beta N^v}{\nu_r\mu}}.
 \end{align*}
-Thus, $ R_0 = \sigma(K) = \frac{1}{2}\left (Tr(K) + \sqrt{Tr(K)^2 - 4\det(K)}\right )  = \frac{\beta N^{u}}{\mu} + \frac{\nu_s\nu_i\beta N^v}{\nu_r\mu}$.
+Thus, $$ R_0 = \sigma(K) = \frac{1}{2}\left (Tr(K) + \sqrt{Tr(K)^2 - 4\det(K)}\right )  = \frac{\beta N^{u}}{\mu} + \frac{\nu_s\nu_i\beta N^v}{\nu_r\mu}.$$
 
 \subsubsection{Diffusion approximations of Markov Jump Processes}
 \label{subsubsec:diff_approx}
@@ -265,10 +262,10 @@ which we can express equivalently in differential form,
 \label{eqn:general_sde}
 \rmd\bX_t = \bmu(\bX_t,t)\dt + \bSigma(\bX_t,t)\rmd\bW_t.
 \end{equation}
-The SDE (\ref{eqn:general_sde}) can be interpreted as the limit of a difference equation, $ \Delta\bX_t = \bmu(\bX_t,t)\Delta t + \bSigma(\bX_t,t)\Delta\bW_t $, with infinitely small time steps, $ \Delta t \rightarrow 0$. Hence, we can simulate approximate sample paths using an \textit{Euler--Maruyama} scheme by taking $ \Delta t = \epsilon>0 $ and sampling the innovations from ,
+The SDE (\ref{eqn:general_sde}) can be interpreted as the limit of a difference equation, $ \Delta\bX_t = \bmu(\bX_t,t)\Delta t + \bSigma(\bX_t,t)\Delta\bW_t $, with infinitely small time steps, $ \Delta t \rightarrow 0$. Hence, we can simulate approximate sample paths using an \textit{Euler--Maruyama} scheme by taking $ \Delta t = \epsilon>0 $ and sampling the innovations, $ \Delta\bX_t$, according to
 $$\Delta\bX_t\sim MVN\left (\bmu(\bX_t,t)\Delta t,\ \bSigma(\bX_t,t)\bSigma(\bX_t,t)^T\Delta t\right ).$$
 
-Given a $ d $--dimensional It\^{o} process of the form (\ref{eqn:general_sde}), \textit{It\^{o}'s Lemma} gives us a formula for the SDE satisfied by a transformation of the original process. The general formula is as follows \cite{oksendal2003stochastic}: let $ g(\bx, t) = \left (g_1(\bx,t),\dots,g_p(\bx,t)\right ) $ be a twice continuously differentiable map from $ \mathbb{R}^d\times[0,\infty)\rightarrow\mathbb{R}^p $. Then the transformed process, $ \bY(\bW,t) = g(\bX_t, t)$, is also an It\^{o} process with component $ Y_k,\ k=1,\dots,p $, given by
+Given a $ d $--dimensional It\^{o} process of the form (\ref{eqn:general_sde}), \textit{It\^{o}'s lemma} gives a formula for the SDE satisfied by a transformed process \cite{oksendal2003stochastic}. Let $ g(\bx, t) = \left (g_1(\bx,t),\dots,g_p(\bx,t)\right ) $ be a twice continuously differentiable map from $ \mathbb{R}^d\times[0,\infty)\rightarrow\mathbb{R}^p $. Then the transformed process, $ \bY(\bW,t) = g(\bX_t, t)$, is also an It\^{o} process with component $ Y_k,\ k=1,\dots,p $, given by
 $$\rmd Y_k, = \pdiv{g_k}{t}(\bX, t) + \sum_i\pdiv{g_k(\bX,t)}{x_i}\rmd X_i + \frac{1}{2}\sum_i\sum_j\pdiv{^2g_k(\bX,t)}{x_i\partial x_j}\rmd X_i\rmd X_j,$$
 where $ \rmd W_i\rmd W_j = \dt\rmd W_i = \rmd W_i\dt = 0 $ and $ \rmd W_i\rmd W_i = \dt. $
 
@@ -299,12 +296,12 @@ The SDE for the SIR model is
 \label{eqn:sir_sde}
 \rmd\bX(t) = \bA^T\blambda(\bX)\dt + \sqrt{\bA^T\diag(\blambda(\bX))\bA}\rmd\bW_t.
 \end{equation}
-This SDE is referred to as the \textit{chemical Langevin equation} (CLE). If we wanted to change the model dynamics, the expressions for $ \bA $ and $ \blambda $ would differ, but the diffusion approximation is of the same form (with the caveat that $ \blambda $ must satisfy  Lipschitz conditions to ensure existence of the SDE, see \cite{fuchs2013inference,oksendal2003stochastic}). 
+This SDE is referred to as the \textit{chemical Langevin equation} (CLE). If we wanted to change the model dynamics, the expressions for $ \bA $ and $ \blambda $ would differ, but the diffusion approximation would be of the same form (with the caveat that $ \blambda $ must satisfy certain Lipschitz conditions to ensure existence of the SDE, see \cite{fuchs2013inference,oksendal2003stochastic}). 
 
 \subsubsection{Linear Noise Approximation}
 \label{subsubsec:lna_background}
 
-The intractability of the CLE transition density is problematic when using the CLE as a basis for inference. Absent additional simplifying approximations, e.g., as in \cite{cauchemez2008}, inference with SDEs typically relies on simulation based methods, e.g., \cite{dukic2012,golightly2013simulation,golightly2018efficient}. An attractive alternative, dating to at least the 1970s \cite{kurtz1970solutions,kurtz1971limit}, but that has received attention in recent years, involves approximating the CLE by a Gaussian state space model, the moments of which are solutions to systems of ODEs that are related to the transition rates of the MJP and its SDE approximation. This approximation is known as the \textit{linear noise approximation} (LNA) and it will be the methodological basis for Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of this dissertation. Our informal derivation of the LNA follows \cite{golightly2013simulation,wilkinson2011stochastic}. Rigorous derivations can be found in \cite{elf2003fast,kurtz1981approximation,vankampen2007stochastic,wallace2012linear}.
+The intractability of the CLE transition density is problematic when using the CLE as a basis for inference. Absent additional simplifying assumptions, e.g., as in \cite{cauchemez2008}, inference with SDEs typically relies on simulation based methods, e.g., \cite{dukic2012,golightly2013simulation,golightly2018efficient}. An attractive alternative, dating to at least the 1970s \cite{kurtz1970solutions,kurtz1971limit}, but that has received attention in recent years, involves approximating the CLE by a Gaussian state space model, the moments of which are solutions to systems of ODEs that are related to the transition rates of the MJP and its SDE approximation. This approximation is known as the \textit{linear noise approximation} (LNA) and it will be the methodological basis for Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of this dissertation. Our informal derivation of the LNA follows \cite{golightly2013simulation,wilkinson2011stochastic}. Rigorous derivations can be found in \cite{elf2003fast,kurtz1981approximation,vankampen2007stochastic,wallace2012linear}. 
 
 We take the SDE (\ref{eqn:sir_sde}) as our starting point and express the transition rates in terms of intensive concentrations. Letting $ \bXtil \equiv \bXtil(t) = \bX(t)/N $ and suppressing the dependence on $ \btheta $, we have $  \blambda(\bX) = N\lambda(\bXtil) $. The rescaled CLE is 
 \begin{align}
@@ -377,8 +374,35 @@ Finally, agent--based data augmentation (DA) methods for fitting SEMs, first pre
 \section{Bayesian Computation and Markov Chain Monte Carlo}
 \label{sec:bayesian_computation}
 
+The objective of Bayesian inference is to quantify uncertainty about a parameter of interest, $ \theta $, given data, $ y $. Uncertainty in the Bayesian paradigm is quantified through the posterior distribution, $$\pi(\theta|y)=\frac{\pi(y|\theta)\pi(\theta)}{\pi(y)},$$
+where $ \pi(y|\theta) $ and $ \pi(\theta) $ are the sampling distribution and the prior distribution. The marginal distribution of the data, $ \pi(y) = \int\pi(y|\theta)\rmd\pi(\theta) $, is constant with respect to $ \theta $, and so we typically work with the unnormalized posterior, $$ \pi(\theta|y)\propto\pi(y|\theta)\pi(\theta). $$
+
+Having computed a posterior, we define a Bayes estimator as a decision rule that minimizes the expected posterior loss, or Bayes risk, $ \E_{\theta|y}(L(\theta,\thetahat)) $, i.e., $$ \widehat{\theta} = \underset{\theta^\prime}{\mr{argmin}}\int L(\theta,\theta^\prime(y)) \pi(\theta|y)\rmd\pi(\theta) .$$ Some common Bayes estimators are the posterior mean, which minimizes the expected squared error loss, and the posterior median, which minimizes expected absolute error. More broadly, we are interested in the posterior distribution of a function, $ f(\theta) $,  $$\E_{\theta|y}(f(\theta)) = \int f(\theta)\pi(\theta|y)\rmd\pi(\theta).$$
+This integral is frequently intractable. However, we can approximate it numerically by Monte Carlo integration. Suppose $ \theta_i\overset{i.i.d.}{\sim}\pi(\theta|y) $ and $ \E_{\theta|y}(f(\theta))<\infty $. Then, by the strong law of large numbers (SLLN), 
+\begin{align*}
+\what{\mu}_n &= \frac{1}{n}\sum_{i=1}^n f(\theta_i) \overset{a.s.}{\longrightarrow} E_{\theta|y}(f(\theta)),\ \hspace{0.1in} n\longrightarrow\infty\\
+\what{\sigma}^2_n &= \frac{1}{n}\sum_{i=1}^n (f(\theta_i) - \what{\mu}_n)^2 \overset{a.s.}{\longrightarrow}\Var_{\theta|y}(f(\theta)).
+\end{align*}
+Hence, we approximate $ \E_{\theta|y}(f(\theta)) $ by the Monte Carlo estimate, $ \what{\mu}_n $. The distribution of the ordinary Monte Carlo estimate is given to us by the central limit theorem (CLT), 
+$$\frac{\what{\mu}_n - \E_{\theta|y}(f(\theta))}{\what{\sigma}_n/\sqrt{n}}\overset{\mcL}{\longrightarrow}Z\sim N(0,1),$$
+as $ \Var(\what{\mu}_n) \approx \Var\left (\frac{1}{n}\sum_{i=1}^n f(\theta_i)\right ) = \frac{1}{n^2}\sum_{i=1}^n\Var(f(\theta_i)) \implies\Var(\what{\mu}_n) =\what{\sigma}_n^2 / n. $ The quantity, $ \what{\sigma}_n/n $, is called the Monte Carlo standard error (MCSE).  
+
 \subsection{Markov Chain Monte Carlo}
 \label{subsec:mcmc}
+
+Markov chain Monte Carlo (MCMC) is a method for approximating a posterior from which it is not possible to draw samples directly. The strategy is to construct an ergodic (aperiodic and irreducible) Markov chain, $ \lbrace \theta_n\rbrace $, whose stationary distribution is $ \pi(\theta|y) $. Though samples drawn from the Markov chain are correlated, the ergodic theorem ensures that the ergodic mean of an integrable function will converge, almost surely, to its target, i.e.,
+$$\lim\limits_{n\longrightarrow\infty}\sum_{i=1}^n\E_{\theta|y}(f(\theta_i)).$$
+Due to the autocorrelation of MCMC samples, the estimated Monte Carlo variance is now 
+$$\what{\sigma}_n^2 = \frac{1}{n}\frac{1}{\what{n}_{eff}}\sum_{i=1}^n(f(\theta_i) - \what{\mu}_n)^2,$$
+where $ \what{n}_{eff} = n / \left (1 + 2\sum_{\ell=1}^{\infty}\what{\rho}(\ell)\right ) $, and $ \what{\rho}(\ell) $ is the estimated autocorrelation at lag $ \ell $. 
+
+It is generally straightforward to specify a valid Markov chain, at least if one is careful in the math and implementation. It is, however, often challenging to design an MCMC scheme that explores the posterior efficiently. We now present a number of MCMC that will be used throughout this dissertation. 
+
+\subsubsection{Metropolis--Hastings Sampler}
+\label{subsubsec:metropolis_hastings}
+
+\subsubsection{Gibbs Sampler}
+\label{subsubsec:gibbs}
 
 \subsubsection{Slice sampling}
 \label{subsubsec:slice_sampling}
@@ -386,7 +410,8 @@ Finally, agent--based data augmentation (DA) methods for fitting SEMs, first pre
 \subsubsection{Elliptical slice sampling}
 \label{subsubsec:elliptical_slice_sampling}
 
-\subsubsection{Adaptive multivariate normal slice sampling}
+\subsubsection{Multivariate normal slice sampling}
 \label{subsubsec:mvn_slice_sampling}
 
 \subsection{Adaptive MCMC}
+\label{subsec:adaptive_mcmc}
