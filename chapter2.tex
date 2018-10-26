@@ -390,10 +390,10 @@ as $ \Var(\what{\mu}_n) \approx \Var\left (\frac{1}{n}\sum_{i=1}^n f(\theta_i)\r
 \subsection{Markov Chain Monte Carlo}
 \label{subsec:mcmc}
 
-Markov chain Monte Carlo (MCMC) is a method for approximating a posterior from which it is not possible to draw samples directly. The strategy is to construct an ergodic (aperiodic and irreducible) Markov chain, $ \lbrace \theta_n\rbrace $, whose stationary distribution is $ \pi(\theta|y) $. The transition kernel of a Markov chain, $ K(x,x^\prime) $, gives the probability of moving from $ x $ to $ x^\prime $, which are elements in the support of the stationary distribution. The Markov chain preserves the stationary distribution if it satisfies the global balance condition,
-$$\pi(x) = \int K(x^\prime,x)\pi(x^\prime)\rmd x^\prime.$$
+Markov chain Monte Carlo (MCMC) is a method for approximating a posterior from which it is not possible to draw samples directly. The strategy is to construct an ergodic (aperiodic and irreducible) Markov chain, $ \lbrace \theta_n\rbrace $, whose stationary distribution is $ \pi(\theta|y) $. The transition kernel of a Markov chain, $ K(\theta,\theta^\prime) $, gives the probability of moving from $ \theta $ to $ \theta^\prime $, which are elements in the support of the stationary distribution. The Markov chain preserves the stationary distribution if it satisfies the global balance condition,
+$$\pi(\theta) = \int K(\theta^\prime,\theta)\pi(\theta^\prime)\rmd \theta^\prime.$$
 It is typically difficult to directly confirm that a transition kernel satisfies global balance. Fortunately, we verify global balance by proving that the kernel satisfies a stronger condition called detailed balance,
-$$\pi(x)K(x^\prime,x) = \pi(x^\prime)K(x,x^\prime),\ \forall x,x^\prime.$$
+$$\pi(\theta)K(\theta^\prime,\theta) = \pi(\theta^\prime)K(\theta,\theta^\prime),\ \forall \theta,\theta^\prime.$$
 
 Though samples drawn from the Markov chain are correlated, the ergodic theorem ensures that the ergodic mean of an integrable function will converge, almost surely, to its target, i.e.,
 $$\lim\limits_{n\longrightarrow\infty}\sum_{i=1}^n\E_{\theta|y}(f(\theta_i)).$$
@@ -406,7 +406,7 @@ It is often challenging to design an MCMC scheme that explores the posterior eff
 \subsubsection{Metropolis--Hastings Sampler}
 \label{subsubsec:metropolis_hastings}
 
-One of the most important MCMC constructions, due to its simplicity and generality, is the Metropolis--Hastings (MH) algorithm \cite{metropolis1953equation,hastings1970monte}. At each step in the Markov chain, a new state is proposed from the distribution $ q(\prop{\theta}|\cur{\theta}) $, and is accepted with probability
+One of the most important MCMC sampler, due to its simplicity and generality, is the Metropolis--Hastings (MH) algorithm \cite{hastings1970monte,metropolis1953equation}. At each step in the Markov chain, a new state is proposed from the distribution $ q(\prop{\theta}|\cur{\theta}) $, and is accepted with probability
 \begin{align}
 \label{eqn:metropolis_hastings_1}
 \alpha_{\cur{\theta}\rightarrow\prop{\theta}} &= \min\left \lbrace 1, \frac{\pi(\prop{\theta}|y)}{\pi(\cur{\theta}|y)}\frac{q(\cur{\theta}|\prop{\theta})}{q(\prop{\theta}|\cur{\theta})}\right \rbrace \\
@@ -414,6 +414,8 @@ One of the most important MCMC constructions, due to its simplicity and generali
 &= \min\left \lbrace 1, \frac{\pi(y|\prop{\theta})\pi(\prop{\theta})}{\pi(y|\cur{\theta})\pi(\cur{\theta})}\frac{q(\cur{\theta}|\prop{\theta})}{q(\prop{\theta}|\cur{\theta})}\right \rbrace.
 \end{align}
 The Metropolis--Hastings acceptance ratio has a nice interpretation as the ratio of posteriors for the proposed and current state, multiplied by the ratio of proposal probabilities for the reverse and forward transitions. When the next value is proposed from a Gaussian distribution centered at the current state of the chain, the proposal densities cancel out and the algorithm is referred to as the Metropolis algorithm (this was the original formulation given in \cite{metropolis1953equation}). 
+
+The computational efficiency of the MH algorithm depends on having a proposal distribution that proposes jumps that are not so large as to never be accepted, but large enough that the sampler is able to explore the parameter space reasonably quickly. One strategy for achieving good performance is to obtain an empirical estimate of the posterior covariance matrix, which is then rescaled by a theoretically optimal factor \cite{,gelman1997weak,roberts2001optimal,roberts2009examples}. Alternately, the proposal covariance can be estimated adaptively over the MCMC run and tuned to achieve a target acceptance rate for proposals \cite{andrieu2008tutorial,liang2011advanced}. 
 
 \begin{algorithm}[htbp]
 	\caption{Metropolis--Hastings sampler.}
@@ -423,7 +425,7 @@ The Metropolis--Hastings acceptance ratio has a nice interpretation as the ratio
 		\State Propose new value: $ \prop{\theta} \sim q(\prop{\theta}|\cur{\theta}) $
 		\State Compute MH acceptance probability: $ \alpha = \min\left \lbrace 1, \frac{\pi(\prop{\theta}|y)}{\pi(\cur{\theta}|y)}\frac{q(\cur{\theta}|\prop{\theta})}{q(\prop{\theta}|\cur{\theta})}\right \rbrace $
 		\State Sample $ u\sim Unif(0,1) $
-		\State Accept/reject proposal:: \vspace{-0.1in}
+		\State Accept/reject proposal: \vspace{-0.1in}
 			\begin{equation*}
 			\new{\theta} = \left\lbrace \begin{array}{ll}
 			\prop{\theta},&\ \text{if}\ \alpha \geq u,\\
@@ -437,22 +439,22 @@ The Metropolis--Hastings acceptance ratio has a nice interpretation as the ratio
 \subsubsection{Gibbs Sampler}
 \label{subsubsec:gibbs}
 
-The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter, from its full conditional distribution, $ \pi(\theta_j|\btheta_{-j}) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters from their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},y) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
+The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter, from its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},y) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters from their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},y) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
 
 The MH acceptance probability for the Gibbs sampler is one, thus all Gibbs proposals are automatically accepted. To see why this is so, note that $$q(\btheta_{J}|\btheta_{-J},y) = \frac{\pi(\btheta|y)}{\pi(\btheta_{-J}|y)} \propto\pi(\btheta|y).$$
 Therefore, the MH ratio simplifies as
 \begin{align*}
 \frac{\pi(\prop{\btheta_J},\cur{\btheta_{-J}}|y)}{\pi(\cur{\btheta_J},\cur{\btheta_{-J}}|y)}\frac{q(\cur{\btheta_J}|\prop{\btheta_{-J}},y)}{q(\prop{\btheta_J}|\cur{\btheta_{-J}},y)} &= \frac{\pi(\prop{\btheta_J},\cur{\btheta_{-J}}|y)}{\pi(\cur{\btheta_J},\cur{\btheta_{-J}}|y)}\frac{\pi(\cur{\btheta_J},\cur{\btheta_{-J}}|y)}{\pi(\prop{\btheta_J},\cur{\btheta_{-J}}|y)}\frac{\pi(\btheta_{-J}|y)}{\pi(\btheta_{-J}|y)} = 1. \\
 \end{align*}
-An attractive property of the Gibbs sampler is that there are no tuning parameters that need to be optimized. This lends some robustness to the algorithm from a user standpoint.  
+Hence, an attractive property of the Gibbs sampler is that there are no tuning parameters that need to be optimized. This lends some robustness to the algorithm from a user standpoint.  
 
 \begin{algorithm}[htbp]
 	\caption{Gibbs sampler.}
 	\label{alg:gibbs}
 	\begin{algorithmic}[1]
-		\Procedure{Gibbs}{$ \cur{\theta},\ \mcI $ parameter/block indices.}
-		\For{$ J\in\mcI $}
-			\State Update: $ \theta_J|\theta_{-J},y\sim\pi(\theta_J|\theta_{-J},y) $
+		\Procedure{Gibbs}{$ \cur{\theta},\ \mcI = \lbrace J_1,\dots,J_p\rbrace $ parameter/block indices.}
+		\For{$ J\in1,\dots,p $}
+			\State Update: $ \theta_{J_i}|\theta_{-J_i},y\sim\pi(\theta_{J_i}|\theta_{-J_i},y) $
 		\EndFor
 		\EndProcedure
 	\end{algorithmic}
@@ -482,7 +484,7 @@ In the case of slice sampling $ \theta $ from its posterior, $ \pi(\theta|y)\pro
 
 Sampling $ u|\theta $ is trivial. However, we often lack an analytical expression for the slice corresponding to $ \theta|u $. In principal, an approximate interval, $ S^\prime $ need not contain all of $ S $. However, if $ S' $ is too small, the Markov chain will be unable to make big moves, resulting in highly autocorrelated posterior samples. In contrast, too large a bracket will result in many rejections, and hence many unnecessary likelihood evaluations. Several possibilities for approximating $ S $ are listed in \cite{neal2003slice}. The key condition that must be satisfied in any interval selection procedure in order for the Markov chain to satisfy detailed balance is that $ \Pr(S'|\cur{\theta}) = \Pr(S'|\new{\theta}) $. Hence, the set of valid proposals, $ A $, is the set of points for which the probability of selecting an approximate bracket, $ S^\prime $, is equal to the probability of selecting $ S^\prime $ from current state, i.e., \[ A = \lbrace \theta': \theta' \in S\cap S',\ \mathrm{and}\ \Pr(S'|\theta) = \Pr(S'|\theta')\rbrace. \]
 
-Given the current state $ \theta $, threshold $ u $, and initial bracket width $ \omega $, we can use the ``stepping out" procedure to expand the interval until it covers $ S $. If the resulting interval is too wide, we can subsequently shrink it using the rejected draws by shrinking the appropriate bracket endpoint to the rejected value. We will typically tune the initial bracket width throughout the MCMC run, as in \cite{tibbits2014automated}, to target an equal number of bracket expansions to shrinkages.
+Given the current state $ \theta $, threshold $ u $, and initial bracket width $ \omega $, we can ``step out" to expand the interval until it covers $ S $. If the resulting interval is too wide, we can shrink the corresponding bracket endpoint to the rejected value and propose a new value uniformly within the new bracket. We will typically tune the initial bracket width throughout the MCMC run to encourage an equal number of bracket expansions to shrinkages, which minimizes the expected number of likelihood evaluations per MCMC iteration \cite{tibbits2014automated}.
 
 \begin{algorithm}[htbp]
 	\caption{Univariate slice sampling with stepping out.}\label{alg:univar_slice}
@@ -509,11 +511,11 @@ Given the current state $ \theta $, threshold $ u $, and initial bracket width $
 \subsubsection{Multivariate normal slice sampling}
 \label{subsubsec:mvn_slice_sampling}
 
-Univariate slice samplers can suffer from poor mixing in moderate-- to high--dimensional parameter settings, much in the same way as Gibbs samplers. One option for reducing autocorrelation in MCMC samples is to update blocks of parameters. A variety of methods for slice sampling in multiple dimensions are explored in \cite{neal2003slice,thompson2011slice,tibbits2014automated}. These include slice sampling in hyperrectangles, the use of adaptive Gaussian crumbs that guide slice proposals, and slice sampling along eigenvectors of the estimated posterior covariance matrix. 
+Univariate slice samplers can suffer from poor mixing in moderate-- to high--dimensional settings much in the same way as Gibbs samplers. One option for reducing autocorrelation in MCMC samples is to update blocks of parameters. A variety of methods for slice sampling in multiple dimensions are explored in \cite{neal2003slice,thompson2011slice,tibbits2014automated}. These include slice sampling in hyperrectangles, the use of adaptive Gaussian crumbs that guide slice proposals, and slice sampling along eigenvectors of the estimated posterior covariance matrix. 
 
-We present a simple method for sampling a $ d-- $dimensional parameter vector, $ \btheta\in\bbR^d $, with univariate slice sampling updates along rays drawn from a non--isotropic angular central Gaussian distribution. The distribution used in the proposal is tuned so that its covariance matrix matches that of the posterior, which helps to account for linear correlations among model parameters. The method, which we refer to as the multivariate normal slice sampler (MVNSS), is similar to the algorithm in \cite{ahmadian2011efficient}. Our approach differs in that we typically adapt the proposal covariance matrix using a Robbins--Monro recursion, discussed in the next section, which is helped by slight modifications during the adaptation phase of the MCMC \cite{andrieu2008tutorial,liang2011advanced}. The computational cost of MVNSS does not increase dramatically with the dimensionality of the parameter space, though we have found that multiple MVNSS updates per MCMC iteration can, in some cases, improve performance. The algorithm is amenable to tuning of the initial bracket width as in \cite{tibbits2014automated}, which helps to reduce the number of likelihood evaluations per iteration.
+We present a simple method for sampling a parameter vector, $ \btheta\in\bbR^d $, where we perform univariate slice sampling updates along rays drawn from a non--isotropic angular central Gaussian distribution, which is tuned to match the covariance structure of the posterior. This helps to account for linear correlations among model parameters. The method, which we refer to as the multivariate normal slice sampler (MVNSS), is similar to the algorithm in \cite{ahmadian2011efficient}. Our approach differs in that we typically adapt the proposal covariance matrix using a Robbins--Monro recursion, discussed in the next section. This adaptation is helped by slight modifications to the algorithm during the adaptation phase of the MCMC \cite{andrieu2008tutorial,liang2011advanced}. The computational cost of MVNSS does not increase dramatically with the dimensionality of the parameter space, though we have found that multiple MVNSS updates per MCMC iteration can, in some cases, improve performance. The algorithm is amenable to tuning of the initial bracket width as in \cite{tibbits2014automated}, which helps to reduce the number of likelihood evaluations per iteration.
 
-As in the previous section, we will suppress dependence on the data for notational clarity since slice sampling $ \btheta\in\bbR^d $ from its posterior $ \pi(\btheta|y) $ is, again, largely the same as sampling $ \btheta \sim \pi(\btheta)\propto f(\btheta)$. Let $ \bSigma = \Cov(\btheta) = \bL\bL^T $, where $ \bL $ is the lower triangular matrix of the Cholesky decomposition of $ \bL $ (any other matrix square root would do). In practice, $ \bSigma $ is approximated by $ \what{\bSigma}_n $, which is estimated over an initial MCMC run. The strategy in MVNSS is to propose $ \prop{\btheta} = \cur{\btheta} + c\bxi $, where $ \bxi = h(\bz),\ \bz\sim MVN(\mb{0},\bSigma),\ h(\bz) = \bz / ||\bz|| $, and to sample $ c $ in a univariate slice sampling update. Normalizing $ \bz $ allows us to more easily tune the initial bracket width. During an adaptation phase, we construct proposals as $ \prop{\btheta} = \cur{\btheta} + c(h(w\bxi_1 + (1-w)\bxi_2)) $, where $ \bxi_1 = h(\bz_1),\ \bz_1\sim MVN(\mb{0},\bSigma),\,\ \bxi_2 = h(\bz_2),\ \bz_2\sim MVN(\mb{0}, \mb{I}_d), \ h(\bz) = \bz / ||\bz|| $, and $ w\in[0,1] $. The weight given to $ \bz_2 $ is typically quite small, but helps to avoid degeneracy of the covariance during adaptation. We give the non--adaptive version of the algorithm below. 
+As in the previous section, we suppress dependence on the data for notational clarity since slice sampling $ \btheta\in\bbR^d $ from its posterior $ \pi(\btheta|y) $ is, again, largely the same as sampling $ \btheta \sim \pi(\btheta)\propto f(\btheta)$. Let $ \bSigma = \Cov(\btheta) = \bL\bL^T $, where $ \bL $ is the lower triangular matrix of the Cholesky decomposition of $ \bL $ (any other matrix square root would do). In practice, $ \bSigma $ is approximated by $ \what{\bSigma}_n $, which is estimated over an initial MCMC run. The strategy in MVNSS is to propose $ \prop{\btheta} = \cur{\btheta} + c\bxi $, where $ \bxi = h(\bz),\ \bz\sim MVN(\mb{0},\bSigma),\ h(\bz) = \bz / ||\bz|| $, and to sample $ c $ in a univariate slice sampling update. Normalizing $ \bz $ allows us to more easily tune the initial bracket width. During an adaptation phase, we construct proposals as $ \prop{\btheta} = \cur{\btheta} + ch(w\bxi_1 + (1-w)\bxi_2) $, where $ \bxi_1 = h(\bz_1),\ \bz_1\sim MVN(\mb{0},\bSigma),\,\ \bxi_2 = h(\bz_2),\ \bz_2\sim MVN(\mb{0}, \mb{I}_d), \ h(\bz) = \bz / ||\bz|| $, and $ w\in[0,1] $. The weight given to $ \bz_2 $ is typically quite small, but helps to avoid degeneracy of the empirical covariance matrix during adaptation. We give the non--adaptive version of the algorithm below. 
 
 \begin{algorithm}[htbp]
 	\caption{Multivariate normal slice sampling with stepping out.}\label{alg:mvnss}
@@ -541,16 +543,16 @@ As in the previous section, we will suppress dependence on the data for notation
 \subsubsection{Elliptical slice sampling}
 \label{subsubsec:elliptical_slice_sampling}
 
-The elliptical slice sampler (ElliptSS) of \cite{murray2010} is an algorithm for efficiently sampling normally distributed random variables. The conditions we need for ElliptSS to be valid are that $ \bx\sim N(\mathbf{0}, \bSigma) $, and that the posterior factors as $ \pi(\bx|\by)= \frac{1}{Z}N(\bx;\bs{0}, \bSigma)L_\by(\bx) $. The strategy behind ElliptSS is to reparameterize the model by introducing auxiliary variables in a way that preserves the marginal distribution of $ \bx $, thus preserving the likelihood of the data conditional on $ \bx $.
+The elliptical slice sampler (ElliptSS) of \cite{murray2010} is an algorithm for efficiently sampling normally distributed random variables. The conditions we need for ElliptSS to be valid are that $ \bx\sim N(\mathbf{0}, \bSigma) $, and that the posterior factors as $ \pi(\bx|\by)= \frac{1}{Z}N(\bx;\bs{0}, \bSigma)L_\by(\bx) $. The strategy behind ElliptSS is to reparameterize the model by introducing auxiliary variables in a way that preserves the marginal distribution of $ \bx $, and thus preserves the likelihood of the data conditional on $ \bx $.
 
 We introduce auxiliary variables, $
 \boeta_0 \sim N(\bs{0}, \bSigma),\
 \boeta_1 \sim N(\bs{0}, \bSigma),\
 \theta \sim \mr{Unif}(0, 2\pi)$, and define $
-\bx = \boeta_0\sin(\theta) + \boeta_1\cos(\theta). $ Note that $ \bx\sim N(\bs{0}, \bSigma) $, so we have not changed its marginal distribution. ElliptSS alternates sampling $ \boeta_0,\boeta_1,\theta $ under the constraint that $ \bx $ is unchanged, and updating $ \theta $ by univariate slice sampling. To this end, the model is reparameterized as, $$\theta \sim \mr{Unif}(0, 2\pi),\
+\bx = \boeta_0\sin(\theta) + \boeta_1\cos(\theta). $ Note that the marginal distribution of $ \bx $ is still $ \bx\sim N(\bs{0}, \bSigma) $. ElliptSS alternates sampling $ \boeta_0,\boeta_1,\theta $ under the constraint that $ \bx $ is unchanged, and updating $ \theta $ by univariate slice sampling. To this end, the model is reparameterized as, $$\theta \sim \mr{Unif}(0, 2\pi),\
 \boeta \sim N(\bs{0}, \bSigma),\
 \boeta_0 = \bx \sin(\theta) + \boeta \cos(\theta),\
-\boeta_1 = \bx\cos(\theta) - \boeta\sin(\theta),$$ which leaves the latent variable unchanged as $ \prop{\bx} = \boeta_0\sin(\theta) + \boeta_1\cos(\theta) = \bx$. In practice, we need not compute $ \boeta_1 $ since it will be discarded anyway.
+\boeta_1 = \bx\cos(\theta) - \boeta\sin(\theta).$$ This leaves $ \bx $ unchanged as $ \prop{\bx} = \boeta_0\sin(\theta) + \boeta_1\cos(\theta) = \bx$. In practice, we need not compute $ \boeta_1 $ since it will just be discarded.
 
 \begin{algorithm}[htbp]
 	\caption{Elliptical slice sampler.}\label{alg:elliptical_slice_sampler}
@@ -573,9 +575,45 @@ We introduce auxiliary variables, $
 	\end{algorithmic}
 \end{algorithm}
 
-The elliptical slice sampler is a rejection--free algorithm with no free tuning parameters that always perturbs the current state if it is not the only state that has non--zero probability. Its efficiency when $ \bx $ is high dimensional can be motivated in a number of ways. In high dimensions, the typical set of $ \bx $ is concentrated in near the surface of a Gaussian hyperellipsoid \cite{betancourt2017conceptual,murray2010}. Thus, proposals along an elliptical path determined by two points within the ellipse are less likely to escape the thin shell where than line proposals (e.g., MVNSS, where slice sampling varies $ \epsilon $ in the proposal $ \bx' = \bx + \epsilon\boeta,\ \boeta \sim N(\bs{0},\bSigma)$). Moreover, as the dimensionality of $ \bx $ grows large, the proposed ellipse, $ \boeta $, and $ \bx $ are likely to be an angle of $ \pi/2 $ apart. Hence, if $ \bx $ is a good explanation for the data, $ \boeta $ is likely not to be and the line sampler will reject almost all values of $ \epsilon>0 $. 
+The elliptical slice sampler is a rejection--free algorithm with no free tuning parameters that always perturbs the current state if it is not the only state that has non--zero probability. Its efficiency when $ \bx $ is high dimensional can be motivated in a number of ways. In high dimensions, the typical set of $ \bx $ is concentrated in near the surface of a Gaussian hyperellipsoid \cite{betancourt2017conceptual,murray2010}. Thus, proposals along an elliptical path determined by two points within the ellipse are less likely to escape the typical set than are line proposals (e.g., MVNSS, where slice sampling varies $ \epsilon $ in the proposal $ \bx' = \bx + \epsilon\boeta,\ \boeta \sim N(\bs{0},\bSigma)$). Moreover, as the dimensionality of $ \bx $ grows large, the proposed ellipse, $ \boeta $, and $ \bx $ are likely to be an angle of $ \pi/2 $ apart. Hence, if $ \bx $ is a good explanation for the data, $ \boeta $ is likely not to be and the line sampler will reject almost all values of $ \epsilon>0 $. 
 
 As \cite{murray2010} point out, ElliptSS can also be seen as a slice sampling version of the pre-conditioned Crank-Nicolson (pCN) proposal that was proposed in \cite{neal1998regression}, which was an autoregressive MH proposal of the form  $ \bx' = \bx\sqrt{1-\epsilon^2} + \boeta\epsilon,\ \epsilon\in[-1,1] $. pCN proposals are known to have acceptance probabilities that are invariant to the dimension of the parameter space \cite{cotter2013mcmc}. Finally, as shown in \cite{bloem2016slice}, the form of the elliptical slice sampling update corresponds to an analytical expression for the Hamiltonian flow where the potential has Gaussian distribution. The auxiliary variable, $ \boeta $, is analogous to the initial velocity. 
 
 \subsection{Adaptive MCMC}
 \label{subsec:adaptive_mcmc}
+
+Adaptive MCMC algorithms aim to improve computational efficiency by using MCMC samples to learn optimal values of tuning parameters on the fly. MCMC proposal kernels can be adapted in a number of different ways, but must be adapted with care to preserve the stationarity of the target distribution. In order for an adaptive MCMC algorithm to preserve the stationary distribution, it must satisfy two conditions, vanishing adaptation, and bounded convergence \cite{andrieu2008tutorial}.
+
+The main computational tool used in the adaptive variations of the MCMC algorithms in this dissertation is the Robbins--Monro recursion, which allows us to continuously adapt the tuning parameters of an MCMC kernel. The Robbins--Monro recursion is a stochastic approximation algorithm that searches for a solution to an equation, $ f(\theta) = \alpha $, that has a unique root at $ \theta^\star $. The function $ f(\theta) $ is not directly observed. Instead, we use a noisy sequence of estimates, $ h(\what{\theta}_n) $, satisfying $ \E(h(\what{\theta}_n)) = f(\theta) $ to recursively approximate $ \theta^\star $. The recursion takes the form, $$\theta_{n+1} = \theta_n + \gamma_{n+1}(h(\what{\theta}_n) - \theta^\star).$$
+Hence, the recursion increments $ \theta $ by an amount proportional to the difference between $ h(\what{\theta}_n) $ and its target.  The gain factor sequence, $ \lbrace\gamma_{n+1}\rbrace $, is a deterministic non--increasing, positive sequence with $ \lim\lim\limits_{n\rightarrow\infty}0 $ that satisfies the following conditions: $$(i)\ \sum_{n=1}^\infty \gamma_n = \infty,\hspace{0.25in} (ii)\  \sum_{n=1}^\infty\gamma_n^{1+\lambda} < \infty,\ \lambda > 0.$$
+Note that since $ \gamma_n\rightarrow0 $ and $ \E(h(\what{\theta}_n))= f(\theta) $, it follows that $ |\theta_{n+1} - \theta_n|\rightarrow0 $ as $ n\rightarrow\infty $, i.e., the recursion is constructed to satisfy diminishing adaptation. Condition $ (i) $ ensures that the gain sequence does not decay so fast that there are values of $ \theta \Theta $ in its state space, $ \Theta $, that cannot be reached. Condition $ (ii) $ ensures bounded convergence of the sequence $ \lbrace\theta_n\rbrace $. Gain factor sequences of the form $ \gamma_n = C(1+pn)^{-\alpha},\ \alpha\in(0.5,1],\ p>0 $ will satisfy these conditions \cite{andrieu2008tutorial,liang2011advanced}. 
+
+When fitting a SEM, we will typically adapt the proposal covariance over the course of an initial tuning run that is followed by a final run with a fixed MCMC kernel. The samples accumulated during the adaptation phase are discarded. We now present an adaptive version of the random walk MH algorithm from Section \ref{subsubsec:metropolis_hastings}, in which we adapt the proposal covariance and a global scaling parameter that is set to achieve a target acceptance rate of $ \alpha^\star. $ This is Algorithm 4 in \cite{andrieu2008tutorial}. The proposal covariance matrix for the MVNSS is tuned in the same way.
+
+Let $ \mu_n $ and $ \Sigma_n $ denote the empirical mean and covariance of the posterior samples from the first $ n $ MCMC iterations, $ \alpha(\cur{\btheta}_{n-1},\prop{\btheta}_{n}) $ be the MH acceptance probability for accepting the proposal in iteration $ n$, $ \alpha^\star $ be the target acceptance rate (typically set to 0.234 based on \cite{roberts2001optimal}), and $ \lbrace\gamma_n\rbrace $ be a sequence of gain factors. The adaptive MH algorithm with global adaptive scaling is given below.
+
+\begin{algorithm}[htbp]
+	\caption{Adaptive Metropolis--Hastings with global adaptive scaling.}
+	\label{alg:adaptive_MH}
+	\begin{algorithmic}[1]
+		\Procedure{AdaptiveMH}{$ \btheta_0,\ \bmu_0,\ \bSigma_0 $}
+		\For{$ n\in 1,\dots,N $}
+			\State $ \prop{\btheta}_n \sim MVN(\bmu_{n-1},\lambda_{n-1}\bSigma_{n-1}) $ \Comment{Propose new value}
+			\State $ \alpha(\cur{\btheta}_{n-1},\prop{\btheta}_n) = \min\left \lbrace 1, \frac{\pi(\prop{\theta}_n|y)}{\pi(\cur{\theta}_{n-1}|y)}\right \rbrace $ \Comment{MH acceptance probability}
+			\State $ u\sim Unif(0,1) $ \Comment{Accept/reject proposal}
+			\begin{equation*}
+			\cur{\btheta}_n= \left\lbrace \begin{array}{ll}
+			\prop{\btheta}_n,&\ \text{if}\ \alpha \geq u,\\
+			\cur{\btheta}_{n-1},&\ \text{if}\ \alpha < u.
+			\end{array} \right.
+			\end{equation*}
+			\State \textbf{Adapt MH kernel:}\vspace{-0.1in}
+			\begin{align*}
+			\log(\lambda_{n}) &= \log(\lambda_{n-1}) + \gamma_n(\alpha(\cur{\btheta_{n-1}},\prop{\btheta_n}) - \alpha^\star) \\
+			\bmu_n &= \bmu_{n-1} + \gamma_n(\cur{\btheta}_n - \bmu_{n-1}) \\
+			\bSigma_n &= \bSigma_{n-1} + \gamma_n\left ((\cur{\btheta}_n - \bmu_{n-1})(\cur{\btheta}_n - \bmu_{n-1})^T - \bSigma_{n-1}\right )
+			\end{align*}
+		\EndFor
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
