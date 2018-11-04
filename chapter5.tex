@@ -159,9 +159,9 @@ The diffusion approximation for the MJP is a real--valued process, $ \bX $, on t
 
 \subsubsection{Reproduction numbers}
 \label{subsubsec:stratmod_repnumbs}
-The basic reproduction number, $ R_0 $, and its variants describe the propensity of an outbreak to spread through a population \cite{heffernan2005perspectives,van2008further}. $ R_0 $ is loosely interpreted as the average number of secondary infections arising from a single infected individual in a completely susceptible population. An outbreak will fail to sustain itself (almost surely when it evolves deterministically, but in reality with high probability due to the inherently stochastic nature of epidemics) when $ R_0 < 1 $. For this reason, epidemiologists often quantify the effectiveness of a control measure by estimating the extent to which the intervention reduces $ R_0 $. We can interpret the basic reproduction number as an intrinsic reproduction number when there is an exogenous contribution to force of infection \cite{blackwood2018introduction}. From a modeling perspective, is helpful to understand not only how $ R_0 $ affects the transmission dynamics, but also how various aspects of the model interact to affect $ R_0 $. This is important for parameterizing the model and assimilating prior information about how different aspects of the model \textit{jointly} influence the outbreak dynamics.
+The basic reproduction number, $ R_0 $, and its variants describe the propensity of an outbreak to spread through a population \cite{heffernan2005perspectives,van2008further}. $ R_0 $ is loosely interpreted as the average number of secondary infections arising from a single infected individual in a completely susceptible population. An outbreak will fail to sustain itself (almost surely when it evolves deterministically, but in reality with high probability due to the inherently stochastic nature of epidemics) when $ R_0 < 1 $. For this reason, epidemiologists often quantify the effectiveness of a control measure by estimating the extent to which the intervention reduces $ R_0 $. We can interpret the basic reproduction number as an intrinsic reproduction number when there is an exogenous contribution to force of infection \cite{blackwood2018introduction}. From a modeling perspective, is important to understand not only how $ R_0 $ affects the transmission dynamics, but also how various aspects of the model interact to affect $ R_0 $. 
 
-The basic reproduction number of a structured SEM can be obtained by computing the spectral radius (absolute value of the dominant eigenvalue) of the next generation matrix (NGM) for the linearized system of ODEs specifying the flow in and out of states at infection (see \cite{heffernan2005perspectives,van2008further,van2017reproduction} for details). The $ i,j $ element of the NGM gives the expected number of secondary infections in age stratum $ i $ given an index infection in stratum $ j $. Noting that vaccinated and unvaccinated invididuals in this model are equally transmissive and have the same mean infectious period durations, we obtain the age--structured next generation matrix
+The basic reproduction number of a structured SEM can be obtained by computing the spectral radius (absolute value of the dominant eigenvalue) of the next generation matrix (NGM) for the linearized system of ODEs specifying the flow in and out of states at infection \cite{heffernan2005perspectives,van2017reproduction,van2008further}. The $ i,j $ element of the NGM gives the expected number of secondary infections in age stratum $ i $ given an index infection in stratum $ j $. Noting that vaccinated and unvaccinated invididuals in this model are equally transmissive and have the same mean infectious period durations, we obtain the age--structured next generation matrix
 \begin{align}
 \label{eqn:sirs_ngm_full}
 \bK &= 
@@ -183,7 +183,7 @@ The basic reproduction number is
 R_0 = \frac{1}{2}\left (K_{YY} + K_{AA}\right ) + \frac{1}{2}\sqrt{(K_{YY} - K_{AA})^2 + 4K_{YA}K_{AY}}.
 \end{align}
 
-There are a few aspects of this expression that are useful to highlight as they relate to prior specification. First, it is possible for the outbreak to persist, i.e., $ R_0 > 1 $, even when the intrinsic reproduction number in one of the strata is below 1, e.g., $ K_{YY} <1$. However, a critical aspect of the contact structure is that most of the infectious contacts for each group are within--group contacts ($ C_{YY} = 0.6 $, $ C_{AA}=0.85 $). Therefore, the persistence of an outbreak in both strata suggests that $ K_{11} $ and $ K_{22} $ should not be much less than one. If not, then persistence of the outbreak in the stratum where transmission is not self--sustained implies that either its rate of infectious contact from outside the population is high ($ \alpha_j(t)N_j \gg  1$), and/or that the intrinsic reproduction number in the other stratum is high. This latter possibility could be particularly problematic since it might imply unreasonably high attack rates in the other stratum.
+There are a few aspects of this expression that we should highlight. First, it is possible for the outbreak to persist, i.e., $ R_0 > 1 $, even when the intrinsic reproduction number in one of the strata is below 1, e.g., $ K_{YY} <1$. However, a critical aspect of the contact structure is that most of the infectious contacts for each group are within--group contacts ($ C_{YY} = 0.6 $, $ C_{AA}=0.85 $). Therefore, the persistence of an outbreak in both strata suggests that $ K_{11} $ and $ K_{22} $ should not be much less than one. If not, then persistence of the outbreak in the stratum where transmission is not self--sustained implies that either its rate of infectious contact from outside the population is high ($ \alpha_j(t)N_j \gg  1$), and/or that the intrinsic reproduction number in the other stratum is high. This latter possibility could be particularly problematic since it might imply unreasonably high attack rates in the other stratum.
 
 We also note that the basic reproduction number is greater than the average of intrinsic reproduction numbers, $ K_{YY} $ and $ K_{AA} $, since the second term on the right hand side of (\ref{eqn:sirs_R0}) will typically be positive. Similarly, the variance of $ R_0 $ is also greater than the average of variances of $ K_{YY} $ and $ K_{AA} $. For these reasons, we should consider how $ K_{YY} $ and $ K_{AA} $ interact to a prior over $ R_0 $ when parameterizing the model. Note that if the cross--stratum contact rates were negligible, $ R_0 $ would behave like the average of intrinsic reproduction numbers plus a term proportional to the absolute difference between $ K_{YY} $ and $ K_{AA} $. This suggests that prior information about the intrinsic reproduction numbers, either individually (our preference) or about their average and difference, could help identify $ R_0 $. We should also keep in mind that our model is more complicated since the cross stratum terms are not negligible ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $), hence
 \begin{align*}
@@ -198,9 +198,9 @@ Finally we emphasize the importance of accounting for all of the parameters that
 \subsection{Flexible Models for the Force of Infection with Gaussian Markov Random Fields}
 \label{subsec:flu_gmrf}
 
-We will model the time--varying force of infection using first order GMRFs (random walk of order 1; RW1) for the log intrinsic reproduction numbers for each stratum, which we specify separately over three epochs corresponding to the period one month before the first detected case until the start of the Finnish school year in 2009, the beginning of the Finnish school year in 2009 until its start in 2010 (including the inter--season period), and the second epidemic season beginning at the start of the Finnish school year, 2010. These correspond to epiweeks 15, 2009 through epiweek 33, 2009, epiweek 34, 2009 through epiweek 32, 2010, and epiweek 33, 2010 through epiweek 22, 2011. We will assume that the intrinsic reproduction numbers are fixed over the inter--season period, from epiweek 16, 2010 -- epiweek 32, 2010, to their values at the end of the first season.
+We will model the time--varying force of infection using first order GMRFs (random walk of order 1; RW1) for the log intrinsic reproduction numbers and the effective rate of exogenous infectious contacts in each age stratum. The GMRFs are separately specified over three epochs corresponding to the period one month before the first detected case until the start of the Finnish school year in 2009, the beginning of the Finnish school year in 2009 until its start in 2010 (including the inter--season period), and the second epidemic season beginning at the start of the Finnish school year, 2010. These epochs correspond to epiweeks 15, 2009 through epiweek 33, 2009, epiweek 34, 2009 through epiweek 32, 2010, and epiweek 33, 2010 through epiweek 22, 2011. We will assume that the intrinsic reproduction numbers are homogeneous over the inter--season period, from epiweek 16, 2010 -- epiweek 32, 2010.
 
-The GMRF is parameterized on the log scale using a state--space formulation defined by the initial value and first order differences. Let $ \bpsi_{j} = (\psi_{j,0},\dots,\psi_{j,L}) $ be the vector of intrinsic reproduction numbers, ignoring relative contact rates, for stratum $ j \in \lbrace Y,A \rbrace$ in weeks $ \ell \in \lbrace0,\dots,53,71,\dots,112\rbrace$ indexed from epiweek 15, 2009. Let $ \bP^v_j = \left (P^v_j(t_1),\dots,P^v_j(t_L)\right )$ denote the vector of vaccine coverage rates for stratum $ j $. Absent vaccination,
+The GMRF is parameterized on the log scale using a state--space formulation defined by the initial value and first order differences. Let $ \bpsi_{j} = \lbrace\psi_{j,\ell}:\ \ell \in 0,\dots,52,71,\dots,112\rbrace $ be the vector of intrinsic reproduction numbers, ignoring relative contact rates, for stratum $ j \in \lbrace Y,A \rbrace$, and where time is indexed from epiweek 15, 2009. Let $ \bP^v_j = \left (P^v_j(t_1),\dots,P^v_j(t_L)\right )$ denote the vector of vaccine coverage rates for stratum $ j $. Absent vaccination,
 \begin{equation}
 \label{eqn:R0t_novacc}
 \psi^\prime_{j,\ell} = \frac{\beta_j(t_\ell)N_j}{\mu_j(t_\ell)},
@@ -213,18 +213,19 @@ where $ \beta(t_\ell) $ is the time--varying rate of infection rate per--endogen
 Note that $ \psi_{j,\ell}^\prime = \bpsi_{j,\ell} / \left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\right ) $. In order to capture the time--varying aspects of the force of infection that are not due to changes in vaccination, we will parameterize the GMRF for the force of infection using (\ref{eqn:R0t_novacc}). However, when we back out the time--varying rates of infectious contact, we need to account for the effects of vaccination that appear in (\ref{eqn:R0t_vacc}). Thus, $ \bpsi_j^\prime\sim \mr{GMRF}(\btheta) \implies\bpsi_j / (1 - \bP^v_j + \bP^v_j\nu_j) \sim \mr{GMRF}(\btheta). $
 
 We denote by $ \Delta $ the first--order forward difference operator, i.e., $ \Delta X_j = X_{j+1} - X_j $. The first--order differences of the log intrinsic reproduction numbers for stratum $ j $ in each season are assigned a Gaussian prior with mean zero and variance $ \sigma^2_{j,\ell} $. We assign Gaussian priors to the initial intrinsic reproduction numbers at the beginning of each season and to the log standard deviation of the log differences in each season. The sub--model for intrinsic reproduction numbers in stratum $ j $ is
-\begin{align}
-\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
-\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,18,71, \nonumber\\
-\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ &\ell=0,\dots,16, \nonumber\\
-\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,18}),&\ &\ell=18,\dots,51, \nonumber\\
-\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,71}),&\ &\ell=71,\dots,111, \nonumber\\
-\log(\psi_{j,\ell}) &= \log(\psi_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
-\log(\psi_{j,\ell}) &= \log(\psi_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
-\log(\psi_{j,\ell}) &= \log(\psi_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
-\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112 \nonumber
-\end{align}
-
+\begin{small}
+	\begin{align}
+	\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
+	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,18,71, \nonumber\\
+	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ &\ell=0,\dots,16, \nonumber\\
+	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,18}),&\ &\ell=18,\dots,51, \nonumber\\
+	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,71}),&\ &\ell=71,\dots,111, \nonumber\\
+	\log(\psi_{j,\ell}) &= \log(\psi_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
+	\log(\psi_{j,\ell}) &= \log(\psi_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
+	\log(\psi_{j,\ell}) &= \log(\psi_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
+	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
+	\end{align}
+\end{small}
 In practice, we will use the following partially non--centered parameterization:
 \begin{small}
 	\begin{align}
@@ -238,7 +239,38 @@ In practice, we will use the following partially non--centered parameterization:
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
-	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112 \nonumber
+	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
+	\end{align}
+\end{small}
+We similarly assign a first order random walk prior to the effective number of exogenous infectious contacts for each age stratum. Note that this term is somewhat of a catch--all for infectious contacts that arise outside of the density dependent mixing of susceptible and infected individuals. The rate of exogenous infection may be loosely interpreted as either the baseline rate of infectious contact or as the rate of infection from outside the population. Let $ \alpha^\prime_{j,\ell} = \alpha_{j,\ell}N $ denote the rate of exogenous infection for age stratum $ j $ in week $ \ell $, scaled by the population size. The GMRF prior for $ \balpha^\prime_j = \lbrace\alpha^\prime_{j,\ell}:\ \ell=0,\dots,52,71,\dots,112\rbrace $ is
+\begin{small}
+	\begin{align}
+	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
+	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,18,71, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ &\ell=0,\dots,16, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,18}),&\ &\ell=18,\dots,51, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,71}),&\ &\ell=71,\dots,111, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
+	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/N,&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
+	\end{align}
+\end{small}
+
+Again, we will use a partially non--centered parameterization in practice.
+\begin{small}
+	\begin{align}
+	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
+	Z_{\log(\sigma_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,18,71, \nonumber \\
+	Z_{\Delta\log(\alpha^\prime_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,\dots,16,18,\dots,51,71,\dots,111, \nonumber \\ 
+	\log(\sigma_{j,\ell}) &= m_{j,\ell} + s_{j,\ell}Z_{\log(\sigma_{j,\ell})},&\ &\ell = 0,18,71,\nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,0} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=0,\dots,16, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,18} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=18,\dots,51, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,71} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=71,\dots,111, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
+	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/N,&\ &\ell=0,\dots,52,71,\dots,112 \nonumber
 	\end{align}
 \end{small}
 
