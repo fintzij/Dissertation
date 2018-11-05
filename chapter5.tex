@@ -50,6 +50,13 @@ Y_{j,\ell} \sim \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + 
 \end{equation}
 where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an age--specific overdispersion parameter, and $ \Delta $ is a differencing operator for the cumulative incidence in a age--vaccination stratum, e.g., $ \Delta N_{SI}^{(u)}(t_\ell) = N_{SI}^{(u)}(t_\ell) - N_{SI}^{(u)}(t_{\ell-1}) $ is change in cumulative incidence between times $ t_{\ell-1} $ and $ t_\ell $. Note that the time--step for the data and incidence over the inter--season period is twenty weeks long. 
 
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/fludat_plots}
+	\caption[A(H1N1)pdm09 incidence and vaccination data from Finland, April 15, 2009 --- June 5, 2011.]{(Top) Observed incidence (solid lines) and vaccine coverage (lines with points). (Bottom left) Observed cases by season and age stratum. The 2009--2010 season (dark green) corresponds to the period from April 15, 2009 through April 4, 2010. The 2010--2011 season (light green) corresponds to the period from September 12, 2010 through June 5, 2011. Numbers in points give the attack rate within each stratum for the corresponding season. (Bottom right) Vaccination coverage by age stratum, colored by vaccine coverages at the times of peak incidence in the first season, tail of the major outbreak in the first season, and end of the vaccination campaign. The numbers inside and outside the histograms denote the percentage of individuals in each stratum that were vaccinated and unvaccinated, respectively, by the end of the vaccination campaign. The times at which vaccine coverages are summarized, denoted by colors of histogram bars, are also identified by corresponding triangles above the top figure.}
+	\label{fig:finland_fludat}
+\end{sidewaysfigure}
+
 \subsection{Model Structure}
 \label{subsec:flu_modstructure}
 
@@ -137,8 +144,8 @@ The contact rate between individuals in age stratum $ j $ and age stratum $ k $,
 \begin{array}{ll}
 \lambda_{SI,j}^{(u)} = \left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{u} \\ 
 \lambda_{SI,j}^{(v)} = \nu\left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{v}\\
-\lambda_{IR,j}^{(u)} = \mu_{j}(t) I_{j}^{(u)} \\
-\lambda_{IR,j}^{(v)} = \mu_{j}(t) I_{j}^{(v)} \\
+\lambda_{IR,j}^{(u)} = \mu_{j} I_{j}^{(u)} \\
+\lambda_{IR,j}^{(v)} = \mu_{j} I_{j}^{(v)} \\
 \lambda_{RS,j}^{(u)} = \omega R_{j}^{(u)} \\
 \lambda_{RS,j}^{(v)} = \omega R_{j}^{(v)}
 \end{array}
@@ -203,12 +210,12 @@ We will model the time--varying force of infection using first order GMRFs (rand
 The GMRF is parameterized on the log scale using a state--space formulation defined by the initial value and first order differences. Let $ \bpsi_{j} = \lbrace\psi_{j,\ell}:\ \ell \in 0,\dots,52,71,\dots,112\rbrace $ be the vector of intrinsic reproduction numbers, ignoring relative contact rates, for stratum $ j \in \lbrace Y,A \rbrace$, and where time is indexed from epiweek 15, 2009. Let $ \bP^v_j = \left (P^v_j(t_1),\dots,P^v_j(t_L)\right )$ denote the vector of vaccine coverage rates for stratum $ j $. Absent vaccination,
 \begin{equation}
 \label{eqn:R0t_novacc}
-\psi^\prime_{j,\ell} = \frac{\beta_j(t_\ell)N_j}{\mu_j(t_\ell)},
+\psi^\prime_{j,\ell} = \frac{\beta_j(t_\ell)N_j}{\mu_j},
 \end{equation}
-where $ \beta(t_\ell) $ is the time--varying rate of infection rate per--endogenous contact, $ \mu_j(t_\ell) $ is the recovery rate at week $ \ell $ (season--specific), and $ N_{j} $ is the number of individuals in age stratum $ j $. Accounting for vaccination, 
+where $ \beta(t_\ell) $ is the time--varying rate of infection rate per--endogenous contact, $ \mu_j$ is the recovery rate at week $ \ell $ (season--specific), and $ N_{j} $ is the number of individuals in age stratum $ j $. Accounting for vaccination, 
 \begin{equation}
 \label{eqn:R0t_vacc}
-\psi_{j,\ell} = \frac{\beta_j(t_\ell)N_j\left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\nu_j\right )}{\mu_j(t_\ell)}
+\psi_{j,\ell} = \frac{\beta_j(t_\ell)N_j\left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\nu_j\right )}{\mu_j}
 \end{equation}
 Note that $ \psi_{j,\ell}^\prime = \bpsi_{j,\ell} / \left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\right ) $. In order to capture the time--varying aspects of the force of infection that are not due to changes in vaccination, we will parameterize the GMRF for the force of infection using (\ref{eqn:R0t_novacc}). However, when we back out the time--varying rates of infectious contact, we need to account for the effects of vaccination that appear in (\ref{eqn:R0t_vacc}). Thus, $ \bpsi_j^\prime\sim \mr{GMRF}(\btheta) \implies\bpsi_j / (1 - \bP^v_j + \bP^v_j\nu_j) \sim \mr{GMRF}(\btheta). $
 
@@ -290,24 +297,77 @@ MCMC proceeds by alternately updating $ \bZ|\bY,\btheta $ using ElliptSS (Algori
 \section{Results}
 \label{sec:flu_results}
 
-Estimates of the total numbers of infections and attack rates by season and age group are reported in Table \ref{tab:flu_attack_rates}, 
+\subsection{Incidence}
+\label{subsec:flu_incid_res}
+Estimates of cumulative incidence and attack rates by season and age group are reported in Table \ref{tab:flu_attack_rates}. The pandemic severity appears to be belied by the relatively low levels of mild cases that were detected by the surveillance system. We estimate that there were approximately 1.1 million (95\% BCI: 768,000, 1,540,000) infections in the first epidemic season, and an additional 810,000 (95\% BCI: 619,000, 1,050,000) cases during the second season. These estimates correspond to estimated attack rates of 14.3\%--28.7\% during the first season, and 11.6\%--19.5\% in the second season, assuming that each individual was infected only once. The estimated attack rates were substantially higher among youths than adults in the first epidemic season, but somewhat lower during the second season. The estimated incidence over the inter--season period was low; 17 cases (95\% BCI: 8, 37) among youths, and 87 cases (95\% BCI: 35, 222) among adults. 
 
 \begin{sidewaystable}[htbp]
-	\caption{Estimated infections (thousands) and attack rates by season an age stratum. Attack rates are computed as the estimated numbers of infections in each season divided by the population sizes assuming that each case is unique.}
+	\caption{Estimated infections (thousands) and attack rates by season and age stratum. Attack rates are calculated as the number of infections divided by the size of each stratum, assuming that cases are unique.}
 	\label{tab:flu_attack_rates}
 	\centering\footnotesize
 	\begin{tabular}{lrrrrrr}
 		\hline
-		\multicolumn{1}{c}{\bfseries } & \multicolumn{2}{c}{\bfseries Season 1} & \multicolumn{2}{c}{\bfseries Season 2} & \multicolumn{2}{c}{\bfseries Both Seasons} \\
-		\cmidrule(r){2-3} \cmidrule(lr){4-5} \cmidrule(l){6-7}
-		& \multicolumn{1}{c}{Infections} & \multicolumn{1}{c}{Attack rate} & \multicolumn{1}{c}{Infections} & \multicolumn{1}{c}{Attack rate} & \multicolumn{1}{c}{Infections} & \multicolumn{1}{c}{Attack rate}\\
+		&\multicolumn{6}{c}{\textbf{Time varying dynamics}}\\
+		\cmidrule{2-7} & \multicolumn{2}{c}{\textit{Season 1}} & \multicolumn{2}{c}{\textit{Season 2}} & \multicolumn{2}{c}{\textit{Both Seasons}}\\
+		\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7} & 
+		Incidence & Attack rate & Incidence & Attack rate & Incidence & Attack rate \\
 		\hline
-		Ages 0-19 & 391 (274, 541) & 31.9 (22.4, 44.2) & 290 (150, 517) & 23.7 (12.2, 42.2) & 689 (476, 962) & 56.4 (38.9, 78.7)\\
-		Ages 20+ & 693 (473, 974) & 16.8 (11.5, 23.6) & 1,130 (847, 1,460) & 27.3 (20.5, 35.4) & 1,830 (1,460, 2,240) & 44.3 (35.4, 54.2)\\
-		All ages & 1,090 (789, 1,460) & 20.3 (14.8, 27.3) & 1,420 (1,050, 1,890) & 26.6 (19.7, 35.2) & 2,520 (2,020, 3,100) & 47.1 (37.8, 57.9)\\
+	Ages 0-19 & 376 (245, 536) & 30.8 (20.1, 43.8) & 142 (73.4, 218) & 11.6 (6, 17.8) & 522 (351, 702) & 42.7 (28.7, 57.4)\\
+	Ages 20+ & 728 (478, 1,060) & 17.6 (11.6, 25.8) & 672 (480, 877) & 16.3 (11.6, 21.2) & 1,400 (1,070, 1,810) & 34 (26, 43.7)\\
+	All ages & 1,110 (768, 1,540) & 20.7 (14.3, 28.7) & 810 (619, 1,050) & 15.1 (11.6, 19.5) & 1,920 (1,510, 2,430) & 36 (28.3, 45.5)\\
+		\hline &&&&&&\\
+		&\multicolumn{6}{c}{\textbf{Piecewise homogeneous dynamics}}\\
+		\cmidrule{2-7}	& \multicolumn{2}{c}{\textit{Season 1}} & \multicolumn{2}{c}{\textit{Season 2}} & \multicolumn{2}{c}{\textit{Both Seasons}}\\
+	\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7} & 
+	Incidence & Attack rate & Incidence & Attack rate & Incidence & Attack rate \\
+	\hline
+	Ages\_0-19 & 415 (288, 571) & 33.9 (23.5, 46.7) & 131 (79.5, 204) & 10.7 (6.5, 16.7) & 549 (411, 712) & 44.9 (33.6, 58.2)\\
+	Ages\_20+ & 757 (513, 1,100) & 18.3 (12.4, 26.5) & 695 (572, 855) & 16.8 (13.8, 20.7) & 1,460 (1,160, 1,850) & 35.3 (28.1, 44.7)\\
+	All\_ages & 1,180 (843, 1,600) & 22 (15.8, 29.9) & 827 (670, 1,030) & 15.5 (12.5, 19.3) & 2,010 (1,620, 2,500) & 37.5 (30.4, 46.7)\\
 		\hline
 	\end{tabular}
 \end{sidewaystable}
+
+\subsection{Transmission Dynamics}
+\label{flu_res_dynamics}
+Estimates of time varying reproduction numbers and exogenous infections are shown in Figure \ref{fig:flurwodetimevaryingplots} and estimates of model parameters are given in Table \ref{tab:flu_param_posts}.
+
+\begin{sidewaysfigure}
+	\centering
+	\includegraphics[width=0.95\linewidth]{figures/flu_rw_ode_timevarying_plots}
+	\caption{Estimated incidence (top row), effective reproduction numbers (second row), basic reproduction numbers adjusted for vaccination (third row), and exogenous infections (bottom row). $ N_{SI}^j(t), $ is the weekly incidence in age stratum $ j $, $ R_{eff}(t) $ and $ R_{adj}(t) $ are the effective and vaccination--adjusted basic reproduction numbers, $ T_{eff}^j(t) $ is the type reproduction number for stratum $ j $ (expected \# of secondary infections in all strata for a single infected in stratum $ j $), and $ \alpha_j(t) $ is the rate of exogenous infectious contacts for stratum $ j $.}
+	\label{fig:flurwodetimevaryingplots}
+\end{sidewaysfigure}
+
+\begin{sidewaystable}
+	\caption[Posterior estimates of SIRS model parameters for pandemic A(H1N1) influenza in Finland.]{Posterior estimates of SIRS model parameters for pandemic A(H1N1) influenza in Finland. Intrinsic reproduction numbers account for vaccine coverage and vaccine efficacy via (\ref{eqn:R0t_vacc}).} 
+	\label{tab:flu_param_ests}
+	\centering\footnotesize
+	\begin{tabular}{clrr}
+		\hline
+		&&\multicolumn{2}{c}{\textbf{Dynamics}}\\
+		\cmidrule{3-4}\textbf{Parameter} & \textbf{Interpretation} & \textit{Time varying} & \textit{Piecewise homogeneous}\\
+		\hline
+		$ \psi_{Y,0} $ & Intrinsic $ R_0 $ for youths at epiweek 15, 2009  & 1.1 (1.0, 1.2) & 1.1 (1.0, 1.2)\\
+		$ \psi_{Y,18} $ & Intrinsic $ R_0 $ for youths at epiweek 34, 2009 & 1.5 (1.1, 1.8) & 1.6 (1.3, 1.9)\\
+		$ \psi_{Y,71} $ & Intrinsic $ R_0 $ for youths at epiweek 33, 2010 & 1.2 (0.93, 1.5) & 1.2 (0.94, 1.5)\\
+		$ \psi_{A,0} $ & Intrinsic $ R_0 $ for adults at epiweek 15, 2009  & 1.1 (1, 1.2) & 1.1 (1, 1.1)\\
+		$ \psi_{A,18} $ & Intrinsic $ R_0 $ for adults at epiweek 34, 2009 & 1.1 (0.95, 1.2) & 1.1 (0.96, 1.2)\\
+		$ \psi_{A,71} $ & Intrinsic $ R_0 $ for adults at epiweek 33, 2010 & 1.4 (1.1, 1.8) & 1.6 (1.4, 1.8)\\
+		$ 1/\mu_{Y} $ & Mean infectious period for youths (days) & 6.5 (4.3, 8.8) & 7.5 (5.5, 9.5)\\
+		$ 1/\mu_A $ & Mean infectious period for adults (days) & 2.6 (1.9, 3.4) & 2.9 (2.2, 3.8)\\
+		$ 1/\mu $ & Mean duration of immunity (years) & 9.3 (4.5, 21) & 9.9 (4.8, 21)\\
+		$ \nu $ & 1 - VE for susceptibility & 0.05 (0.01, 0.17) & 0.04 (0.01, 0.13)\\
+		$ \rho_Y $ & Mean case detection rate for youths & 0.008 (0.006, 0.012) & 0.008 (0.006, 0.011)\\
+		$ \rho_A $ & Mean case detection rate for adults & 0.003 (0.002, 0.005) & 0.003 (0.002, 0.004)\\		
+		$ 1/\sqrt{\phi_Y} $ & Negative binomial overdispersion for youths & 0.99 (0.82, 1.2) & 1 (0.85, 1.3)\\
+		$ 1/\sqrt{\phi_A} $ & Negative binomial overdispersion for adults & 0.97 (0.83, 1.2) & 1 (0.83, 1.2)\\
+		\hline
+	\end{tabular}
+\end{sidewaystable}
+
+\subsection{Piecewise Homogeneous Dynamics}
+\label{subsec:flu_res_homog}
 
 \section{Discussion}
 \label{sec:flu_discussion}
