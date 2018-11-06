@@ -155,3 +155,59 @@ Jointly sampling the LNA draws and the values of a GMRF, $ \bF $, in addition to
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
+
+\section{Modeling Pandemic A(H1N1) Influenza in Finland --- Additional Details and Supplementary Results}
+\label{sec:flu_supplement}
+
+\subsection{Prior Specification}
+\label{subsec:flu_priors}
+
+\subsubsection{Priors for Time--homogeneous Parameters}
+\label{subsubsec:flu_param_priors_homog}
+
+\subsubsection{Priors for GMRFs}
+\label{subsubsec:flu_gmrf_priors}
+
+\subsection{MCMC Details}
+
+\label{subsec:flu_mcmc_details}
+
+\subsection{Additional Results}
+\label{subsec:flu_additional_results}
+
+\subsubsection{Stratified SIRS model with time--varying dynamics}
+\label{subsubsec:flu_additional_res_rw1}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/flu_traces_rw_ode}
+	\caption{Posterior traceplots for a stratified SIRS ODE model with time--varying dynamics fit to data from the A(H1N1) influenza pandemic in Finland.}
+	\label{fig:flutracesrwode}
+\end{sidewaysfigure}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/flu_rw_pairs}
+	\caption{Histograms and pairwise scatterplots of posterior samples for the parameters of a stratified SIRS ODE model with time varying dynamics that were sampled via MVNSS. The model was fit to data from the A(H1N1) influenza pandemic in Finland.}
+	\label{fig:flurwpairs}
+\end{sidewaysfigure}
+
+\newpage
+
+\subsubsection{Stratified SIRS model with piecewise--homogeneous dynamics}
+\label{subsubsec:flu_additional_res_const}
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/flu_traces_const_ode}
+	\caption{Posterior traceplots for a stratified SIRS ODE model with piecewise--homogeneous dynamics fit to data from the A(H1N1) influenza pandemic in Finland.}
+	\label{fig:fluconstodetraces}
+\end{sidewaysfigure}
+
+
+\begin{sidewaysfigure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{figures/flu_const_pairs}
+	\caption{Histograms and pairwise scatterplots of posterior samples for the parameters of a stratified SIRS ODE model with piecewise homogeneous dynamics that were sampled via MVNSS. The model was fit to data from the A(H1N1) influenza pandemic in Finland.}
+	\label{fig:fluconstpairs}
+\end{sidewaysfigure}
