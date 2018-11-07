@@ -94,6 +94,7 @@ Following \cite{meyer2017incorporating}, we row--normalize the matrix, thus remo
 	20+ & 0.15 & 0.85
 }. \]
 
+\newpage
 \section{Mapping Standard Normal Draws to LNA Sample Paths with Forcings}
 \label{sec:dolna_forcings}
 \begin{algorithm}[htbp]
@@ -159,18 +160,40 @@ Jointly sampling the LNA draws and the values of a GMRF, $ \bF $, in addition to
 \section{Modeling Pandemic A(H1N1) Influenza in Finland --- Additional Details and Supplementary Results}
 \label{sec:flu_supplement}
 
+\subsection{MCMC Details}
+\label{subsec:flu_mcmc_details}
+We fit age--vaccination stratified SIRS ODE models with time varying dynamics to pandemic A(H1N1) influenza incidence data. The vaccination adjusted reproduction numbers were modeled using either a GMRF or as piecewise homogeneous within three epochs. The models were fit using the same prior regimes, given in Table \ref{tab:flu_priors}. We ran five chains for each model, initialized at random parameter values, for 100,000 iterations per chain. Model parameters (excluding noncentered GMRF draws and hyperparameters, as described in Section \ref{subsec:flu_mcmc}) were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was adapted over the first 50,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. In the GMRF model, the non--centered GMRF draws were updated via ElliptSS along with their hyperparameters, hence MCMC alternated between one ElliptSS and one MVNSS update per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for the non--GMRF parameters were parameterized as in Table \ref{tab:flu_params_est}, and the GMRF was parameterized using the NCP given in Section \ref{subsec:flu_gmrf}. Convergence was assessed visually by inspection of traceplots of posterior samples. The models took between roughly one hour to run.
+
 \subsection{Prior Specification}
 \label{subsec:flu_priors}
 
 \subsubsection{Priors for Time--homogeneous Parameters}
 \label{subsubsec:flu_param_priors_homog}
 
+\begin{sidewaystable}[htbp]
+	\begin{fullpage}
+		\caption[Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland.]{Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland, prior distributions used in the main analysis. Vaccination adjusted intrinsic reproduction numbers are defined as in equation \ref{eqn:R0t_vacc}.}
+		\label{tab:flu_priors}
+		\scriptsize
+		\centering
+		\begin{tabular}{lllrr}
+			\hline
+			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
+			\hline
+		\end{tabular}
+	\end{fullpage}
+\end{sidewaystable}
+
 \subsubsection{Priors for GMRFs}
 \label{subsubsec:flu_gmrf_priors}
 
-\subsection{MCMC Details}
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figures/flu_RW1_prior}
+	\caption{Prior distribution of GMRF paths for vaccination adjusted intrinsic basic reproduction numbers A(H1N1)pdm09 influenza in Finland.}
+	\label{fig:flurw1prior}
+\end{figure}
 
-\label{subsec:flu_mcmc_details}
 
 \subsection{Additional Results}
 \label{subsec:flu_additional_results}
