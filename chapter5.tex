@@ -3,9 +3,9 @@
 
 \section{Overview}
 \label{sec:lna_extensions_overview}
-To this point, we have largely worked with stochastic epidemic models (SEMs) where the transmission dynamics of an outbreak are time--homogeneous. This may be only mildly unreasonable for short outbreaks in closed, relatively ``well--mixed" populations, and is often an attractive modeling choice as SEMs with static dynamics are easier to interpret and fit. Incidence data typically arise in settings where the outbreak milieu changes with environmental factors, heterogeneity in the contact structures of various subpopulations as they are exposed, or behavioral responses as people become aware of an outbreak (or complacent about the extent to which it is under control). Furthermore, we are often interested in understanding the effects of time--varying interventions, such as vaccination campaigns, on the transmission dynamics of an outbreak. Thus, it is important to allow time--varying aspects of an outbreak to be flexibly expressed in the model.
+To this point, we have largely worked with stochastic epidemic models (SEMs) where the transmission dynamics of an outbreak are time--homogeneous. This may be reasonable for short outbreaks in closed, relatively ``well--mixed" populations, and is often an attractive modeling choice as SEMs with static dynamics are easier to interpret and fit. Incidence data typically arise in settings where the outbreak milieu changes with environmental factors, heterogeneity in the contact structures of various subpopulations as they are exposed, or behavioral responses as people become aware of an outbreak (or complacent about the extent to which it is under control). Furthermore, we are often interested in understanding the effects of time--varying interventions, such as vaccination campaigns, on the transmission dynamics of an outbreak. Thus, it is important to allow time--varying aspects of an outbreak to be flexibly expressed in the model.
 
-In this chapter, we will use SEMs with time--varying force of infection (FOI) to model the spread of pandemic A(H1N1) influenza in Finland using surveillance data. Our goals will be to quantify the transmission dynamics of the outbreak, to estimate the true incidence, and to understand what effect a national vaccination campaign had in mitigating the outbreak severity. We will use the LNA and ODE SEM representations to fit models with time--varying dynamics. 
+In this chapter, we will use SEMs with time--varying force of infection (FOI) to model the spread of pandemic A(H1N1) influenza in Finland using surveillance data. Our goals will be to quantify the transmission dynamics of the outbreak, to estimate the true incidence, and to understand what effect a national vaccination campaign had in mitigating the outbreak severity. We will demonstrate how the LNA and ODE SEM representations can be used to fit models with time--varying dynamics. 
 
 %We will compare models with time--varying and constant dynamics that we fit using the linear noise approximation (LNA) framework developed in Chapter \ref{chap:lna_for_sems}.
 
@@ -16,25 +16,25 @@ A critical aspect of modeling outbreaks over multiple seasons is that we must ac
 
 Before delving into details of how we intend to accommodate time--inhomogeneity in the FOI, we briefly highlight why we should bother. To make the point, we compare results for two SIRS models fit to incidence data from an outbreak with time--inhomogeneous dynamics. The data were simulated from an SIRS model where the rate of infectious contact varied sinusoidally over the course of two waves (depicted in Figure \ref{fig:sinfoi_tparam_plots}). While both models allowed for loss of immunity, the per--contact infectious rate was held constant in one model, and in the other was allowed to vary in time, with changes penalized via a first order Gaussian Markov random field (GMRF) shrinkage prior (details presented in Sections \ref{sec:flu_tparam_models} and \ref{sec:tparam_motiv_details}). We used the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fit both models. 
 
-Although both models are misspecified vis--a--vis the  data generating model, the model with time--varying FOI was clearly better able to describe the dynamics of the outbreak (Figure \ref{fig:sinfoi_tparam_plots}). Estimates of basic and effective reproduction numbers capture the true basic and effective reproduction numbers throughout both seasons. The model with time--varying FOI is also able to recover the true incidence. In contrast, the model with constant FOI fails to accurately estimate the basic and effective reproduction numbers between seasons and during the second wave. It also completely fails to capture the incidence during the second wave. Unlike the model with time--varying FOI, the model with constant FOI also fails to recover the hyperparameters governing the outbreak dynamics and sampling process. In particular the mean duration of immunity and case detection rate are important parameters that are poorly estimated (Figure \ref{fig:sinfoi_param_plots}). Finally, the posterior predictive distributions for the model with time--varying FOI are more accurate, and more precise, than posterior predictive distributions for the model with constant FOI (Figures \ref{fig:sinfoi_tparam_plots} and \ref{fig:sinfoi_ppi_comp}).
+Although both models are misspecified vis--a--vis the  data generating model, the model with time--varying FOI was clearly better able to describe the dynamics of the outbreak (Figure \ref{fig:sinfoi_tparam_plots}). Estimates of basic and effective reproduction numbers capture the true basic and effective reproduction numbers throughout both seasons. The model with time--varying FOI is also able to recover the true incidence. In contrast, the model with homogeneous dynamics fails to accurately estimate the basic and effective reproduction numbers between seasons and during the second wave. It also completely fails to capture the incidence during the second wave. Unlike the model with time--varying FOI, the model with constant FOI also fails to recover the hyperparameters governing the outbreak dynamics and sampling process. In particular the mean duration of immunity and case detection rate are important parameters that are poorly estimated (Figure \ref{fig:sinfoi_param_plots}). Finally, the posterior predictive distributions for the model with time--varying FOI are more accurate, and more precise, than posterior predictive distributions for the model with constant FOI (Figures \ref{fig:sinfoi_tparam_plots} and \ref{fig:sinfoi_ppi_comp}).
 
-\begin{figure}[htbp]
+\begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_lna_tparam_plots}
-	\caption[Time--varying reproduction numbers, latent incidence, and posterior predictive distributions for SIRS models fit to data from an outbreak with time--varying dynamics.]{From left to right: posterior distributions of basic reproduction numbers, of effective reproduction numbers, of latent incidence, partial and full posterior predictive distributions. The top row corresponds to estimates obtained using an SIRS model where the basic reproduction number, and hence the per--contact infectivity rate, was allowed to vary in time, with differences penalized according to a first order GMRF. The second row shows estimates obtained from an SIRS model where the per--contact infectivity rate was constant over time. Shaded bands correspond to pointwise 50\%, 80\%, and 95\% Bayesian credible intervals and posterior predictive intervals, with the pointwise posterior/predictive median drawn as a solid line of the corresponding color.}
+	\caption[Time--varying reproduction numbers, latent incidence, and posterior predictive distributions for SIRS models fit to data from an outbreak with time--varying dynamics.]{Posterior estimates of time--varying quantities. From left to right: basic reproduction numbers, effective reproduction numbers, latent incidence, partial and full posterior predictive distributions. The top row corresponds to estimates obtained using an SIRS model where the basic reproduction number, and hence the per--contact infectivity rate, was allowed to vary in time, with differences penalized according to a first order GMRF. The second row shows estimates obtained from an SIRS model where the per--contact infectivity rate was constant over time. Shaded bands correspond to pointwise 50\%, 80\%, and 95\% Bayesian credible intervals and posterior predictive intervals, with the pointwise posterior/predictive median drawn as a solid line.}
 	\label{fig:sinfoi_tparam_plots}
-\end{figure}
+\end{sidewaysfigure}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sinfoi_lna_param_plots}
-	\caption[Posterior distributions of SIRS model parameters fit to data from an outbreak with time--varying dynamics.]{Posterior distributions of SIRS model parameters fit to data from an outbreak with time--varying dynamics. From left to right: $ 1/\mu $, the mean infectious period duration; $ 1/\omega $, the mean duration of immunity; $ \rho $, the mean case detection rate; $ \phi $, negative binomial overdispersion parameter; $ \sigma_{RW1} $, standard deviation of log--differences of time--varying basic reproduction numbers. The true values are given by solid red lines and priors by dashed green curves. The solid grey lines are posterior medians, and shaded regions correspond to 95\% Bayesian credible intervals.}
+	\caption[Posterior distributions of SIRS model parameters fit to data from an outbreak with time--varying dynamics.]{Posterior distributions of SIRS model parameters fit to data from an outbreak with time--varying dynamics. From left to right: $ 1/\mu $, the mean infectious period duration; $ 1/\omega $, the mean duration of immunity; $ \rho $, the mean case detection rate; $ \phi $, negative binomial overdispersion parameter; $ \sigma_{RW1} $, standard deviation of log--differences of time--varying basic reproduction numbers. True values are given by solid red lines and priors by dashed green curves. Solid grey lines are posterior medians, and shaded regions correspond to 95\% Bayesian credible intervals.}
 	\label{fig:sinfoi_param_plots}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.6\linewidth]{figures/sinfoi_ppi_comp}
+	\includegraphics[width=0.8\linewidth]{figures/sinfoi_ppi_comp}
 	\caption[Comparison with posterior predictive p-values and relative predictive interval widths for SIRS models fit to an outbreak with time--varying dynamics.]{Comparison of models with time--varying and constant force of infection using posterior predictive p-values (PPPs) and relative posterior predictive interval (PPI) widths. Each point corresponds to the observed incidence in a given week. The X--Y coordinates give the PPPs under a model with a time--varying force of infection (FOI), where R0 was modeled as a Gaussian Markov random field of order one, the PPP under a model with constant per--contact infection rate. The size and color of each point corresponds to the relative PPI width, computed as $ (\widehat{\sigma}_{post,\ell}^{constant} - \widehat{\sigma}_{post,\ell}^{RW1})/\widehat{\sigma}_{post,\ell}^{RW1} $, and the sign of the relative width is further emphasized by the shape of the point. Dots indicate that PPIs with constant FOI are wider, the lone triangle corresponds to the one data point where the PPI for the model with time--varying FOI was wider.}
 	\label{fig:sinfoi_ppi_comp}
 \end{figure}
@@ -50,7 +50,7 @@ We will model the time series of weekly incidence among youths (Y), ages 0--19, 
 \label{flu_emit_prob}
 Y_{j,\ell} \sim \mr{Neg.Binom}\left (\mu = \rho_j(\Delta N_{SI}^{(u)}(t_\ell) + \Delta N_{SI}^{(v)}(t_\ell)), \sigma^2 = \mu + \mu^2 / \phi_j\right ),
 \end{equation}
-where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an age--specific overdispersion parameter, and $ \Delta $ is a differencing operator for the cumulative incidence in a age--vaccination stratum, e.g., $ \Delta N_{SI}^{(u)}(t_\ell) = N_{SI}^{(u)}(t_\ell) - N_{SI}^{(u)}(t_{\ell-1}) $ is change in cumulative incidence between times $ t_{\ell-1} $ and $ t_\ell $. Note that the time--step for the data and incidence over the inter--season period is twenty weeks long. 
+where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an age--specific overdispersion parameter, and $ \Delta $ is a difference operator for the cumulative incidence in a age--vaccination stratum, e.g., $ \Delta N_{SI}^{(u)}(t_\ell) = N_{SI}^{(u)}(t_\ell) - N_{SI}^{(u)}(t_{\ell-1}) $ is change in cumulative incidence between times $ t_{\ell-1} $ and $ t_\ell $. Three cases, two among adults and one among youths, were detected over the interseason period and were treated as if they were accrued at epiweek 33, 2010. 
 
 \begin{sidewaysfigure}[htbp]
 	\centering
@@ -62,7 +62,7 @@ where $ \rho_j $ is the age--specific mean case detection rate, $ \phi_j $ is an
 \subsection{Model Structure}
 \label{subsec:flu_modstructure}
 
-We fit an age--vaccination stratified susceptible--infected--recovered--susceptible (SIRS) model in which individuals transition stochastically, and continuously in time, between disease states. Individuals are assumed to become infectious immediately upon becoming infected, and acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lose immunity are assumed to become fully susceptible. Following \cite{shubin2016revealing}, we assume a closed population and ignore demographic changes or mortality. All individuals were assigned to be susceptible and unvaccinated at the start of the modeling period. The model is diagrammed in Figure \ref{fig:flu_sirs_diag}, and Table \ref{tab:flu_notation} lists the model parameters and their interpretations. 
+We fit an age--vaccination stratified susceptible--infected--recovered--susceptible (SIRS) model in which individuals transitioned stochastically, and continuously in time, between disease states. Individuals were assumed to become infectious immediately upon becoming infected, and acquire temporary, though potentially long lasting, protection upon recovery. Individuals who lost immunity were assumed to become fully susceptible. We estimated the initial number of susceptibles as a parameters in the model and assumed that individuals who were not initially susceptible were detached from the transmission processes but could still be vaccinated. The implications of estimating the initial numbers of susceptibles are discussed in Section \ref{subsec:flu_highsusc_sensitivity}. Following \cite{shubin2016revealing}, we assume a closed population and ignore demographic changes or mortality. The model is diagrammed in Figure \ref{fig:flu_sirs_diag}, and Table \ref{tab:flu_notation} lists the model parameters and their interpretations. 
 
 \begin{table}[htbp]
 	\caption{Summary of notation for influenza models.}
@@ -89,6 +89,7 @@ We fit an age--vaccination stratified susceptible--infected--recovered--suscepti
 		$ \mathcal{T} $ & Observation times, numbered by week:  $ \lbrace t_\ell:\ \ell=1,\dots,52,71,\dots,113\rbrace $& No \\
 		$ N$ & Population size & No\\
 		$ N_{j}^{(k)}(t_\ell) $ & Size of age stratum $ j $ with vaccination status $ k $ in week $ \ell $ & Yes \\
+		$ s_{j} $ & Initially susceptible fraction of age stratum $ j $, $ s_j = S_j^{(u)}(t_0) / N_{j}^{(u)}(t_0) $ & No\\ 
 		$ V_{j}(t_\ell) $ & \# vaccine doses to individuals in age stratum j at week $ \ell $ & Yes\\	
 		$ P^v_{j}(t_\ell) $ & Vaccination coverage in age stratum $ j $ by week $ \ell $ & Yes \\
 		$ \xi_{k,j}^{(uv)}(t_\ell) $ & Vaccination forcing for compartment $ k $ in age stratum $ j $ in week $ \ell $ & Yes\\
@@ -102,18 +103,20 @@ We fit an age--vaccination stratified susceptible--infected--recovered--suscepti
 	\end{tabular}
 \end{table}
 
-By taking the sojourn time in each disease state to be exponentially distributed, and leveraging the exchangeability of individuals within the model, we represent the time--evolution of the epidemic as a Markov jump process (MJP), $$ \bX^c = \lbrace S_{Y}^{(u)}, I_{Y}^{(u)}, R_{Y}^{(u)},
-S_{Y}^{(v)}, I_{Y}^{(v)}, R_{Y}^{(v)}, S_{A}^{(u)}, I_{A}^{(u)}, R_{A}^{(u)},
-S_{A}^{(v)}, I_{A}^{(v)}, R_{A}^{(v)} \rbrace, $$ on the state space of compartment counts, $ \mcS_X^c$, with corresponding cumulative incidence process $ \bN^c $ on the state space of cumulative incidence counts $ \mcS_N^c $.
+We take sojourn time in each disease state to be exponentially distributed and leverage the exchangeability of individuals within the model to represent the time--evolution of the epidemic as a Markov jump process (MJP), $$ \bX^c = \left \lbrace S_{Y}^{(u)}, I_{Y}^{(u)}, R_{Y}^{(u)},D_Y^{(u)},
+S_{Y}^{(v)}, I_{Y}^{(v)}, R_{Y}^{(v)},D_Y^{(v)}, S_{A}^{(u)}, I_{A}^{(u)}, R_{A}^{(u)},D_A^{(u)}
+S_{A}^{(v)}, I_{A}^{(v)}, R_{A}^{(v)},D_A^{(v)} \right \rbrace, $$ where $ S_j^{(k)},\ I_j^{(k)},\ R_j^{(k)},\ D_j^{(k)} $ are the numbers of susceptible, infected, recovered, and detached (susceptible, but not part of the transmission process) individuals in age stratum $ j $ with vaccination status $ k $. The state space of $ \bX^c $, is the set of compartment counts, $ \mcS_X^c$. $ \bX^c $ is also coupled to the cumulative incidence process $ \bN^c $ on the state space of cumulative incidence counts $ \mcS_N^c $, as described in Section \ref{subsubsec:cle_repar}.
 
 \begin{figure}[htbp]
 	\centering
 	\begin{tikzpicture}
-	\draw[thick,dotted] (-1,1) rectangle (11.25,8.25);
-	\node at (1,7.25) [label={\textbf{Age stratum = j}}] {};
+	\draw[thick,dotted] (-2.75,1) rectangle (11,8.25);
+	\node at (-0.5,7.25) [label={\textbf{Age stratum = j}}] {};
+	\draw (-1.25,5) circle(0.5) node (Dju) {$D_j^{(u)}$};
 	\draw (1.25,5) circle(0.5) node (Sju) {$S_j^{(u)}$};
 	\draw (5,5) circle(0.5) node (Iju) {$I_j^{(u)}$};
 	\draw (9,5) circle(0.5) node (Rju) {$R_j^{(u)}$};
+	\draw (-1.25,2) circle(0.5) node (Djv) {$D_j^{(v)}$};
 	\draw (1.25,2) circle(0.5) node (Sjv) {$S_j^{(v)}$};
 	\draw (5,2) circle(0.5) node (Ijv) {$I_j^{(v)}$};
 	\draw (9,2) circle(0.5) node (Rjv) {$R_j^{(v)}$};
@@ -126,6 +129,7 @@ S_{A}^{(v)}, I_{A}^{(v)}, R_{A}^{(v)} \rbrace, $$ on the state space of compartm
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sjv) -- (Ijv) node[midway,above] {$ \lambda_{SI,j}^{(v)}(t) $};
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Ijv) -- (Rjv) node[midway,above] {$ \lambda_{IR,j}^{(v)}(t) $};
 	
+	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Dju) -- (Djv) node[midway,right] {$ \xi_{D,j}^{(uv)}(t_\ell) $};
 	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Sjv) node[midway,right] {$ \xi_{S,j}^{(uv)}(t_\ell) $};
 	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Ijv) node[midway,right] {$ \xi_{I,j}^{(uv)}(t_\ell) $};
 	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Rju) -- (Rjv) node[midway,left] {$ \xi_{R,j}^{(uv)}(t_\ell) $};
@@ -139,7 +143,8 @@ S_{A}^{(v)}, I_{A}^{(v)}, R_{A}^{(v)} \rbrace, $$ on the state space of compartm
 	\label{fig:flu_sirs_diag}
 \end{figure}
 
-The contact rate between individuals in age stratum $ j $ and age stratum $ k $, denoted $ C_{jk} $, was based on estimated mean contact rates, appropriately standardized (see Section \ref{sec:flu_contact_rates}), from the Finnish arm of the POLYMOD survey \cite{mossong2008social,polymod} and accessed via the \texttt{socialmixr R} package \cite{funk2018socialmixr}. Sixty percent of contacts in the 0--19 age group were from other individuals age 0--19, while eighty--five percent of the contacts in the 20+ age group were from other adults.  The rates, $ \blambda = (\blambda_{Y},\blambda_{A}) $, at which individuals in age--stratum $ j \in \lbrace Y,\ A\rbrace $ transition between disease states are
+The contact rate between individuals in age stratum $ j $ and age stratum $ k $, denoted $ C_{jk} $, was based on estimated mean contact rates, appropriately standardized (see Section \ref{sec:flu_contact_rates}), from the Finnish arm of the POLYMOD survey \cite{mossong2008social,polymod} and accessed via the \texttt{socialmixr R} package \cite{funk2018socialmixr}. Sixty percent of contacts in the 0--19 age group were from other individuals age 0--19, while eighty--five percent of the contacts in the 20+ age group were from other adults. The rates, $ \blambda = (\blambda_{Y},\blambda_{A}) $, at which individuals in age--stratum $ j \in \lbrace Y,\ A\rbrace $ transition between disease states are
+
 \begin{equation}\small
 \label{eqn:flu_sirs_rates}
 \blambda_{j} = \left\lbrace
@@ -154,7 +159,7 @@ The contact rate between individuals in age stratum $ j $ and age stratum $ k $,
 \right .
 \end{equation}
 
-At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected. We do not assume that VE for susceptibility varies by age, and also do not model vaccine efficacy for infectiousness or recovery due to the limited extent of the data. To account for the time required to elicit an immune response, we apply the deterministic forcing at the beginning of week after the time when each dose count was indexed. Thus, suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell), I_j^{(u)}(t_\ell), R_j^{(u)}(t_\ell)\right ) $ unvaccinated susceptible, infected, and recovered individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell), I_j^{(v)}(t_\ell), R_j^{(v)}(t_\ell)\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
+At weekly intervals, we deterministically force individuals from unvaccinated model compartments to the corresponding vaccinated compartments. Following \cite{shubin2016revealing}, we assume that vaccine doses were distributed proportionally to the number of individuals in each unvaccinated compartment of the corresponding age stratum. In \cite{shubin2016revealing}, it was assumed that vaccination was fully protective with 80\% probability two weeks after administration. Here, we will assume that the vaccine is partially protective in that it reduces the rate at which vaccinated individuals become infected. We do not assume that VE for susceptibility varies by age, and also do not model vaccine efficacy for infectiousness or recovery due to the limited extent of the data. To account for the time required to elicit an immune response, we apply the deterministic forcing at the beginning of week after the time when each dose count was indexed. Suppose that at the end of week $ \ell $ we have $ \bX_j^{(u)}(t_\ell) = \left (S_j^{(u)}(t_\ell),\ I_j^{(u)}(t_\ell),\ R_j^{(u)}(t_\ell),\ D_j^{(u)}(t_\ell)\right ) $ unvaccinated susceptible, infected, recovered, and detached individuals in age stratum $ j $ and $ \bX_j^{(v)}(t_\ell) = \left (S_j^{(v)}(t_\ell),\ I_j^{(v)}(t_\ell),\ R_j^{(v)}(t_\ell),\ D_j^{(v)}(t_\ell\right ) $ vaccinated individuals, and that $ V_j(t_\ell) $ vaccine doses were recorded for stratum $ j $ in that week. We apply the vaccine forcing to the initial state for the following week: 
 \begin{align}
 \label{eqn:vacc_forcing}
 \begin{split}
@@ -164,7 +169,7 @@ At weekly intervals, we deterministically force individuals from unvaccinated mo
 \end{align}
 Thus, the vaccination forcing affects the initial condition for the period $ (t_\ell,t_{\ell+1}] $, not the state at time $ t_\ell $. 
 
-The diffusion approximation for the MJP is a real--valued process, $ \bX $, that in its infinite population limit evolves as a deterministic system of ODEs. The state space of $ \bX $ is defined in terms of compartment volumes, $ \mcS_X^R $, and with corresponding cumulative incidence process, $ \bN $, with state space $ \mcS_N^R $. Note that the boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $, and similarly of $ \bX $ and $ \bN $, ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{Y}^{(u)}(t) + I_{Y}^{(u)}(t) + R_{Y}^{(u)}(t) = N_{Y}^{(u)}(t) $. Due to the complexity of the model, we will rely on the deterministic ODE framework that was explored as a comparitor for the LNA in Chapter \ref{chap:lna_for_sems} to facilitate the computation \ref{chap:lna_for_sems}.  
+The diffusion approximation for the MJP is a real--valued process, $ \bX $, that in its infinite population limit evolves as a deterministic system of ODEs. The state space of $ \bX $ is defined in terms of compartment volumes, $ \mcS_X^R $, and with corresponding cumulative incidence process, $ \bN $, with state space $ \mcS_N^R $. Note that the boundary conditions on the state spaces of $ \bX^c $ and $ \bN^c $, and similarly of $ \bX $ and $ \bN $, ensure positivity of compartment counts and monotonicity of cumulative incidence paths, and that the compartment counts each age--vaccination stratum sum to the number of individuals in that stratum, e.g., $ S_{Y}^{(u)}(t) + I_{Y}^{(u)}(t) + R_{Y}^{(u)}(t)+ D_{Y}^{(u)}(t) = N_{Y}^{(u)}(t) $. Due to the complexity of the model, we will rely on the deterministic ODE framework that was explored as a comparitor for the LNA in Chapter \ref{chap:lna_for_sems} to facilitate the computation \ref{chap:lna_for_sems}.  
 
 %As in Chapter \ref{chap:lna_for_sems}, we will use the non--centered parameterization of the restarting LNA of the log--transformed SDE to approximate the time--evolution of $ \bX^c $ and $ \bN^c $. Algorithm \ref{alg:doLNA2} details the procedure for mapping standard normal LNA draws onto an LNA sample path with vaccination forcings.
 
@@ -194,75 +199,82 @@ The basic reproduction number is
 R_0 = \frac{1}{2}\left (K_{YY} + K_{AA}\right ) + \frac{1}{2}\sqrt{(K_{YY} - K_{AA})^2 + 4K_{YA}K_{AY}}.
 \end{align}
 
-There are a few aspects of this expression that we should highlight. First, it is possible for the outbreak to persist, i.e., $ R_0 > 1 $, even when the intrinsic reproduction number in one of the strata is below 1, e.g., $ K_{YY} <1$. However, a critical aspect of the contact structure is that most of the infectious contacts for each group are within--group contacts ($ C_{YY} = 0.6 $, $ C_{AA}=0.85 $). Therefore, the persistence of an outbreak in both strata suggests that $ K_{11} $ and $ K_{22} $ should not be much less than one. If not, then persistence of the outbreak in the stratum where transmission is not self--sustained implies that either its rate of infectious contact from outside the population is high ($ \alpha_j(t)N_j \gg  1$), and/or that the intrinsic reproduction number in the other stratum is high. This latter possibility could be particularly problematic since it might imply unreasonably high attack rates in the other stratum.
+Note that is possible for the outbreak to persist, i.e., $ R_0 > 1 $,  when the intrinsic reproduction number in one of the strata is below 1, e.g., $ K_{YY} <1$, even though most transmission arises from within--group contacts. However, $ R_0 <$ will be less than 1 if both $ K_{YY} <1 $ and $ K_{AA} <1 $.
 
-We also note that the basic reproduction number is greater than the average of intrinsic reproduction numbers, $ K_{YY} $ and $ K_{AA} $, since the second term on the right hand side of (\ref{eqn:sirs_R0}) will typically be positive. Similarly, the variance of $ R_0 $ is also greater than the average of variances of $ K_{YY} $ and $ K_{AA} $. For these reasons, we should consider how $ K_{YY} $ and $ K_{AA} $ interact to a prior over $ R_0 $ when parameterizing the model. Note that if the cross--stratum contact rates were negligible, $ R_0 $ would behave like the average of intrinsic reproduction numbers plus a term proportional to the absolute difference between $ K_{YY} $ and $ K_{AA} $. This suggests that prior information about the intrinsic reproduction numbers, either individually (our preference) or about their average and difference, could help identify $ R_0 $. We should also keep in mind that our model is more complicated since the cross stratum terms are not negligible ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $), hence
+Furthermore, the basic reproduction number is greater than the average of intrinsic reproduction numbers, $ K_{YY} $ and $ K_{AA} $, since the second term on the right hand side of (\ref{eqn:sirs_R0}) will typically be positive. Similarly, the variance of $ R_0 $ is also greater than the average of variances of $ K_{YY} $ and $ K_{AA} $. For these reasons, we should consider how $ K_{YY} $ and $ K_{AA} $ interact to induce a prior over $ R_0 $ when parameterizing the model. Note that if the cross--stratum contact rates were negligible, $ R_0 $ would behave like the average of intrinsic reproduction numbers plus a term proportional to the absolute difference between $ K_{YY} $ and $ K_{AA} $. This suggests that prior information about the intrinsic reproduction numbers, either individually (our preference) or about their average and difference, could help identify $ R_0 $. We should also keep in mind that our model is more complicated since the cross stratum terms are not negligible ($ C_{AA} = 0.6 $, $ C_{YY}=0.85 $), hence
 \begin{align*}
 K_{YA} &= \frac{(1 - C_{YY})}{C_{YY}}\frac{\mu_Y}{\mu_A}K_{YY},\hspace{0.25in}
 K_{AY} = \frac{(1 - C_{AA})}{C_{AA}}\frac{\mu_A}{\mu_Y}K_{AA},\\
 &\implies K_{YA}K_{AY} = \frac{(1 - C_{YY})(1-C_{AA})}{C_{YY}C_{AA}}K_{YY}K_{AA}.
 \end{align*} 
-Thus, $ R_0 $ behaves like the average of intrinsic reproduction numbers plus a term that is non--linear in $ K_{11} $ and $ K_{22} $.
+Thus, $ R_0 $ is the average of $ K_{YY} $ and $ K_{AA} $, plus a non--linear function of $ K_{YY} $ and $ K_{AA} $.
 
 Finally we emphasize the importance of accounting for all of the parameters that contribute the intrinsic reproduction numbers, and by extension $ R_0 $, when specifying priors and parameterizing the estimation scale of the MCMC. In particular, it is critical to note that the effective population size might be lower than the nominal population size because of vaccination and depletion of susceptibles. We can easily misspecify the scales of prior distributions for the reproduction numbers, or select an inefficient parameterization for the MCMC estimation scale, by neglecting this dynamic. In our model, for example, the value of $ R_0 $ in the first season, and the rate at which recovered individuals lose immunity, will affect the effective population size at the beginning of the second season. 
 
 \subsection{Flexible Models for the Force of Infection with Gaussian Markov Random Fields}
 \label{subsec:flu_gmrf}
 
-We will model the time--varying force of infection using first order GMRFs (random walk of order 1; RW1) for the log intrinsic reproduction numbers and the effective rate of exogenous infectious contacts in each age stratum. The GMRFs are separately specified over three epochs corresponding to the period one month before the first detected case until the start of the Finnish school year in 2009, the beginning of the Finnish school year in 2009 until its start in 2010 (including the inter--season period), and the second epidemic season beginning at the start of the Finnish school year, 2010. These epochs correspond to epiweeks 15, 2009 through epiweek 33, 2009, epiweek 34, 2009 through epiweek 32, 2010, and epiweek 33, 2010 through epiweek 22, 2011. We will assume that the intrinsic reproduction numbers are homogeneous over the inter--season period, from epiweek 16, 2010 -- epiweek 32, 2010.
+We will model the time--varying force of infection using first order GMRFs for the log intrinsic reproduction numbers and the effective rate of exogenous infectious contacts in each age stratum. The GMRFs are separately specified over three epochs corresponding to the period one month before the first detected case until the start of the Finnish school year in 2009, the beginning of the Finnish school year in 2009 until its start in 2010 (including the inter--season period), and the second epidemic season beginning at the start of the Finnish school year, 2010. These epochs correspond to epiweeks 15, 2009 through epiweek 34, 2009, epiweek 35, 2009 through epiweek 32, 2010, and epiweek 33, 2010 through epiweek 22, 2011. We will assume that the intrinsic reproduction numbers are homogeneous over the inter--season period, from epiweek 16, 2010 -- epiweek 32, 2010.
 
-The GMRF is parameterized on the log scale using a state--space formulation defined by the initial value and first order differences. Let $ \bpsi_{j} = \lbrace\psi_{j,\ell}:\ \ell \in 0,\dots,52,71,\dots,112\rbrace $ be the vector of intrinsic reproduction numbers, ignoring relative contact rates, for stratum $ j \in \lbrace Y,A \rbrace$, and where time is indexed from epiweek 15, 2009. Let $ \bP^v_j = \left (P^v_j(t_1),\dots,P^v_j(t_L)\right )$ denote the vector of vaccine coverage rates for stratum $ j $. Absent vaccination,
+Let $ \bpsi_{j} = \lbrace\psi_{j,\ell}:\ \ell \in 0,\dots,52,71,\dots,112\rbrace $ be the vector of intrinsic reproduction numbers for stratum $ j \in \lbrace Y,A \rbrace$, ignoring the relative contact rates, $ C_{jk} $, and vaccination. The reproduction number in time interval $ \ell $, indexed in weeks from epiweek 15, 2009, is
 \begin{equation}
 \label{eqn:R0t_novacc}
-\psi^\prime_{j,\ell} = \frac{\beta_j(t_\ell)N_j}{\mu_j},
+\psi_{j,\ell} = \frac{\beta_j(t_\ell)N_js_j}{\mu_j},
 \end{equation}
-where $ \beta(t_\ell) $ is the time--varying rate of infection rate per--endogenous contact, $ \mu_j$ is the recovery rate at week $ \ell $ (season--specific), and $ N_{j} $ is the number of individuals in age stratum $ j $. Accounting for vaccination, 
+where $ \beta_j(t_\ell) $ is the per--contact infection rate, $ \mu_j $ is the recovery rate, $ N_j $ is the size of the age stratum, and $ s_j $ is the fraction of individuals in stratum $ j $ that are susceptible.
+ 
+When transmission is sustained at near--endemic levels, we should expect that the effective reproduction numbers are near one, or perhaps slightly above. Let $ \nu $ be the relative rate of infectious contact among vaccinated individuals, i.e., one minus the vaccine efficacy for susceptibility. The effective reproduction number, which accounts for the effects of vaccination and depletion of susceptibles, is 
 \begin{equation}
-\label{eqn:R0t_vacc}
-\psi_{j,\ell} = \frac{\beta_j(t_\ell)N_j\left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\nu_j\right )}{\mu_j}
+\label{eqn:Reff_t}
+\psi_{j,\ell}^{eff} = \frac{\beta_j(t_\ell)_j\left (S^{(u)}_j(t_\ell) + S^{(v)}_j(t_\ell)\nu\right )}{\mu_j}
 \end{equation}
-Note that $ \psi_{j,\ell}^\prime = \bpsi_{j,\ell} / \left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\right ) $. In order to capture the time--varying aspects of the force of infection that are not due to changes in vaccination, we will parameterize the GMRF for the force of infection using (\ref{eqn:R0t_novacc}). However, when we back out the time--varying rates of infectious contact, we need to account for the effects of vaccination that appear in (\ref{eqn:R0t_vacc}). Thus, $ \bpsi_j^\prime\sim \mr{GMRF}(\btheta) \implies\bpsi_j / (1 - \bP^v_j + \bP^v_j\nu_j) \sim \mr{GMRF}(\btheta). $
+If vaccination does not increase the rate of infectious contact (and we will assume it does not), then $ \psi_{j,\ell}^{eff} < \psi_{j,\ell} $ since $ \nu\in[0,1] $ and $ (S^{(u)}_j(t_\ell) + S^{(v)}_j(t_\ell) < N_js_j $. It is critical to account for this when specifying priors for the basic intrinsic reproduction numbers at the start of each epoch. It would not do, for instance, to set priors for the intrinsic basic reproduction numbers at the beginning of the third epoch that nominally concentrate mass near one since this would imply that the effective reproduction numbers are far below one due to vaccination and depletion of susceptibles during the first wave of the outbreak. Our approach will be to assign priors to the vaccination adjusted intrinsic reproduction numbers at the beginning of each epoch, $ \psi_{j,\ell}^\prime = \psi_{j,\ell}  \left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\right ) $, where $ P_j^v(t_\ell) $ is the vaccination coverage in stratum $ j $ at $ t_\ell $. 
 
-We denote by $ \Delta $ the first--order forward difference operator, i.e., $ \Delta X_j = X_{j+1} - X_j $. The first--order differences of the log intrinsic reproduction numbers for stratum $ j $ in each season are assigned a Gaussian prior with mean zero and variance $ \sigma^2_{j,\ell} $. We assign Gaussian priors to the initial intrinsic reproduction numbers at the beginning of each season and to the log standard deviation of the log differences in each season. The sub--model for intrinsic reproduction numbers in stratum $ j $ is
+We denote by $ \Delta $ the first--order forward difference operator, i.e., $ \Delta X_j = X_{j+1} - X_j $. The first--order differences of the log intrinsic reproduction numbers for stratum $ j $ in each epoch are assigned a Gaussian prior with mean zero and variance $ \sigma^2_{j,\ell} $. The sub--model for intrinsic reproduction numbers in stratum $ j $ is
+
 \begin{small}
 	\begin{align}
-	\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
-	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,18,71, \nonumber\\
-	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ &\ell=0,\dots,16, \nonumber\\
-	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,18}),&\ &\ell=18,\dots,51, \nonumber\\
+	\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
+	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,19,71, \nonumber\\
+	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ &\ell=0,\dots,17, \nonumber\\
+	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,19}),&\ &\ell=19,\dots,51, \nonumber\\
 	\Delta\log(\psi_{j,\ell})&\sim \mcN(0, \sigma^2_{j,71}),&\ &\ell=71,\dots,111, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
-	\log(\psi_{j,\ell}) &= \log(\psi_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
+	\log(\psi_{j,\ell}) &= \log(\psi_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
 	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
 	\end{align}
 \end{small}
+
+The induced GMRF prior for the vaccination adjusted basic reproduction numbers is given in Figure \ref{fig:flurw1prior}. 
+
 In practice, we will use the following partially non--centered parameterization:
 \begin{small}
 	\begin{align}
-	\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
-	Z_{\log(\sigma_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,18,71, \nonumber \\
-	Z_{\Delta\log(\psi_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,\dots,16,18,\dots,51,71,\dots,111, \nonumber \\ 
-	\log(\sigma_{j,\ell}) &= m_{j,\ell} + s_{j,\ell}Z_{\log(\sigma_{j,\ell})},&\ &\ell = 0,18,71,\nonumber\\
-	\Delta\log(\psi_{j,\ell})&= \sigma_{j,0} Z_{\Delta\log(\psi_{j,\ell})},&\ &\ell=0,\dots,16, \nonumber\\
-	\Delta\log(\psi_{j,\ell})&= \sigma_{j,18} Z_{\Delta\log(\psi_{j,\ell})},&\ &\ell=18,\dots,51, \nonumber\\
+	\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
+	Z_{\log(\sigma_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,19,71, \nonumber \\
+	Z_{\Delta\log(\psi_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,\dots,17,19,\dots,51,71,\dots,111, \nonumber \\ 
+	\log(\sigma_{j,\ell}) &= m_{j,\ell} + s_{j,\ell}Z_{\log(\sigma_{j,\ell})},&\ &\ell = 0,19,71,\nonumber\\
+	\Delta\log(\psi_{j,\ell})&= \sigma_{j,0} Z_{\Delta\log(\psi_{j,\ell})},&\ &\ell=0,\dots,17, \nonumber\\
+	\Delta\log(\psi_{j,\ell})&= \sigma_{j,19} Z_{\Delta\log(\psi_{j,\ell})},&\ &\ell=19,\dots,51, \nonumber\\
 	\Delta\log(\psi_{j,\ell})&= \sigma_{j,71} Z_{\Delta\log(\psi_{j,\ell})},&\ &\ell=71,\dots,111, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
-	\log(\psi_{j,\ell}) &= \log(\psi_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
+	\log(\psi_{j,\ell}) &= \log(\psi_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
 	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
 	\end{align}
 \end{small}
-We similarly assign a first order random walk prior to the effective number of exogenous infectious contacts for each age stratum. Note that this term is somewhat of a catch--all for infectious contacts that arise outside of the density dependent mixing of susceptible and infected individuals. The rate of exogenous infection may be loosely interpreted as either the baseline rate of infectious contact or as the rate of infection from outside the population. Let $ \alpha^\prime_{j,\ell} = \alpha_{j,\ell}N $ denote the rate of exogenous infection for age stratum $ j $ in week $ \ell $, scaled by the population size. The GMRF prior for $ \balpha^\prime_j = \lbrace\alpha^\prime_{j,\ell}:\ \ell=0,\dots,52,71,\dots,112\rbrace $ is
+
+We similarly assign a first order GMRF prior to the effective number of exogenous infectious contacts for each age stratum. Note that this term is somewhat of a catch--all for infectious contacts that arise outside of the density dependent mixing of susceptible and infected individuals. The rate of exogenous infection may be loosely interpreted as either the baseline rate of infectious contact or as the rate of infection from outside the population. Let $ \alpha^\prime_{j,\ell} = \alpha_{j,\ell}N_js_j $ denote the rate of exogenous infection for age stratum $ j $ in week $ \ell $, scaled by the effective stratum size. The GMRF prior for $ \balpha^\prime_j = \lbrace\alpha^\prime_{j,\ell}:\ \ell=0,\dots,52,71,\dots,112\rbrace $ is
 \begin{small}
 	\begin{align}
-	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
-	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,18,71, \nonumber\\
-	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ &\ell=0,\dots,16, \nonumber\\
-	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,18}),&\ &\ell=18,\dots,51, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
+	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,19,71, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,0}),&\ &\ell=0,\dots,17, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,19}),&\ &\ell=19,\dots,51, \nonumber\\
 	\Delta\log(\alpha^\prime_{j,\ell})&\sim \mcN(0, \sigma^2_{j,71}),&\ &\ell=71,\dots,111, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
-	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
 	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/N,&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
 	\end{align}
@@ -271,15 +283,15 @@ We similarly assign a first order random walk prior to the effective number of e
 Again, we will use a partially non--centered parameterization in practice.
 \begin{small}
 	\begin{align}
-	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,18,71, \nonumber\\
-	Z_{\log(\sigma_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,18,71, \nonumber \\
-	Z_{\Delta\log(\alpha^\prime_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,\dots,16,18,\dots,51,71,\dots,111, \nonumber \\ 
-	\log(\sigma_{j,\ell}) &= m_{j,\ell} + s_{j,\ell}Z_{\log(\sigma_{j,\ell})},&\ &\ell = 0,18,71,\nonumber\\
-	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,0} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=0,\dots,16, \nonumber\\
-	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,18} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=18,\dots,51, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
+	Z_{\log(\sigma_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,19,71, \nonumber \\
+	Z_{\Delta\log(\alpha^\prime_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,\dots,17,19,\dots,51,71,\dots,111, \nonumber \\ 
+	\log(\sigma_{j,\ell}) &= m_{j,\ell} + s_{j,\ell}Z_{\log(\sigma_{j,\ell})},&\ &\ell = 0,19,71,\nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,0} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=0,\dots,17, \nonumber\\
+	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,19} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=19,\dots,51, \nonumber\\
 	\Delta\log(\alpha^\prime_{j,\ell})&= \sigma_{j,71} Z_{\Delta\log(\alpha^\prime_{j,\ell})},&\ &\ell=71,\dots,111, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
-	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,18}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,18+k}),&\ &\ell = 19,\dots,52, \nonumber\\
+	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
 	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/N,&\ &\ell=0,\dots,52,71,\dots,112 \nonumber
 	\end{align}
@@ -289,7 +301,7 @@ The initial reproduction numbers, for which we retain the centered parameterizat
 %jointly with the LNA path 
 using elliptical slice sampling (Algorithm \ref{alg:elliptical_slice_sampler}).
 %(Algorithm \ref{alg:elliptss_lna_gmrf}). 
-Readers familiar with GMRFs will note the, somewhat unconventional, Gaussian prior for the standard deviation of the random walk increments. This choice was made for computational reasons in order to facilitate joint updates of the GMRF and its hyper--parameters. Alternating between field and hyper--parameter updates is known to results in poorly mixing MCMC chains as large updates to the hyper--parameters quickly result in fields that are not concordant with the data  \cite{knorr2002block,murray2010hyper}. 
+Readers familiar with GMRFs will note the, somewhat unconventional, Gaussian prior for the standard deviation of the GMRF increments. This choice was made for computational reasons in order to facilitate joint updates of the GMRF and its hyper--parameters. Alternating between field and hyper--parameter updates is known to results in poorly mixing MCMC chains as large updates to the hyper--parameters quickly result in fields that are not concordant with the data  \cite{knorr2002block,murray2010hyper}. 
 
 \subsection{Sampling from the Posterior}
 \label{subsec:flu_mcmc}
@@ -315,7 +327,7 @@ MCMC proceeds by alternately updating $ \bZ|\bY,\btheta $ using ElliptSS (Algori
 
 \subsection{Incidence}
 \label{subsec:flu_incid_res}
-Estimates of cumulative incidence and attack rates by season and age group are reported in Table \ref{tab:flu_attack_rates}. The pandemic severity appears to be belied by the relatively low levels of mild cases that were detected by the surveillance system. We estimate that there were approximately 1.1 million (95\% BCI: 768,000, 1,540,000) infections in the first epidemic season, and an additional 810,000 (95\% BCI: 619,000, 1,050,000) cases during the second season. These estimates correspond to estimated attack rates of 14.3\%--28.7\% during the first season, and 11.6\%--19.5\% in the second season, assuming that each individual was infected only once. The estimated attack rates were substantially higher among youths than adults in the first epidemic season, but somewhat lower during the second season. The estimated incidence over the inter--season period was low; 17 cases (95\% BCI: 8, 37) among youths, and 87 cases (95\% BCI: 35, 222) among adults. 
+Estimates of cumulative incidence and attack rates by season and age group are reported in Table \ref{tab:flu_attack_rates}. We estimate that there were approximately 532,000 (95\% BCI: 393,000, 703,000) infections in the first epidemic season, and an additional 240,000 (95\% BCI: 172,000, 333,000) cases during the second season. These estimates would correspond to estimated attack rates of 7.4\%--13.1\% during the first season, and 3.2\%--6.2\% in the second season if each individual was infected only once. The estimated attack rates were substantially higher among youths than adults in the first epidemic season, and slightly higher during the second season. The estimated incidence over the inter--season period was low; 110 cases (95\% BCI: 50, 250) among youths, and 330 cases (95\% BCI: 150, 710) among adults. 
 
 \begin{sidewaystable}[htbp]
 	\caption{Estimated infections (thousands) and attack rates by season and age stratum. Attack rates are calculated as the number of infections divided by the size of each stratum, assuming that cases are unique.}
@@ -348,11 +360,11 @@ Estimates of cumulative incidence and attack rates by season and age group are r
 
 \subsection{Transmission Dynamics}
 \label{flu_res_dynamics}
-Estimates of time varying reproduction numbers and exogenous infections are shown in Figure \ref{fig:flurwodetimevaryingplots} and estimates of model parameters are given in Table \ref{tab:flu_param_ests}. The period just prior to the first detected cases until the start of the Finnish school year in 2009 was characterized by low basic and effective reproduction numbers, and elevated rates of exogenous infectious contact in the adult population, suggesting that transmission during this period had not yet accelerated to the point where it could be well characterized by homogeneous mixing of infected individuals within the population. The basic reproduction number at the beginning of this period was 1.1 (95\% BCI: 1.0, 1.2), and appeared to decrease very slightly after the initial false start to the outbreak in the summer of 2009 (third row of Figure \ref{fig:flurwodetimevaryingplots}). 
+Estimates of time varying reproduction numbers and exogenous infections are shown in Figure \ref{fig:flurwodetimevaryingplots} and estimates of model parameters are given in Table \ref{tab:flu_param_ests}. The period just prior to the first detected cases until the start of the Finnish school year in 2009 was characterized by low basic and effective reproduction numbers. The basic reproduction numbers over this period remained at near--endemic levels (95\% BCI: 0.99, 1.00; second and third rows of Figure \ref{fig:flurwodetimevaryingplots}). 
 
 The basic reproduction numbers from the start of the Finnish school year through the peak of the first wave of the outbreak were somewhat higher at around 1.2 (95\% BCI: 1.1, 1.3), increased slightly as the epidemic peaked, but declined below one in early December, 2009, as a result in vaccination. Incidence began to decline, starting in mid--November, preceding the drop in basic reproduction numbers due to vaccination by several weeks, and well before vaccine coverage had reached meaningful levels. The effective reproduction numbers declined throughout the first wave, indicating that the slight increases in rates of infectious contact overwhelmed by depletion of susceptibles.
 
-The vaccination--adjusted basic reproduction numbers at the start of the second season, roughly 1.4 (95\% BCI: 1.3, 1.6), were nominally higher than the estimated reproduction numbers in the first season. However, these estimates do not account for depletion of susceptibles in the first wave of the outbreak. Effective reproduction numbers at the beginning of second epidemic wave were roughly 1.16 (95\% BCI: 1.10, 1.23), were comparable to effective reproduction numbers during the first wave. Without adjusting for vaccination, the basic reproduction numbers would be in the range of 2.4--4, which is similar to results in \cite{shubin2016revealing}. Hence, accounting for vaccination and depletion of susceptibles brings the adjusted reproduction numbers into the range that is more similar to previous estimates for A(H1N1)pdm09 outbreaks \cite{biggerstaff2014estimates}. 
+The vaccination--adjusted basic reproduction numbers at the start of the second season, roughly 1.4 (95\% BCI: 1.3, 1.6), were nominally higher than at the start of the first season. However, these estimates do not account for depletion of susceptibles in the first wave of the outbreak. Effective reproduction numbers at the beginning of second epidemic wave were roughly 1.16 (95\% BCI: 1.10, 1.23), were comparable to effective reproduction numbers during the first wave. Without adjusting for vaccination, the basic reproduction numbers would be in the range of 2.4--4, which is similar to results in \cite{shubin2016revealing}. Accounting for vaccination and depletion of susceptibles brings the adjusted reproduction numbers into the range that is more similar to previous estimates for A(H1N1)pdm09 outbreaks \cite{biggerstaff2014estimates}. 
 
 Figure \ref{fig:flurwodetimevaryingplots} presents the effective and vaccine adjusted type reproduction numbers for the 0--19 and 20+ age strata, which are interpreted as the expected number of secondary cases of any age caused by a single index case in a given age stratum. The type reproduction numbers are the column sums of the basic (vaccine adjusted) and effective NGMs. Note that this definition differs from the definition of type reproduction number in \cite{heesterbeek2007type}, which is the expected number of secondary cases of a particular type given an index case of that type. At the beginning of the first epidemic wave (epiweek 34, 2009), an index youth case was estimated to result in 1.3 (95\% BCI: 1.0, 1.6) secondary cases, while an index adult would result in 1.15 (95\% BCI: 1.0, 1.3) secondary cases. The contribution of youths to the FOI declined dramatically in the second season, while the contribution of adults was roughly the same. At the start of the second season, an index youth case was estimated to lead to 1.0 (95\% BCI: 0.8, 1.25) secondary cases, while an index adult case to 1.2 (1.0, 1.3) secondary cases. The change in the role contribution of youths in the second season can be attributed to the depletion of susceptible youths in the first season due to vaccination and high attack rates in that season. The effective type reproduction numbers in both age strata decline throughout the first wave, while in the second season they increase slightly before again declining as susceptibles deplete. The slight uptick in effective type reproduction numbers at the end of the second season is attributable to loss of immunity among previously infected individuals.  
 

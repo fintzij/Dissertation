@@ -17,8 +17,6 @@ where $ Z_t \sim N(0,1)$. The per--contact infection rates were then obtained as
 Y_\ell \sim \mr{Neg.Binom.}\left (\mu  = \rho(N_{SI}(t_\ell) - N_{SI}(t_{\ell-1})), \sigma^2 = \mu(1 + \mu /\phi) \right ).
 \end{equation}
 
-We fit two models, one where the force of infection was constant over the course of the outbreak and another where the rates of infectious contact were time varying, with log--differences in the basic reproduction numbers penalized using a first order Gaussian Markov random field (GMRF) shrinkage prior where the standard deviation of the log--differences is given by $ \sigma_{RW1} $ (analogous to the models in Section \ref{sec:flu_tparam_models}). We employed non--centered parameterizations for both the LNA and the GMRF. The models were fit under informative priors, summarized in Table \ref{tab:tparam_sim_priors}. We ran five MCMC chains per model for 100,000 iterations per chain, alternating between five elliptical slice sampling (EllipSS) updates and one multivariate normal slice sampling (MVNSS) updates per MCMC iteration. The estimation scale on which the MCMC explored the parameter space was given by $\lbrace \log(R0(t_0)), \log(1/mu), \logit(\rho), 1/\sqrt(\phi) \rbrace$. The MVNSS proposal covariance matrix was adapted throughout the first 50,000 iterations, samples from which were subsequently discarded, using the gain factor sequence: the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.99}$. The contribution of isotropic Gaussian noise to the MVNSS proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}.
-
 \begin{table}[htbp]
 	\caption[Parameters and priors for models fit two SIRS models to data from a simulated outbreak with sinusoidal FOI.]{Parameters and priors used in fitting two SIRS models, one with constant FOI and another with time--varying FOI, to data from an outbreak with SIRS dynamics where the per--contact infection rate varied sinusoidally over time.}
 	\label{tab:tparam_sim_priors}
@@ -26,13 +24,15 @@ We fit two models, one where the force of infection was constant over the course
 	\begin{tabular}{clllr}
 		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Truth} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
-		$ R0-1 $ & Basic reproduction \#-1 & (\ref{eqn:sinfoi_true_R0t}) & LogNormal(0, 0.5) & $ \implies R0(t_0) = $ 2.00 (1.14, 8.10) \\ 
+		$ R0-1 $ & Basic reproduction \#-1 & Eqn. \ref{eqn:sinfoi_true_R0t} & LogNormal(0, 0.5) & $ \implies R0(t_0) = $ 2.00 (1.14, 8.10) \\ 
 		$ 1/\mu $ & Mean infectious period & 1&  LogNormal(0.05, 0.5)& 1.05 (0.39, 2.80) \\
 		$ \rho/(1-\rho)  $ & Odds of case detection  &0.25&  LogNormal(-0.847, 0.5) & $ \implies \rho =$ 0.3 (0.14, 0.53) \\
 		$ 1/\sqrt{\phi} $ & Neg.Binom. overdispersion & 50 & Exponential(5)& $ \implies \phi = 52 (1.84, 39000) $.  \\
 		\hline
 	\end{tabular}
 \end{table}
+
+We fit two models, one where the force of infection was constant over the course of the outbreak and another where the rates of infectious contact were time varying, with log--differences in the basic reproduction numbers penalized using a first order Gaussian Markov random field (GMRF) shrinkage prior where the standard deviation of the log--differences is given by $ \sigma_{RW1} $ (analogous to the models in Section \ref{sec:flu_tparam_models}). We employed non--centered parameterizations for both the LNA and the GMRF. The models were fit under informative priors, summarized in Table \ref{tab:tparam_sim_priors}. We ran five MCMC chains per model for 100,000 iterations per chain, alternating between five elliptical slice sampling (EllipSS) updates and one multivariate normal slice sampling (MVNSS) updates per MCMC iteration. The estimation scale on which the MCMC explored the parameter space was given by $\lbrace \log(R0(t_0)), \log(1/mu), \logit(\rho), 1/\sqrt(\phi) \rbrace$. The MVNSS proposal covariance matrix was adapted throughout the first 50,000 iterations, samples from which were subsequently discarded, using the gain factor sequence: the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.99}$. The contribution of isotropic Gaussian noise to the MVNSS proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}.
 
 \newpage
 \subsection{Additional results}
@@ -190,7 +190,7 @@ We fit age--vaccination stratified SIRS ODE models with time varying dynamics to
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{figures/flu_RW1_prior}
-	\caption{Prior distribution of GMRF paths for vaccination adjusted intrinsic basic reproduction numbers A(H1N1)pdm09 influenza in Finland.}
+	\caption{Induced prior distribution of for vaccination adjusted basic reproduction numbers A(H1N1)pdm09 influenza in Finland.}
 	\label{fig:flurw1prior}
 \end{figure}
 
@@ -234,3 +234,6 @@ We fit age--vaccination stratified SIRS ODE models with time varying dynamics to
 	\caption{Histograms and pairwise scatterplots of posterior samples for the parameters of a stratified SIRS ODE model with piecewise homogeneous dynamics that were sampled via MVNSS. The model was fit to data from the A(H1N1) influenza pandemic in Finland.}
 	\label{fig:fluconstpairs}
 \end{sidewaysfigure}
+
+\subsection{Sensitivity to Distribution of Initial Numbers of Susceptibles}
+\label{subsec:flu_highsusc_sensitivity}

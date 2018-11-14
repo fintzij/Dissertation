@@ -159,12 +159,12 @@ Approximating the transition densities of $ \bN $ using the LNA, (\ref{eqn:lna_t
 \pi(\bNtil,\btheta|\bY) &\propto L(\bY|\bNtil,\btheta)\ind{\bN\in\mcS_N^R}\ind{\bX\in\mcS_X^R}\pi(\bNtil|\btheta)\pi(\btheta) \nonumber\\
 &= \prod_{\ell=1}^{L}\Pr(Y_\ell|\Delta\bNtil(t_\ell),\btheta)\ind{\bN(t_\ell)\in\mcS_N^R}\ind{\bX(t_\ell)\in\mcS_X^R}\pi(\bNtil(t_\ell)|\bntil(t_{\ell-1}),\bx(t_{\ell-1}),\btheta)\pi(\btheta).
 \end{align}
-Note that the emission probabilities in (\ref{eqn:lna_approximate_posterior}) depend on the incidence, not the log--incidence, but that this just requires a simple reparameterization of the emission distribution. In our example, the observed incidence is a negative binomial sample of the true incidence. We also explicitly include indicators for whether the LNA path respects the positivity and monotonicity constraints of the original MJP. We do this for two reasons: We wish to more faithfully approximate the MJP. We also wish to avoid numerical instabilities that arise when $ \bN $ or $ \bX $ become negative and that can cause routines for numerically integrating the LNA ODEs to fail. 
+The emission probabilities in (\ref{eqn:lna_approximate_posterior}) depend on the incidence, not the log--incidence. Hence, we exponentiate LNA paths when computing emission probabilities. We also explicitly include indicators for whether the LNA path respects the positivity and monotonicity constraints of the original MJP. We do this for two reasons: We wish to more faithfully approximate the MJP. We also wish to avoid numerical instabilities that arise when $ \bN $ or $ \bX $ become negative and that can cause routines for numerically integrating the LNA ODEs to fail. 
 
 \subsection{Inference via the Linear Noise Approximation}
 \label{subsec:lna_inference}
 
-To this point, we have discussed how to approximate transition densities of a MJP via the LNA. However, this is only half the battle since we must also address the computational aspects of sampling from the augmented approximate posterior, (\ref{eqn:lna_approximate_posterior}). A central computation challenge that plagues DA MCMC is that MCMC chains may suffer from severe autocorrelation when the algorithm alternately updates the latent variables given the parameters, and parameters given the latent variables, see e.g., \cite{bernardo2003non,papaspiliopoulos2003noncentered,papaspiliopoulos2007general,yu2011center}. As we can see in Figure, a DA MCMC algorithm that alternates between updates LNA paths and model parameters is no exception.
+To this point, we have discussed how to approximate transition densities of a MJP via the LNA. However, this is only half the battle since we must also address the computational aspects of sampling from the augmented approximate posterior, (\ref{eqn:lna_approximate_posterior}). A central computation challenge that plagues DA MCMC is that MCMC chains may suffer from severe autocorrelation when the algorithm alternately updates the latent variables given the parameters, and parameters given the latent variables, see e.g., \cite{bernardo2003non,papaspiliopoulos2003noncentered,papaspiliopoulos2007general,yu2011center}. As we can see in Figure, a DA MCMC algorithm that alternates between updates to LNA paths and model parameters is no exception.
 
 \begin{figure}[!ht]
 \centering
@@ -223,7 +223,7 @@ In each iteration of a DA MCMC algorithm, we alternate between updates to the la
 	\label{fig:lna_sampling_diagram}
 \end{figure}
 
-The NCP of the LNA also plays an important role in facilitating efficient updates of $ \bZ|\btheta,\bY $ via the elliptical slice sampling (ElliptSS) algorithm of \cite{murray2010}, which was detailed in Section \ref{subsubsec:elliptical_slice_sampling} and is presented in Algorithm \ref{alg:elliptss_lna}. ElliptSS is an efficient and easy to implement MCMC algorithm for sampling latent Gaussian random variables, $ \bZ $, in models where the posterior of can be decomposed as the Gaussian prior for $ \bZ $ and an arbitrary likelihood, $ L(\bY|\bZ,\btheta) $, i.e.,
+The NCP of the LNA also plays an important role in facilitating efficient updates of $ \bZ|\btheta,\bY $ via the elliptical slice sampling (ElliptSS) algorithm of \cite{murray2010}, which was detailed in Section \ref{subsubsec:elliptical_slice_sampling} and is presented in Algorithm \ref{alg:elliptss_lna}. ElliptSS is an efficient and easy to implement MCMC algorithm for sampling latent Gaussian random variables, $ \bZ $, in models where the posterior of can be decomposed as the Gaussian prior for $ \bZ $ and likelihood, $ L(\bY|\bZ,\btheta) $, i.e.,
 \begin{equation}
 \label{eqn:eliptss_posterior_decomp}
 \pi(\btheta,\bZ|\bY)\propto L(\bY|\bZ,\btheta)MVN(\bZ;\mu_\bZ,\bSigma_\bZ).
