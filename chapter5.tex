@@ -228,7 +228,7 @@ When transmission is sustained at near--endemic levels, we should expect that th
 \label{eqn:Reff_t}
 \psi_{j,\ell}^{eff} = \frac{\beta_j(t_\ell)_j\left (S^{(u)}_j(t_\ell) + S^{(v)}_j(t_\ell)\nu\right )}{\mu_j}
 \end{equation}
-If vaccination does not increase the rate of infectious contact (and we will assume it does not), then $ \psi_{j,\ell}^{eff} < \psi_{j,\ell} $ since $ \nu\in[0,1] $ and $ (S^{(u)}_j(t_\ell) + S^{(v)}_j(t_\ell) < N_js_j $. It is critical to account for this when specifying priors for the basic intrinsic reproduction numbers at the start of each epoch. It would not do, for instance, to set priors for the intrinsic basic reproduction numbers at the beginning of the third epoch that nominally concentrate mass near one since this would imply that the effective reproduction numbers are far below one due to vaccination and depletion of susceptibles during the first wave of the outbreak. Our approach will be to assign priors to the vaccination adjusted intrinsic reproduction numbers at the beginning of each epoch, $ \psi_{j,\ell}^\prime = \psi_{j,\ell}  \left (1 - P^v_j(t_\ell) + P^v_j(t_\ell)\right ) $, where $ P_j^v(t_\ell) $ is the vaccination coverage in stratum $ j $ at $ t_\ell $. 
+If vaccination does not increase the rate of infectious contact (and we will assume it does not), then $ \psi_{j,\ell}^{eff} < \psi_{j,\ell} $ since $ \nu\in[0,1] $ and $ (S^{(u)}_j(t_\ell) + S^{(v)}_j(t_\ell) < N_js_j $. It is critical to account for this when specifying priors for the basic intrinsic reproduction numbers at the start of each epoch. It would not do, for instance, to set priors for the intrinsic basic reproduction numbers at the beginning of the third epoch that nominally concentrate mass near one since this would imply that the effective reproduction numbers are far below one due to vaccination and depletion of susceptibles during the first wave of the outbreak. Our approach will be to assign priors to the vaccination adjusted intrinsic reproduction numbers at the beginning of each epoch, $ \psi_{j,\ell}^\prime = \psi_{j,\ell}  \left (1 - P^v_j(t_\ell) + \nu P^v_j(t_\ell)\right ) $, where $ P_j^v(t_\ell) $ is the vaccination coverage in stratum $ j $ at $ t_\ell $, $ \ell = 0,19,71 $. 
 
 We denote by $ \Delta $ the first--order forward difference operator, i.e., $ \Delta X_j = X_{j+1} - X_j $. The first--order differences of the log intrinsic reproduction numbers for stratum $ j $ in each epoch are assigned a Gaussian prior with mean zero and variance $ \sigma^2_{j,\ell} $. The sub--model for intrinsic reproduction numbers in stratum $ j $ is
 
@@ -330,7 +330,7 @@ MCMC proceeds by alternately updating $ \bZ|\bY,\btheta $ using ElliptSS (Algori
 Estimates of cumulative incidence and attack rates by season and age group are reported in Table \ref{tab:flu_attack_rates}. We estimate that there were approximately 532,000 (95\% BCI: 393,000, 703,000) infections in the first epidemic season, and an additional 240,000 (95\% BCI: 172,000, 333,000) cases during the second season. These estimates would correspond to estimated attack rates of 7.4\%--13.1\% during the first season, and 3.2\%--6.2\% in the second season if each individual was infected only once. The estimated attack rates were substantially higher among youths than adults in the first epidemic season, and slightly higher during the second season. The estimated incidence over the inter--season period was low; 110 cases (95\% BCI: 50, 250) among youths, and 330 cases (95\% BCI: 150, 710) among adults. 
 
 \begin{sidewaystable}[htbp]
-	\caption{Estimated infections (thousands) and attack rates by season and age stratum. Attack rates are calculated as the number of infections divided by the size of each stratum, assuming that cases are unique.}
+	\caption[Estimated A(H1N1) infections and attack rates by season and age stratum.]{Estimated infections (thousands) and attack rates by season and age stratum. Attack rates are calculated as the number of infections divided by the size of each stratum, assuming that cases are unique.}
 	\label{tab:flu_attack_rates}
 	\centering\footnotesize
 	\begin{tabular}{lrrrrrr}
@@ -338,7 +338,7 @@ Estimates of cumulative incidence and attack rates by season and age group are r
 		&\multicolumn{6}{c}{\textbf{Time varying dynamics}}\\
 		\cmidrule{2-7} & \multicolumn{2}{c}{\textit{Season 1}} & \multicolumn{2}{c}{\textit{Season 2}} & \multicolumn{2}{c}{\textit{Both Seasons}}\\
 		\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7} & 
-		Incidence & Attack rate & Incidence & Attack rate & Incidence & Attack rate \\
+		Incidence ($ \times10^3 $) & Attack rate (\%) & Incidence ($ \times10^3 $)& Attack rate (\%) & Incidence ($ \times10^3 $) & Attack rate (\%)\\
 		\hline
 	Ages 0-19 & 174 (127, 231) & 14.2 (10.4, 18.9) & 68.6 (46.6, 100) & 5.6 (3.8, 8.2) & 244 (181, 321) & 19.9 (14.8, 26.2)\\
 	Ages 20+ & 356 (243, 501) & 8.6 (5.9, 12.1) & 171 (117, 245) & 4.1 (2.8, 5.9) & 530 (378, 720) & 12.8 (9.2, 17.4)\\
@@ -347,31 +347,26 @@ Estimates of cumulative incidence and attack rates by season and age group are r
 		&\multicolumn{6}{c}{\textbf{Piecewise homogeneous dynamics}}\\
 		\cmidrule{2-7}	& \multicolumn{2}{c}{\textit{Season 1}} & \multicolumn{2}{c}{\textit{Season 2}} & \multicolumn{2}{c}{\textit{Both Seasons}}\\
 	\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7} & 
-	Incidence & Attack rate & Incidence & Attack rate & Incidence & Attack rate \\
+	Incidence ($ \times10^3 $) & Attack rate (\%)& Incidence ($ \times10^3 $) & Attack rate (\%)& Incidence ($ \times10^3 $) & Attack rate (\%)\\
 	\hline
 	Ages\_0-19 & 150 (107, 203) & 12.3 (8.7, 16.6) & 55.1 (34.4, 82) & 4.5 (2.8, 6.7) & 206 (154, 267) & 16.8 (12.6, 21.9)\\
-	\hline
 	Ages\_20+ & 263 (182, 375) & 6.4 (4.4, 9.1) & 181 (128, 242) & 4.4 (3.1, 5.9) & 445 (324, 598) & 10.8 (7.9, 14.5)\\
-	\hline
 	All\_ages & 414 (305, 556) & 7.7 (5.7, 10.4) & 236 (178, 309) & 4.4 (3.3, 5.8) & 653 (499, 840) & 12.2 (9.3, 15.7)\\
 		\hline
 	\end{tabular}
 \end{sidewaystable}
 
-\subsection{Transmission Dynamics}
+\subsection{Transmission Dynamics and Vaccination}
 \label{flu_res_dynamics}
-Estimates of time varying reproduction numbers and exogenous infections are shown in Figure \ref{fig:flurwodetimevaryingplots} and estimates of model parameters are given in Table \ref{tab:flu_param_ests}. 
 
-The period just prior to the first detected cases until the start of the Finnish school year in 2009 was characterized by near--endemic effective reproduction numbers and modest rates of exogenous infectious contact (second and fourth rows of Figure \ref{fig:flurwodetimevaryingplots}). The median estimated effective reproduction numbers in the first season exceeded 1.1 starting at the beginning of October, 2009, and peaked around 1.25 (95\% BCI: 1.2, 1.3) at the beginning of November, which corresponded to the start of exponential growth in the number of detected cases. The effective reproduction number first dropped below one in the third week of November, corresponding to the time at which case counts began to decline. The rate of exogenous infectious contact was higher during the epidemic wave compared to the preceding months, though the contribution of exogenous contact to the force of infection was modest. The second epidemic wave was longer in duration, but less severe, than the first wave. The median effective reproduction number first exceeded one at the end of September, 2010, rose above 1.1 in early November, and peaked at 1.16 (95\% BCI: 1.1, 1.2) in early December. The effective reproduction number only fell below, 1 in early February, 2011. The rate of exogenous infectious contact was markedly lower during the second epidemic wave compared to the first wave. 
-
-The effective reproduction numbers in the first season fell below one several months before the vaccination adjusted basic reproduction numbers. This suggests that the end of the first wave outbreak largely came about due to the depletion of susceptibles, rather than due to the aggressive vaccination campaign. Nevertheless, there is evidence to suggest that the vaccination campaign mitigated 
-
-Figure \ref{fig:flurwodetimevaryingplots} presents the effective and vaccine adjusted type reproduction numbers for the 0--19 and 20+ age strata, which are interpreted as the expected number of secondary cases of any age caused by a single index case in a given age stratum. The type reproduction numbers are the column sums of the basic (vaccine adjusted) and effective NGMs. Note that this definition differs from the definition of type reproduction number in \cite{heesterbeek2007type}, which is the expected number of secondary cases of a particular type given an index case of that type. At the beginning of the first epidemic wave (epiweek 34, 2009), an index youth case was estimated to result in 1.3 (95\% BCI: 1.0, 1.6) secondary cases, while an index adult would result in 1.15 (95\% BCI: 1.0, 1.3) secondary cases. The contribution of youths to the FOI declined dramatically in the second season, while the contribution of adults was roughly the same. At the start of the second season, an index youth case was estimated to lead to 1.0 (95\% BCI: 0.8, 1.25) secondary cases, while an index adult case to 1.2 (1.0, 1.3) secondary cases. The change in the role contribution of youths in the second season can be attributed to the depletion of susceptible youths in the first season due to vaccination and high attack rates in that season. The effective type reproduction numbers in both age strata decline throughout the first wave, while in the second season they increase slightly before again declining as susceptibles deplete. The slight uptick in effective type reproduction numbers at the end of the second season is attributable to loss of immunity among previously infected individuals.  
+The period just prior to the first detected cases until the start of the Finnish school year in 2009 was characterized by near--endemic effective reproduction numbers and modest rates of exogenous infectious contact (second and fourth rows of Figure \ref{fig:flurwodetimevaryingplots}). The median estimated effective reproduction numbers in the first season exceeded 1.1 starting at the beginning of October, 2009, and peaked around 1.25 (95\% BCI: 1.2, 1.3) at the beginning of November, which corresponded to the start of exponential growth in the number of detected cases. The effective reproduction number first dropped below one in the third week of November, corresponding to the time at which case counts began to decline. The rate of exogenous infectious contact was higher during the epidemic wave compared to the preceding months, though the contribution of exogenous contact to the force of infection was modest. The second epidemic wave was longer in duration, but less severe, than the first wave. The median effective reproduction number during the second wave exceeded one at the end of September, 2010, rose above 1.1 in early November, and peaked at 1.16 (95\% BCI: 1.1, 1.2) in early December. The effective reproduction number only fell below, 1 in early February, 2011. The rate of exogenous infectious contact was lower during the second epidemic wave than the first wave. 
+ 
+Figure \ref{fig:flurwodetimevaryingplots} (second and third rows) presents the effective and basic type reproduction numbers for the 0--19 and 20+ age strata, computed as the column sums of the basic and effective NGMs and which are interpreted as a measure of the expected number of secondary cases of any age caused by a single index case in a given age stratum \cite{glass2011estimating}. Estimates of effective type reproduction numbers suggest that transmission was largely sustained by infectious contacts with adults since the effective type reproduction numbers among adults are above one until each epidemic wave dies off, while the corresponding estimates for youths are below one. This is a reasonable finding given that the adults made up 77\% of the population and that the majority of all contacts were with adults (85\% of contacts in the adult population were with other adults, while 40\% of youth contacts were with adults). Note that this definition differs from the definition of type reproduction number in \cite{heesterbeek2007type}, which is the expected number of secondary cases of a particular type given an index case of that type.
 
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=0.95\linewidth]{figures/flu_rw_ode_timevarying_plots}
-	\caption{Posterior estimates of time varying quantities under time varying dynamics. Estimated incidence (top row), effective reproduction numbers (second row), vaccination adjusted basic reproduction numbers (third row), and exogenous infections (bottom row). $ N_{SI}^j(t), $ is the weekly incidence in age stratum $ j $, $ R_{eff}(t) $ and $ R_{adj}(t) $ are the effective and vaccination--adjusted basic reproduction numbers, $ T_{eff}^j(t) $ is the type reproduction number for stratum $ j $ (expected \# of secondary infections in all strata for a single infected in stratum $ j $), and $ \alpha_j(t) $ is the rate of exogenous infectious contacts for stratum $ j $.}
+	\caption[Estimated A(H1N1) incidence, reproduction numbers, and rates of exogenous infection under time varying dynamics.]{Posterior estimates of time varying quantities under time varying dynamics. Estimated incidence (top row), effective reproduction numbers (second row), vaccination adjusted basic reproduction numbers (third row), and exogenous infections (bottom row). $ N_{SI}^j(t), $ is the weekly incidence in age stratum $ j $, $ R_{eff}(t) $ and $ R_{adj}(t) $ are the effective and vaccination--adjusted basic reproduction numbers, $ T_{eff}^j(t) $ is the type reproduction number for stratum $ j $ (expected \# of secondary infections in all strata for a single infected in stratum $ j $), and $ \alpha_j(t) $ is the rate of exogenous infectious contacts for stratum $ j $.}
 	\label{fig:flurwodetimevaryingplots}
 \end{sidewaysfigure}
 
@@ -404,6 +399,85 @@ The mean infectious period of youths was substantially longer that of adults, 6.
 	\end{tabular}
 \end{sidewaystable}
 
+The effective reproduction numbers in the first season fell below one several months before the vaccination adjusted basic reproduction numbers. This suggests that the end of the first wave outbreak largely came about due to the depletion of susceptibles, rather than due to the aggressive vaccination campaign. Nevertheless, there is evidence to suggest that the vaccination campaign mitigated the severity of the epidemic. Table \ref{tab:flu_novacc_ests} presents the estimated increases in incidence and attack rates by age stratum and season, which are obtained by setting vaccine coverage to zero and simulating outbreaks from the posterior. Without vaccination, we estimate that an additional 8.1\% (95\% PPI: 4.0\%, 12.5\%) of the population would have become infected over the course of both seasons. The vaccination campaign likely mitigated the severity of the second wave, in particular. We estimate that the attack rate would have been 1.3--fold (95\% PPI: 1.1, 1.5) higher in the first season, and 2.1--fold (95\% PPI: 1.4, 3.3) higher in the second season absent the effects of vaccination. 
+
+In addition to mitigating the outbreak severity, we also find that the vaccination campaign may have delayed the second wave of the outbreak by roughly four months. Incidence peaked during the second season in late January to early February (posterior median: epiweek 6, 2011; 95\% BCI: epiweek 4, epiweek 7). Our model predicts that, absent vaccination, incidence would have peaked between the September and mid November (posterior median: epiweek 41, 2010; 95\% PPI: epiweek 38, epiweek 47). A similar finding was reported in \cite{shubin2016revealing}. We caution that this result should not be over--interpreted as it is most likely an artifact of the procedure used to predict the counterfactual outcomes. The posterior distribution of per--contact infection rates at the start of the third epoch are calibrated so that the effective reproduction number (\ref{eqn:Reff_t}), which accounts for vaccination, is roughly one (see Figure \ref{fig:flurwodetimevaryingplots}, second row). Setting vaccination to zero has the effect of artificially inflating the effective reproduction number, and hence the per--contact infection rate, by the fraction of the effective population size. Hence, the model mistakenly predicts that the epidemic in the second season takes off immediately.
+
+We can make a rough adjustment to account for the artificial inflation in the FOI by multiplying the reproduction numbers by the reduction in $ R_0 $ that would have been achieved with vaccination in the absence of any infections or recoveries. Let $ \psi_{j,\ell}^{adj} $ denote the vaccination adjusted reproduction number, where
+$$\psi_{j,\ell}^{adj} = \psi_{j,\ell}\left (1 - P^v_j(t_\ell) + \nu P^v_j(t_\ell)\right ).$$
+We set vaccination counts to zero as before and simulate outbreaks using the posterior distribution of the adjusted reproduction numbers. After adjustment, we predict that the attack rate would have been roughly 1.5--fold higher (95\% PPI: 1.1, 2.0) in the absence of vaccination, which is 
+ 
+\begin{table}[htbp]
+	\caption[Predicted incidence and attack rates in the absence of vaccination.]{Effects of vaccination; increases in cumulative incidence (thousands), absolute percent increase, and relative fold--increase in attack rates without vaccination by season and age stratum.}
+	\label{tab:flu_novacc_ests}
+	\centering\footnotesize
+	\begin{tabular}{lrrr}
+		\hline
+		&\multicolumn{3}{c}{\textit{Season 1}}\\
+		\cmidrule{2-4} 
+		 & Incidence ($ \times10^3 $) & Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
+		 \hline
+		 Ages 0-19 & 45.4 (21.4, 71.8) & 3.7 (1.7, 5.9) & 1.3 (1.1, 1.4)\\
+		 Ages 20+ & 107 (51.9, 162) & 2.6 (1.3, 3.9) & 1.3 (1.1, 1.5)\\
+		 All ages & 154 (74.9, 226) & 2.9 (1.4, 4.2) & 1.3 (1.1, 1.5)\\
+		 \hline
+		 &&&\\
+		 &\multicolumn{3}{c}{\textit{Season 2}}\\
+		 \cmidrule{2-4} 
+		 &Incidence ($ \times10^3 $) & Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
+		 \hline
+		 Ages 0-19 & 66.1 (25.3, 125) & 5.4 (2.1, 10.2) & 2.0 (1.3, 3.1)\\
+		 Ages 20+ & 202 (85.9, 359) & 4.9 (2.1, 8.7) & 2.2 (1.4, 3.5)\\
+		 All ages & 272 (121, 456) & 5.1 (2.3, 8.5) & 2.1 (1.4, 3.3)\\
+		 \hline
+		  &&&\\
+		 &\multicolumn{3}{c}{\textit{Both seasons}}\\
+		 \cmidrule{2-4} 
+		 &Incidence ($ \times10^3 $)& Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
+		 \hline
+		 Ages 0-19 & 113 (50.7, 192) & 9.3 (4.1, 15.7) & 1.5 (1.2, 1.9)\\
+		 Ages 20+ & 314 (156, 509) & 7.6 (3.8, 12.3) & 1.6 (1.3, 2.1)\\
+		 All ages & 432 (216, 668) & 8.1 (4, 12.5) & 1.6 (1.3, 2.0)\\
+		\hline
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+	\caption[Adjusted estimates of predicted incidence and attack rates in the absence of vaccination.]{Effects of vaccination adjusted for artificial inflation of reproduction numbers in the absence of vaccination. Increases in cumulative incidence (thousands), absolute percent increase, and relative fold--increase in attack rates without vaccination by season and age stratum.}
+	\label{tab:flu_novacc_adj}
+	\centering\footnotesize
+	\begin{tabular}{lrrr}
+		\hline
+		&\multicolumn{3}{c}{\textit{Season 1}}\\
+		\cmidrule{2-4} 
+		& Incidence ($ \times10^3 $) & Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
+		\hline
+		Ages 0-19 & 58 (-14, 130) & 4.7 (-1.1, 10.7) & 1.4 (0.93, 2.1)\\
+		Ages 20+ & 170 (3.4, 340) & 4 (0.1, 8.2) & 1.6 (1, 2.6)\\
+		All ages & 220 (27, 430) & 4.2 (0.5, 8.1) & 1.5 (1.1, 2.3)\\
+		\hline
+		&&&\\
+		&\multicolumn{3}{c}{\textit{Season 2}}\\
+		\cmidrule{2-4} 
+		&Incidence ($ \times10^3 $) & Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
+		\hline
+		Ages 0-19 & 27 (-10, 66) & 2.2 (-0.8, 5.4) & 1.5 (0.86, 2.6)\\
+		Ages 20+ & 47 (-46, 150) & 1.1 (-1.1, 3.7) & 1.3 (0.79, 2)\\
+		All ages & 75 (-37, 200) & 1.4 (-0.7, 3.7) & 1.3 (0.86, 2)\\
+		\hline
+		&&&\\
+		&\multicolumn{3}{c}{\textit{Both seasons}}\\
+		\cmidrule{2-4} 
+		&Incidence ($ \times10^3 $)& Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
+		\hline
+		Ages 0-19 & 86 (-4.2, 180) & 7 (-0.3, 14.6) & 1.4 (0.98, 2.1)\\
+		Ages 20+ & 220 (3.1, 430) & 5.3 (0.1, 10.5) & 1.5 (1, 2.2)\\
+		All ages & 300 (41, 560) & 5.7 (0.8, 10.5) & 1.5 (1.1, 2)\\
+		\hline
+	\end{tabular}
+\end{table}
+
 The posterior predictive distributions for cases (Figure \ref{fig:flupostpredsrwode}) suggests that the model does a better job reconstructing the second epidemic season than the first, particularly among individuals ages 0--19. The model seems to substantially underestimate the peak of the outbreak in the first season. This might seem somewhat surprising given that the attack rates in the first season were quite high. One possibility is that heterogeneity in detection rates is confounding our estimates of the unobserved epidemic process. In their analysis of this data, \cite{shubin2016revealing} estimated that detection was positively associated with incidence. It is also possible that misspecification of the effective population size could be contributing to the lack of model fit. This might occur, for example, if a meaningful percentage of the population were geographically separated from the areas with intense transmission, or were immune due to exposure to A(H1N1) early in life (as might be the case for older individuals who had antibodies from the 1918 pandemic).  
 
 \begin{figure}[htbp]
@@ -412,7 +486,6 @@ The posterior predictive distributions for cases (Figure \ref{fig:flupostpredsrw
 	\caption{Posterior predictive distributions of a stratified SIRS ODE model with time varying dynamics for A(H1N1)pdm09 in Finland.}
 	\label{fig:flupostpredsrwode}
 \end{figure}
-
 
 \subsection{Piecewise Homogeneous Dynamics}
 \label{subsec:flu_res_homog}
