@@ -3,18 +3,18 @@
 
 \section{Overview}
 \label{sec:lna_extensions_overview}
-To this point, we have largely worked with stochastic epidemic models (SEMs) where the transmission dynamics of an outbreak are time--homogeneous. This may be reasonable for short outbreaks in closed, relatively ``well--mixed" populations, and is often an attractive modeling choice as SEMs with static dynamics are easier to interpret and fit. Incidence data typically arise in settings where the outbreak milieu changes with environmental factors, heterogeneity in the contact structures of various subpopulations as they are exposed, or behavioral responses as people become aware of an outbreak (or complacent about the extent to which it is under control). Furthermore, we are often interested in understanding the effects of time--varying interventions, such as vaccination campaigns, on the transmission dynamics of an outbreak. Thus, it is important to allow time--varying aspects of an outbreak to be flexibly expressed in the model.
+To this point, we have largely worked with stochastic epidemic models (SEMs) where the transmission dynamics of an outbreak are time--homogeneous. This may be reasonable for short outbreaks in closed, relatively ``well--mixed" populations, and is often an attractive modeling choice as SEMs with static dynamics are easier to interpret and fit. Incidence data typically arise in settings where the outbreak milieu changes with environmental factors, spatio--temporal heterogeneity in the contact patterns of subpopulations as they are exposed, or behavioral responses as awareness of an outbreak increases and wanes. Furthermore, we are often interested in understanding the effects of time--varying interventions, such as vaccination campaigns, on the transmission dynamics. 
 
-In this chapter, we will use SEMs with time--varying force of infection (FOI) to model the spread of pandemic A(H1N1) influenza in Finland using surveillance data. Our goals will be to quantify the transmission dynamics of the outbreak, to estimate the true incidence, and to understand what effect a national vaccination campaign had in mitigating the outbreak severity. We will demonstrate how the LNA and ODE SEM representations can be used to fit models with time--varying dynamics. 
+In this chapter, we will demonstrate how the LNA and ODE SEM representations can be used to fit models with time--varying dynamics, which we will then use to model the spread of pandemic A(H1N1) influenza in Finland. We will analyze incidence data from two epidemic seasons, described in Section \ref{subsec:flu_description}. Our goals will be to quantify the transmission dynamics of the outbreak, to estimate the true incidence, and to understand what effect a national vaccination campaign had in mitigating the outbreak severity. 
 
 %We will compare models with time--varying and constant dynamics that we fit using the linear noise approximation (LNA) framework developed in Chapter \ref{chap:lna_for_sems}.
 
 \subsection{On the Importance of Allowing for Time--Varying Dynamics}
 \label{subsec:tparam_motivation}
 
-A critical aspect of modeling outbreaks over multiple seasons is that we must account for changes in rates of infectious contacts both within, and between, seasons. The decline in transmission at the end of one season may be attributable, in some combination, to stochastic extinction, a decline in the rate of infectious contact, and a reduction in the effective number of susceptible individuals via immunity acquired from natural exposure or vaccination. It is difficult to explain the emergence of the second season without allowing for stochastic reemergence, changes in the FOI, or waning immunity. Put another way, it is highly unlikely an outbreak that died off in a population protected by herd immunity would reemerge absent changes in FOI or repletion of susceptibles in the population. 
+A critical aspect of modeling outbreaks over multiple seasons is that we must account for changes in rates of infectious contacts both within, and between, seasons. The decline in transmission at the end of one season may be attributable, in some combination, to stochastic extinction, a decline in the rate of infectious contact, and a reduction in the effective number of susceptible individuals via immunity acquired from natural exposure or vaccination. It is difficult to explain the emergence of the second season without allowing for stochastic reemergence, changes in the force of infection (FOI), or waning immunity. Put another way, it is highly unlikely an outbreak that died off in a population protected by herd immunity would reemerge absent changes in FOI or repletion of susceptibles in the population. 
 
-Before delving into details of how we intend to accommodate time--inhomogeneity in the FOI, we briefly highlight why we should bother. To make the point, we compare results for two SIRS models fit to incidence data from an outbreak with time--inhomogeneous dynamics. The data were simulated from an SIRS model where the rate of infectious contact varied sinusoidally over the course of two waves (depicted in Figure \ref{fig:sinfoi_tparam_plots}). While both models allowed for loss of immunity, the per--contact infectious rate was held constant in one model, and in the other was allowed to vary in time, with changes penalized via a first order Gaussian Markov random field (GMRF) shrinkage prior (details presented in Sections \ref{sec:flu_tparam_models} and \ref{sec:tparam_motiv_details}). We used the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fit both models. 
+Before delving into details of how we intend to accommodate time--inhomogeneity in the FOI, we briefly highlight why we should bother. To make the point, we compare results for two SIRS models fit to incidence data from an outbreak with time--varying dynamics. The data were simulated from an SIRS model where the rate of infectious contact varied sinusoidally over the course of two waves (depicted in Figure \ref{fig:sinfoi_tparam_plots}). While both models allowed for loss of immunity, the per--contact infectious rate was held constant in one model, and in the other was allowed to vary in time, with changes penalized via a first order Gaussian Markov random field (GMRF) shrinkage prior (details presented in Sections \ref{sec:flu_tparam_models} and \ref{sec:tparam_motiv_details}). We used the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fit both models. 
 
 Although both models are misspecified vis--a--vis the  data generating model, the model with time--varying FOI was clearly better able to describe the dynamics of the outbreak (Figure \ref{fig:sinfoi_tparam_plots}). Estimates of basic and effective reproduction numbers capture the true basic and effective reproduction numbers throughout both seasons. The model with time--varying FOI is also able to recover the true incidence. In contrast, the model with homogeneous dynamics fails to accurately estimate the basic and effective reproduction numbers between seasons and during the second wave. It also completely fails to capture the incidence during the second wave. Unlike the model with time--varying FOI, the model with constant FOI also fails to recover the hyperparameters governing the outbreak dynamics and sampling process. In particular the mean duration of immunity and case detection rate are important parameters that are poorly estimated (Figure \ref{fig:sinfoi_param_plots}). Finally, the posterior predictive distributions for the model with time--varying FOI are more accurate, and more precise, than posterior predictive distributions for the model with constant FOI (Figures \ref{fig:sinfoi_tparam_plots} and \ref{fig:sinfoi_ppi_comp}).
 
@@ -35,7 +35,7 @@ Although both models are misspecified vis--a--vis the  data generating model, th
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/sinfoi_ppi_comp}
-	\caption[Comparison with posterior predictive p-values and relative predictive interval widths for SIRS models fit to an outbreak with time--varying dynamics.]{Comparison of models with time--varying and constant force of infection using posterior predictive p-values (PPPs) and relative posterior predictive interval (PPI) widths. Each point corresponds to the observed incidence in a given week. The X--Y coordinates give the PPPs under a model with a time--varying force of infection (FOI), where R0 was modeled as a Gaussian Markov random field of order one, the PPP under a model with constant per--contact infection rate. The size and color of each point corresponds to the relative PPI width, computed as $ (\widehat{\sigma}_{post,\ell}^{constant} - \widehat{\sigma}_{post,\ell}^{RW1})/\widehat{\sigma}_{post,\ell}^{RW1} $, and the sign of the relative width is further emphasized by the shape of the point. Dots indicate that PPIs with constant FOI are wider, the lone triangle corresponds to the one data point where the PPI for the model with time--varying FOI was wider.}
+	\caption[Comparison with posterior predictive p-values and relative predictive interval widths for SIRS models fit to an outbreak with time--varying dynamics.]{Comparison of models with time--varying and constant force of infection using posterior predictive p-values (PPPs) and relative posterior predictive interval (PPI) widths. Each point corresponds to the observed incidence in a given week. The X--Y coordinates give the PPPs under time--varying dynamics and time homogeneous dynamics, respectively. The size and color of each point corresponds to the relative PPI width, computed as $ (\widehat{\sigma}_{post,\ell}^{constant} - \widehat{\sigma}_{post,\ell}^{RW1})/\widehat{\sigma}_{post,\ell}^{RW1} $, and the sign of the relative width is further emphasized by the shape of the point. Dots indicate that PPIs with constant FOI are wider, the lone triangle corresponds to the one data point where the PPI for the model with time--varying FOI was wider.}
 	\label{fig:sinfoi_ppi_comp}
 \end{figure}
 
@@ -232,7 +232,7 @@ If vaccination does not increase the rate of infectious contact (and we will ass
 
 We denote by $ \Delta $ the first--order forward difference operator, i.e., $ \Delta X_j = X_{j+1} - X_j $. The first--order differences of the log intrinsic reproduction numbers for stratum $ j $ in each epoch are assigned a Gaussian prior with mean zero and variance $ \sigma^2_{j,\ell} $. The sub--model for intrinsic reproduction numbers in stratum $ j $ is
 
-\begin{small}
+\begin{footnotesize}
 	\begin{align}
 	\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
 	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,19,71, \nonumber\\
@@ -242,14 +242,11 @@ We denote by $ \Delta $ the first--order forward difference operator, i.e., $ \D
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
-	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
+	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\mu_{j},&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
 	\end{align}
-\end{small}
-
-The induced GMRF prior for the vaccination adjusted basic reproduction numbers is given in Figure \ref{fig:flurw1prior}. 
-
-In practice, we will use the following partially non--centered parameterization:
-\begin{small}
+\end{footnotesize}
+The induced GMRF prior for the vaccination adjusted basic reproduction numbers is given in Figure \ref{fig:flurw1prior}. In practice, we will use the following partially non--centered parameterization:
+\begin{footnotesize}
 	\begin{align}
 	\log(\psi_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
 	Z_{\log(\sigma_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,19,71, \nonumber \\
@@ -261,12 +258,13 @@ In practice, we will use the following partially non--centered parameterization:
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\psi_{j,\ell}) &= \log(\psi_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\psi_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
-	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/\left (\mu_{j}(t_\ell)(1 - P^v_j(t_\ell) + P_j^v(t_\ell)\nu_j)\right ),&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
+	\beta_j(t_\ell) &= \psi_{j,\ell}N_j/ \mu_{j},&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
 	\end{align}
-\end{small}
+\end{footnotesize}
 
-We similarly assign a first order GMRF prior to the effective number of exogenous infectious contacts for each age stratum. Note that this term is somewhat of a catch--all for infectious contacts that arise outside of the density dependent mixing of susceptible and infected individuals. The rate of exogenous infection may be loosely interpreted as either the baseline rate of infectious contact or as the rate of infection from outside the population. Let $ \alpha^\prime_{j,\ell} = \alpha_{j,\ell}N_js_j $ denote the rate of exogenous infection for age stratum $ j $ in week $ \ell $, scaled by the effective stratum size. The GMRF prior for $ \balpha^\prime_j = \lbrace\alpha^\prime_{j,\ell}:\ \ell=0,\dots,52,71,\dots,112\rbrace $ is
-\begin{small}
+We similarly assign a first order GMRF prior to the effective number of exogenous infectious contacts for each age stratum. Note that this term is somewhat of a catch--all for infectious contacts that arise outside of the density dependent mixing of susceptible and infected individuals, and is loosely interpreted as either the baseline rate of infectious contact or as the rate of infection from outside the population. Let $ \alpha^\prime_{j,\ell} = \alpha_{j,\ell}N_js_j $ denote the rate of exogenous infection for age stratum $ j $ in week $ \ell $, scaled by the effective stratum size. The GMRF prior for $ \balpha^\prime_j = \lbrace\alpha^\prime_{j,\ell}:\ \ell=0,\dots,52,71,\dots,112\rbrace $ is
+
+\begin{footnotesize}
 	\begin{align}
 	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
 	\log(\sigma_{j,\ell}) &\sim \mcN(m_{j,\ell}, s_{j,\ell}^2),&\ &\ell=0,19,71, \nonumber\\
@@ -276,12 +274,11 @@ We similarly assign a first order GMRF prior to the effective number of exogenou
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
-	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/N,&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
+	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/(N_js_j),&\ &\ell=0,\dots,52,71,\dots,112. \nonumber
 	\end{align}
-\end{small}
-
+\end{footnotesize}
 Again, we will use a partially non--centered parameterization in practice.
-\begin{small}
+\begin{footnotesize}
 	\begin{align}
 	\log(\alpha^\prime_{j,\ell}) &\sim \mcN(\mu_{j,\ell},\tau_{j,\ell}^2),&\ &\ell= 0,19,71, \nonumber\\
 	Z_{\log(\sigma_{j,\ell})} &\sim \mcN(0,1),&\ &\ell=0,19,71, \nonumber \\
@@ -293,9 +290,9 @@ Again, we will use a partially non--centered parameterization in practice.
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,0}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,k}),&\ &\ell = 1,\dots,17, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,19}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,19+k}),&\ &\ell = 19,\dots,52, \nonumber\\
 	\log(\alpha^\prime_{j,\ell}) &= \log(\alpha^\prime_{j,71}) + \sum_{k=0}^{\ell-1}\Delta\log(\alpha^\prime_{j,71+k}),&\ &\ell = 72,\dots,112. \nonumber \\
-	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/N,&\ &\ell=0,\dots,52,71,\dots,112 \nonumber
+	\alpha_{j,\ell} &= \alpha^\prime_{j,\ell}/(N_js_j),&\ &\ell=0,\dots,52,71,\dots,112 \nonumber
 	\end{align}
-\end{small}
+\end{footnotesize}
 
 The initial reproduction numbers, for which we retain the centered parameterization, are blocked with other model parameters and updated using a multivariate normal slice sampler (MVNSS). The non--centered GMRF differences and their standard deviations are updated 
 %jointly with the LNA path 
@@ -359,21 +356,23 @@ Estimates of cumulative incidence and attack rates by season and age group are r
 \subsection{Transmission Dynamics and Vaccination}
 \label{flu_res_dynamics}
 
-The period just prior to the first detected cases until the start of the Finnish school year in 2009 was characterized by near--endemic effective reproduction numbers and modest rates of exogenous infectious contact (second and fourth rows of Figure \ref{fig:flurwodetimevaryingplots}). The median estimated effective reproduction numbers in the first season exceeded 1.1 starting at the beginning of October, 2009, and peaked around 1.25 (95\% BCI: 1.2, 1.3) at the beginning of November, which corresponded to the start of exponential growth in the number of detected cases. The effective reproduction number first dropped below one in the third week of November, corresponding to the time at which case counts began to decline. The rate of exogenous infectious contact was higher during the epidemic wave compared to the preceding months, though the contribution of exogenous contact to the force of infection was modest. The second epidemic wave was longer in duration, but less severe, than the first wave. The median effective reproduction number during the second wave exceeded one at the end of September, 2010, rose above 1.1 in early November, and peaked at 1.16 (95\% BCI: 1.1, 1.2) in early December. The effective reproduction number only fell below, 1 in early February, 2011. The rate of exogenous infectious contact was lower during the second epidemic wave than the first wave. 
+The period just prior to the first detected cases until the start of the Finnish school year in 2009 was characterized by near--endemic effective reproduction numbers and modest rates of exogenous infectious contact (second and fourth rows of Figure \ref{fig:flurwodetimevaryingplots}). We estimate that at the start of the Finnish school year in 2009, there were 390 (95\% BCI: 230, 670) infected individuals in the population, roughly half of whom were youths. The median estimated effective reproduction numbers in the first season exceeded 1.1 starting at the beginning of October, 2009, and peaked around 1.25 (95\% BCI: 1.2, 1.3) at the beginning of November, which corresponded to the start of exponential growth in the number of detected cases. The effective reproduction number first dropped below one in the third week of November, corresponding to the time at which case counts began to decline. The rate of exogenous infectious contact was higher during the epidemic wave compared to the preceding months, though the contribution of exogenous contact to the force of infection was modest. 
+
+The second epidemic wave was longer in duration, but less severe, than the first wave. We estimate that there were only a handful of infected individuals at the start of the third epoch (posterior median, 12; 95\% BCI: 5, 140), about half of whom were youths. The median effective reproduction number during the second wave exceeded one at the end of September, 2010, rose above 1.1 in early November, and peaked at 1.16 (95\% BCI: 1.1, 1.2) in early December. The effective reproduction number only fell below, 1 in early February, 2011. The rate of exogenous infectious contact was lower during the second epidemic wave than the first wave. 
  
 Figure \ref{fig:flurwodetimevaryingplots} (second and third rows) presents the effective and basic type reproduction numbers for the 0--19 and 20+ age strata, computed as the column sums of the basic and effective NGMs and which are interpreted as a measure of the expected number of secondary cases of any age caused by a single index case in a given age stratum \cite{glass2011estimating}. Estimates of effective type reproduction numbers suggest that transmission was largely sustained by infectious contacts with adults since the effective type reproduction numbers among adults are above one until each epidemic wave dies off, while the corresponding estimates for youths are below one. This is a reasonable finding given that the adults made up 77\% of the population and that the majority of all contacts were with adults (85\% of contacts in the adult population were with other adults, while 40\% of youth contacts were with adults). Note that this definition differs from the definition of type reproduction number in \cite{heesterbeek2007type}, which is the expected number of secondary cases of a particular type given an index case of that type.
 
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=0.95\linewidth]{figures/flu_rw_ode_timevarying_plots}
-	\caption[Estimated A(H1N1) incidence, reproduction numbers, and rates of exogenous infection under time varying dynamics.]{Posterior estimates of time varying quantities under time varying dynamics. Estimated incidence (top row), effective reproduction numbers (second row), vaccination adjusted basic reproduction numbers (third row), and exogenous infections (bottom row). $ N_{SI}^j(t), $ is the weekly incidence in age stratum $ j $, $ R_{eff}(t) $ and $ R_{adj}(t) $ are the effective and vaccination--adjusted basic reproduction numbers, $ T_{eff}^j(t) $ is the type reproduction number for stratum $ j $ (expected \# of secondary infections in all strata for a single infected in stratum $ j $), and $ \alpha_j(t) $ is the rate of exogenous infectious contacts for stratum $ j $.}
+	\caption[Estimated A(H1N1) incidence, reproduction numbers, and rates of exogenous infection under time--varying dynamics.]{Posterior estimates of time--varying quantities under time--varying dynamics. Estimated incidence (top row), effective reproduction numbers (second row), vaccination adjusted basic reproduction numbers (third row), and exogenous infections (bottom row). $ N_{SI}^j(t), $ is the weekly incidence in age stratum $ j $, $ R_{eff}(t) $ and $ R_{adj}(t) $ are the effective and vaccination--adjusted basic reproduction numbers, $ T_{eff}^j(t) $ is the type reproduction number for stratum $ j $ (expected \# of secondary infections in all strata for a single infected in stratum $ j $), and $ \alpha_j(t) $ is the rate of exogenous infectious contacts for stratum $ j $.}
 	\label{fig:flurwodetimevaryingplots}
 \end{sidewaysfigure}
 
-The mean infectious period of youths was substantially longer that of adults, 6.5 days (95\% BCI: 4.3 days, 8.8 days) compared with 2.6 days (1.9 days, 3.4 days), respectively. Published point estimates of the serial interval for A(H1N1)pdm09, which is the average time between an index case and a secondary case, and which we might expect to be a bit shorter than the mean infectious period, have mostly been in the 2--3.5 day range \cite{vink2014serial}. Immunity following infection was relatively long--lasting, although a sizable percentage of individuals who were infected lost immunity; 8.2\% (95\% BCI: 3.8\%, 16.2\%) of individuals who had become infected before the start of the second season had lost protection by the beginning of the second season, while the percentage of infected individuals who became infected over both seasons and lost immunity by the end of season two was 10.6\% (95\% BCI: 5.0\%, 19.9\%). The vaccine was estimated to be quite effective,  reducing the rate of infectious contact by 95\% (95\% BCI: 83\%, 99\%). 
+The mean infectious period of youths was slightly longer that of adults, 2.5 days (95\% BCI: 1.9 days, 3.5 days) compared with 2.1 days (1.8 days, 5.8 days), respectively. Published point estimates of the serial interval for A(H1N1)pdm09, which is the average time between an index case and a secondary case, and which we might expect to be a bit shorter than the mean infectious period, have mostly been in the 2--3.5 day range \cite{vink2014serial}. Immunity following infection was relatively long--lasting, although a sizable percentage of individuals who were infected lost immunity; 19\% (95\% BCI: 12\%, 28\%) of individuals who had become infected before the start of the second season had lost protection by the beginning of the second season, while the percentage of infected individuals who became infected over both seasons and lost immunity by the end of season two was 27\% (95\% BCI: 18\%, 38\%). The vaccine was estimated to be quite effective,  reducing the rate of infectious contact by 81\% (95\% BCI: 4\%, 46\%). 
 
 \begin{sidewaystable}[htbp]
-	\caption[Posterior estimates of SIRS model parameters for pandemic A(H1N1) influenza in Finland.]{Posterior estimates of SIRS model parameters for pandemic A(H1N1) influenza in Finland. Intrinsic reproduction numbers account for vaccine coverage and vaccine efficacy via (\ref{eqn:R0t_vacc}).} 
+	\caption[Posterior estimates of SIRS model parameters for pandemic A(H1N1) influenza in Finland.]{Posterior medians (95\% Bayesian credible intervals) of SIRS model parameters for pandemic A(H1N1) influenza in Finland. The corresponding priors are given in Tables \ref{tab:flu_priors} and \ref{tab:flu_priors_const}.} 
 	\label{tab:flu_param_ests}
 	\centering\footnotesize
 	\begin{tabular}{clrr}
@@ -381,34 +380,36 @@ The mean infectious period of youths was substantially longer that of adults, 6.
 		&&\multicolumn{2}{c}{\textbf{Dynamics}}\\
 		\cmidrule{3-4}\textbf{Parameter} & \textbf{Interpretation} & \textit{Time varying} & \textit{Piecewise homogeneous}\\
 		\hline
-		$ \psi_{Y,0} $ & Intrinsic $ R_0 $ for youths at epiweek 15, 2009  & 1.1 (1.0, 1.2) & 1.1 (1.0, 1.2)\\
-		$ \psi_{Y,18} $ & Intrinsic $ R_0 $ for youths at epiweek 34, 2009 & 1.5 (1.1, 1.8) & 1.6 (1.3, 1.9)\\
-		$ \psi_{Y,71} $ & Intrinsic $ R_0 $ for youths at epiweek 33, 2010 & 1.2 (0.93, 1.5) & 1.2 (0.94, 1.5)\\
-		$ \psi_{A,0} $ & Intrinsic $ R_0 $ for adults at epiweek 15, 2009  & 1.1 (1, 1.2) & 1.1 (1, 1.1)\\
-		$ \psi_{A,18} $ & Intrinsic $ R_0 $ for adults at epiweek 34, 2009 & 1.1 (0.95, 1.2) & 1.1 (0.96, 1.2)\\
-		$ \psi_{A,71} $ & Intrinsic $ R_0 $ for adults at epiweek 33, 2010 & 1.4 (1.1, 1.8) & 1.6 (1.4, 1.8)\\
-		$ 1/\mu_{Y} $ & Mean infectious period for youths (days) & 6.5 (4.3, 8.8) & 7.5 (5.5, 9.5)\\
-		$ 1/\mu_A $ & Mean infectious period for adults (days) & 2.6 (1.9, 3.4) & 2.9 (2.2, 3.8)\\
-		$ 1/\mu $ & Mean duration of immunity (years) & 9.3 (4.5, 21) & 9.9 (4.8, 21)\\
-		$ \nu $ & 1 - VE for susceptibility & 0.05 (0.01, 0.17) & 0.04 (0.01, 0.13)\\
-		$ \rho_Y $ & Mean case detection rate for youths & 0.008 (0.006, 0.012) & 0.008 (0.006, 0.011)\\
-		$ \rho_A $ & Mean case detection rate for adults & 0.003 (0.002, 0.005) & 0.003 (0.002, 0.004)\\		
-		$ 1/\sqrt{\phi_Y} $ & Negative binomial overdispersion for youths & 0.99 (0.82, 1.2) & 1 (0.85, 1.3)\\
-		$ 1/\sqrt{\phi_A} $ & Negative binomial overdispersion for adults & 0.97 (0.83, 1.2) & 1 (0.83, 1.2)\\
+		$ \psi_{Y,0} $ & Intrinsic $ R_0 $ for youths at epiweek 15, 2009  & 1.0 (0.99, 1.1) & 1.0 (0.95, 1.2)\\
+		$ \psi_{Y,18} $ & Intrinsic $ R_0 $ for youths at epiweek 35, 2009 & 1.1 (1.0, 1.1) & 1.5 (1.1, 1.8)\\
+		$ \psi_{Y,71}^{adj} $ & Adjusted intrinsic $ R_0 $ for youths at epiweek 33, 2010 & 1.2 (1.0, 1.3) & 1.2 (0.95, 1.5)\\
+		$ \psi_{A,0} $ & Intrinsic $ R_0 $ for adults at epiweek 15, 2009  & 1.0 (1.0, 1.1) & 1.0 (0.94, 1.1)\\
+		$ \psi_{A,18} $ & Intrinsic $ R_0 $ for adults at epiweek 34, 2009 & 1.0 (0.98, 1.1) & 1.1 (1.0, 1.2)\\
+		$ \psi_{A,71} $ & Adjusted intrinsic $ R_0 $ for adults at epiweek 33, 2010 & 1.3 (1.2, 1.5) & 1.4 (1.3, 1.6)\\
+		$ 1/\mu_{Y} $ & Mean infectious period for youths (days) & 2.5 (1.9, 3.5) & 5.5 (3.5, 7.5)\\
+		$ 1/\mu_A $ & Mean infectious period for adults (days) & 2.1 (1.8, 2.4) & 2.6 (2.2, 3.1)\\
+		$ 1/\mu $ & Mean duration of immunity (years) & 3.6 (2.4, 5.8) & 4.5 (2.8, 7.3)\\
+		$ \nu $ & 1 - VE for susceptibility & 0.19 (0.04, 0.54) & 0.05 (0.01, 0.19)\\
+		$ s_Y $ & \% susceptible youths, $ S^{(u)}_Y(t_0) / N_Y $ & 0.28 (0.21, 0.36) & 0.34 (0.26, 0.42) \\
+		$ s_A $ & \% susceptible adults, $ S_A^{(u)}(t_0) / N_A $ & 0.28 (0.21, 0.35) & 0.32 (0.24, 0.40) \\
+		$ \rho_Y $ & Mean case detection rate for youths & 0.013 (0.01, 0.02) & 0.015 (0.01, 0.02)\\
+		$ \rho_A $ & Mean case detection rate for adults & 0.008 (0.006, 0.01) & 0.0008 (0.006, 0.01)\\		
+		$ 1/\sqrt{\phi_Y} $ & Negative binomial overdispersion for youths & 0.71 (0.55, 0.92) & 1.1 (0.86, 1.3)\\
+		$ 1/\sqrt{\phi_A} $ & Negative binomial overdispersion for adults & 0.56 (0.37, 0.76) & 1 (0.82, 1.20)\\
 		\hline
 	\end{tabular}
 \end{sidewaystable}
 
-The effective reproduction numbers in the first season fell below one several months before the vaccination adjusted basic reproduction numbers. This suggests that the end of the first wave outbreak largely came about due to the depletion of susceptibles, rather than due to the aggressive vaccination campaign. Nevertheless, there is evidence to suggest that the vaccination campaign mitigated the severity of the epidemic. Table \ref{tab:flu_novacc_ests} presents the estimated increases in incidence and attack rates by age stratum and season, which are obtained by setting vaccine coverage to zero and simulating outbreaks from the posterior. Without vaccination, we estimate that an additional 8.1\% (95\% PPI: 4.0\%, 12.5\%) of the population would have become infected over the course of both seasons. The vaccination campaign likely mitigated the severity of the second wave, in particular. We estimate that the attack rate would have been 1.3--fold (95\% PPI: 1.1, 1.5) higher in the first season, and 2.1--fold (95\% PPI: 1.4, 3.3) higher in the second season absent the effects of vaccination. 
+The effective reproduction numbers in the first season fell below one several months before the vaccination adjusted basic reproduction numbers. This suggests that the end of the first wave outbreak largely came about due to the depletion of susceptibles, rather than due to the aggressive vaccination campaign. Nevertheless, there is evidence to suggest that the vaccination campaign mitigated the severity of the epidemic. Table \ref{tab:flu_novacc_ests} presents naive estimates of the increases in incidence and attack rates by age stratum and season, which are obtained by setting vaccine coverage to zero and simulating outbreaks from the posterior. Without vaccination, we estimate that an additional 8.1\% (95\% PPI: 4.0\%, 12.5\%) of the population would have become infected over the course of both seasons. The vaccination campaign likely mitigated the severity of the second wave, in particular. We estimate that the attack rate would have been 1.3--fold (95\% PPI: 1.1, 1.5) higher in the first season, and 2.1--fold (95\% PPI: 1.4, 3.3) higher in the second season absent the effects of vaccination. 
 
-In addition to mitigating the outbreak severity, we also find that the vaccination campaign may have delayed the second wave of the outbreak by roughly four months. Incidence peaked during the second season in late January to early February (posterior median: epiweek 6, 2011; 95\% BCI: epiweek 4, epiweek 7). Our model predicts that, absent vaccination, incidence would have peaked between the September and mid November (posterior median: epiweek 41, 2010; 95\% PPI: epiweek 38, epiweek 47). A similar finding was reported in \cite{shubin2016revealing}. We caution that this result should not be over--interpreted as it is most likely an artifact of the procedure used to predict the counterfactual outcomes. The posterior distribution of per--contact infection rates at the start of the third epoch are calibrated so that the effective reproduction number (\ref{eqn:Reff_t}), which accounts for vaccination, is roughly one (see Figure \ref{fig:flurwodetimevaryingplots}, second row). Setting vaccination to zero has the effect of artificially inflating the effective reproduction number, and hence the per--contact infection rate, by the fraction of the effective population size. Hence, the model mistakenly predicts that the epidemic in the second season takes off immediately.
+In addition to mitigating the outbreak severity, we also find that the vaccination campaign may have delayed the second wave of the outbreak by roughly four months. Incidence peaked during the second season in late January to early February (posterior median: epiweek 6, 2011; 95\% BCI: epiweek 4, epiweek 7). Our model predicts that, absent vaccination, incidence would have peaked between the September and mid November (posterior median: epiweek 41, 2010; 95\% PPI: epiweek 38, epiweek 47). A similar finding was reported in \cite{shubin2016revealing}. We caution that this result should not be over--interpreted as it is most likely an artifact of the procedure used to predict the counterfactual outcomes. The per--contact infection rates at the start of each epoch are calibrated such that the effective reproduction numbers (\ref{eqn:Reff_t}), which account for vaccination, are roughly one (see Figure \ref{fig:flurwodetimevaryingplots}, second row). Setting vaccination to zero has the effect of artificially inflating the effective reproduction number, and hence the per--contact infection rate, by the fraction of the effective population size. Hence, the model mistakenly predicts that the epidemic takes off immediately in the third epoch.
 
-We can make a rough adjustment to account for the artificial inflation in the FOI by multiplying the reproduction numbers by the reduction in $ R_0 $ that would have been achieved with vaccination in the absence of any infections or recoveries. Let $ \psi_{j,\ell}^{adj} $ denote the vaccination adjusted reproduction number, where
+We can make a rough adjustment to account for the artificial inflation in the FOI by rescaling the intrinsic reproduction numbers by the reduction in $ R_0 $ that would have been achieved with vaccination in the absence of any infections or recoveries. Let $ \psi_{j,\ell}^{adj} $ denote the vaccination adjusted reproduction number in week $ \ell $, which scaled as
 $$\psi_{j,\ell}^{adj} = \psi_{j,\ell}\left (1 - P^v_j(t_\ell) + \nu P^v_j(t_\ell)\right ).$$
-We set vaccination counts to zero as before and simulate outbreaks using the posterior distribution of the adjusted reproduction numbers. After adjustment, we predict that the attack rate would have been roughly 1.5--fold higher (95\% PPI: 1.1, 2.0) in the absence of vaccination, which is 
+We set vaccination counts to zero as before and simulate outbreaks using the posterior distribution of the adjusted reproduction numbers. After adjustment, we predict that the overall attack rate would have been roughly 1.2--fold higher (95\% PPI: 1.1, 1.5) in the absence of vaccination, which is lower than the unadjusted estimate. We predict that the attack rates would have been roughly 1.2--fold higher (95\% PPI: 1.1, 1.3) in the first season, and 1.3--fold higher (95\% PPI: 1.0, 1.8) in the second season were it not for the vaccination campaign. We also predict that the second season would have peaked between late December and late February (posterior median: epiweek 2, 2011; 95\% PPI: epiweek 51, 2010, epiweek 9, 2011). Thus, after adjusting for the artificial inflation of contact rates, we do not find evidence to suggest that the second epidemic wave would have taken off in the late summer or early fall. 
  
 \begin{table}[htbp]
-	\caption[Predicted incidence and attack rates in the absence of vaccination.]{Effects of vaccination; increases in cumulative incidence (thousands), absolute percent increase, and relative fold--increase in attack rates without vaccination by season and age stratum.}
+	\caption[Naive predictions of incidence and attack rates in the absence of vaccination.]{Naive predictions of incidence and attack rates in the absence of vaccination. Increases in cumulative incidence (thousands), absolute percent increase, and relative fold--increase in attack rates without vaccination by season and age stratum.}
 	\label{tab:flu_novacc_ests}
 	\centering\footnotesize
 	\begin{tabular}{lrrr}
@@ -453,84 +454,81 @@ We set vaccination counts to zero as before and simulate outbreaks using the pos
 		\cmidrule{2-4} 
 		& Incidence ($ \times10^3 $) & Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
 		\hline
-		Ages 0-19 & 58 (-14, 130) & 4.7 (-1.1, 10.7) & 1.4 (0.93, 2.1)\\
-		Ages 20+ & 170 (3.4, 340) & 4 (0.1, 8.2) & 1.6 (1, 2.6)\\
-		All ages & 220 (27, 430) & 4.2 (0.5, 8.1) & 1.5 (1.1, 2.3)\\
+		Ages 0-19 & 34 (16, 52) & 2.8 (1.3, 4.3) & 1.2 (1.1, 1.3)\\
+		Ages 20+ & 75 (36, 110) & 1.8 (0.9, 2.7) & 1.2 (1.1, 1.4)\\
+		All ages & 110 (54, 160) & 2 (1.0, 3.0) & 1.2 (1.1, 1.3)\\
 		\hline
 		&&&\\
 		&\multicolumn{3}{c}{\textit{Season 2}}\\
 		\cmidrule{2-4} 
 		&Incidence ($ \times10^3 $) & Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
 		\hline
-		Ages 0-19 & 27 (-10, 66) & 2.2 (-0.8, 5.4) & 1.5 (0.86, 2.6)\\
-		Ages 20+ & 47 (-46, 150) & 1.1 (-1.1, 3.7) & 1.3 (0.79, 2)\\
-		All ages & 75 (-37, 200) & 1.4 (-0.7, 3.7) & 1.3 (0.86, 2)\\
+		Ages 0-19 & 12 (-2.5, 37) & 1.0 (-0.2, 3.1) & 1.2 (0.97, 1.6)\\
+		Ages 20+ & 52 (2.7, 140) & 1.3 (0.1, 3.4) & 1.3 (1, 2)\\
+		All ages & 65 (3.3, 170) & 1.2 (0.1, 3.3) & 1.3 (1, 1.8)\\
 		\hline
 		&&&\\
 		&\multicolumn{3}{c}{\textit{Both seasons}}\\
 		\cmidrule{2-4} 
 		&Incidence ($ \times10^3 $)& Attack rate (Abs. \% diff.) & Attack rate (Fold--change) \\
 		\hline
-		Ages 0-19 & 86 (-4.2, 180) & 7 (-0.3, 14.6) & 1.4 (0.98, 2.1)\\
-		Ages 20+ & 220 (3.1, 430) & 5.3 (0.1, 10.5) & 1.5 (1, 2.2)\\
-		All ages & 300 (41, 560) & 5.7 (0.8, 10.5) & 1.5 (1.1, 2)\\
+		Ages 0-19 & 47 (18, 84) & 3.8 (1.5, 6.9) & 1.2 (1.1, 1.4)\\
+		Ages 20+ & 130 (48, 240) & 3.1 (1.2, 5.7) & 1.2 (1.1, 1.5)\\
+		All ages & 180 (70, 310) & 3.3 (1.3, 5.9) & 1.2 (1.1, 1.5)\\
 		\hline
 	\end{tabular}
 \end{table}
 
-The posterior predictive distributions for cases (Figure \ref{fig:flupostpredsrwode}) suggests that the model does a better job reconstructing the second epidemic season than the first, particularly among individuals ages 0--19. The model seems to substantially underestimate the peak of the outbreak in the first season. This might seem somewhat surprising given that the attack rates in the first season were quite high. One possibility is that heterogeneity in detection rates is confounding our estimates of the unobserved epidemic process. In their analysis of this data, \cite{shubin2016revealing} estimated that detection was positively associated with incidence. It is also possible that misspecification of the effective population size could be contributing to the lack of model fit. This might occur, for example, if a meaningful percentage of the population were geographically separated from the areas with intense transmission, or were immune due to exposure to A(H1N1) early in life (as might be the case for older individuals who had antibodies from the 1918 pandemic).  
+The posterior predictive distributions in Figure \ref{fig:flupostpredsrwode} suggest that the model does a better job reconstructing the second epidemic season than the first, particularly among individuals ages 0--19. The model appears to underestimate the peak of the outbreak among youths in the first season. One possibility is that heterogeneity in detection rates is confounding our estimates of the dynamics. In their analysis of this data, \cite{shubin2016revealing} estimated that detection was positively associated with incidence, and it is known that heterogeneity in detection rates can confound estimates of outbreak dynamics \cite{caley2008quantifying,glass2011estimating,white2010reporting}. Another possibility is that the assumption of constant within--epoch variance of log differences of time--varying reproduction numbers is leading to underestimation of the peak reproduction numbers. It is challenging to tune the GMRFs so that they capture changes in the dynamics over time but are not so flexible that we lose identifiability. It is possible that introducing additional changepoints in the time--varying dynamics, or using a model that allows for non--constant variance in the GMRF increments might alleviate this problem. Finally, it is possible that dichotomizing the population into two age strata does not adequately capture the age structure in contact patterns, incidence, and vaccination. A more granular model with additional age strata might be better able to capture the dynamics of the outbreak.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/flu_postpreds_rw_ode}
-	\caption{Posterior predictive distributions of a stratified SIRS ODE model with time varying dynamics for A(H1N1)pdm09 in Finland.}
+	\caption{Posterior predictive distributions of a stratified SIRS ODE model with time--varying dynamics for A(H1N1)pdm09 in Finland.}
 	\label{fig:flupostpredsrwode}
 \end{figure}
 
-\subsection{Piecewise Homogeneous Dynamics}
+\subsection{Comparison with Piecewise Homogeneous Dynamics}
 \label{subsec:flu_res_homog}
 
-For comparison, we fit a model where the outbreak dynamics were piecewise homogeneous (PH) in each epoch. The vaccination adjusted basic reproduction number was estimated for each of the three epochs, and the per--contact infection rate computed from the vaccination adjusted basic reproduction number. The rate of exogenous infection was also constant within each epoch, but no other aspects of the model dynamics differed from the previous model. Posterior distributions of time varying quantities are presented in Figure \ref{fig:fluconstodetimevaryingplots}, and posterior estimates of model parameters are summarized in Table \ref{tab:flu_param_ests}. 
+For comparison, we fit a model where the outbreak dynamics were piecewise homogeneous in each epoch. The basic reproduction numbers and rates of exogenous infection were estimated for each of the three epochs, but unlike the previous model were held constant within each epoch. The remaining aspects of the model structure and emission distributions were similar to the time--varying model. Estimates of incidence and attack rates are presented in Table \ref{tab:flu_attack_rates}, posterior distributions of time--varying quantities are presented in Figure \ref{fig:fluconstodetimevaryingplots}, and posterior estimates of model parameters are summarized in Table \ref{tab:flu_param_ests}. 
 
 \begin{sidewaysfigure}[htbp]
 	\centering
 	\includegraphics[width=0.95\linewidth]{figures/flu_const_ode_timevarying_plots}
-	\caption{Posterior estimates of time varying quantities under piecewise homogeneous dynamics. Estimated incidence (top row), effective reproduction numbers (second row), vaccination adjusted basic reproduction numbers (third row), and exogenous infections (bottom row). $ N_{SI}^j(t), $ is the weekly incidence in age stratum $ j $, $ R_{eff}(t) $ and $ R_{adj}(t) $ are the effective and vaccination--adjusted basic reproduction numbers, $ T_{eff}^j(t) $ is the type reproduction number for stratum $ j $ (expected \# of secondary infections in all strata for a single infected in stratum $ j $), and $ \alpha_j(t) $ is the rate of exogenous infectious contacts for stratum $ j $.}
+	\caption{Posterior estimates of time--varying quantities under piecewise homogeneous dynamics. Estimated incidence (top row), effective reproduction numbers (second row), vaccination adjusted basic reproduction numbers (third row), and exogenous infections (bottom row). $ N_{SI}^j(t), $ is the weekly incidence in age stratum $ j $, $ R_{eff}(t) $ and $ R_{adj}(t) $ are the effective and vaccination--adjusted basic reproduction numbers, $ T_{eff}^j(t) $ is the type reproduction number for stratum $ j $ (expected \# of secondary infections in all strata for a single infected in stratum $ j $), and $ \alpha_j(t) $ is the rate of exogenous infectious contacts for stratum $ j $.}
 	\label{fig:fluconstodetimevaryingplots}
 \end{sidewaysfigure}
 
+Attack rates under piecewise homogeneous dynamics were slightly lower than under time--varying dynamics (Table \ref{tab:flu_attack_rates}). Average dwell times in the infected and recovered states were longer, and the reduction in the rate of infectious contact for vaccinated individuals was substantially greater under piecewise homogeneous dynamics. Two striking differences in the time--varying aspects of the piecewise homogeneous model are in the rates of exogenous infection in each epoch, and the contributions of youths and adults to the force of infection. The highest rates of exogenous infectious contact under piecewise homogeneous dynamics are in the first epoch in the adult sub--population. This might seem paradoxical, but in fact it is an artifact of the inability of the piecewise homogeneous model to accommodate the sub--exponential dynamics that were observed in the first five months of the modeling period. It is somewhat more surprising that the piecewise homogeneous model suggests that transmission from infectious contact with youths alone could possibly have sustained the outbreak in the first epidemic season, and also possibly in the second season. Youths comprised roughly 20\% of the population and only 15\% of the contacts made by adults. Hence, it seems dubious that the effective type reproduction numbers for youths in the first season, and possibly in the second epidemic season, would have been above one. 
 
-The GMRF and PH models are qualitatively quite similar. Estimated attack rates were comparable, though perhaps slightly higher under the PH model. Estimates of the parameters that govern the model dynamics were also largely in agreement, with dwell times in the infectious and recovered states being slightly longer under the PH model. The rate of exogeneous infections among adults was higher under the PH model in the first epoch, but otherwise comparable. The posterior predictive performance of the PH model is nearly identical to that of the GMRF model (Figure \ref{fig:flu_rw_const_ppicomp}), though PPIs under the PH model tended to be slightly wider. 
-
-On the whole, the similarity between the PH and GMRF models is unsurprising given that the variability of the GMRF was fairly constrained and that we used fairly informative priors. However, it is also possible that the introduction of two changepoints in the PH model were sufficient to capture the largest changes in the outbreak dynamics and that within--season heterogeneity in the dynamics was minor. For comparison, we fit a supplementary PH model with only two epochs so that the dynamics were homogeneous over the entire first year. When we omit the changepoint at the start of the Finnish school year, 2009, the model estimates virtually no decline in attack rates for the second season (Figure \ref{fig:fluincid2epochode}). Inspection of the posterior predictive distributions for the two epoch PH model (Figure \ref{fig:flupostpred2epochode}) reveals much more severe misspecification in the sub--models for both age groups during the first epidemic season.  
+Unsurprisingly, the GMRF model is much better able to capture the shape to the outbreak than is the model with piecewise homogeneous dynamics. The posterior predictive distribution indicates that the model has particular difficulty modeling the first wave of the outbreak and predicted that incidence begin to increase exponentially much sooner than was observed. It is possible that delaying the second modeling epoch several weeks to, say, late September could mitigate this behavior. Directly comparing the posterior predictive p-values and posterior predictive interval widths with those of the GMRF model shows that the piecewise homogeneous produces substantially wider predictive intervals with no obvious improvement in accuracy (Figure \ref{fig:flu_rw_const_ppicomp}).
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\linewidth]{figures/flu_postpreds_const_ode}
+	\includegraphics[width=\linewidth]{figures/flu_postpreds_const_ode}
 	\caption{Posterior predictive distributions of a stratified SIRS ODE model with piecewise homogeneous dynamics over three epochs for A(H1N1)pdm09 in Finland.}
 	\label{fig:flupostpredsconstode}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\linewidth]{figures/flu_rw_const_ppicomp}
-	\caption[Comparison with posterior predictive p-values and relative predictive interval widths for SIRS models with time varying and piecewise homogeneous dynamics.]{Comparison of models with time--varying (GMRF) and piecewise homogeneous (PH) force of infection using posterior predictive p-values (PPPs) and relative posterior predictive interval (PPI) widths. Each point corresponds to the observed incidence in a given week. The X--Y coordinates give the PPPs under a model with a time--varying force of infection (FOI), where the vaccination adjusted R0 was modeled as a Gaussian Markov random field of order one, the PPP under a model with piecewise homogeneous per--contact infection rate. The size and color of each point corresponds to the relative PPI width, computed as $ (\widehat{\sigma}_{post,\ell}^{GMRF} - \widehat{\sigma}_{post,\ell}^{PH})/\widehat{\sigma}_{post,\ell}^{GMRF} $, and the sign of the relative width is further emphasized by the shape of the point. Red dots indicate that PPIs under time varying dynamics are wider and grey triangles indicate that PPIs under piecewise homogeneous dynamics are wider.}
+	\includegraphics[width=\linewidth]{figures/flu_rw_const_ppicomp}
+	\caption[Comparison with posterior predictive p-values and relative predictive interval widths for SIRS models with time--varying and piecewise homogeneous dynamics.]{Comparison of models with time--varying (GMRF) and piecewise homogeneous (PH) dynamics using posterior predictive p-values (PPPs) and relative posterior predictive interval (PPI) widths. Each point corresponds to the observed incidence in a given week. The X--Y coordinates give the PPPs under time--varying and piecewise homogeneous dynamics, respectively. The size and color of each point corresponds to the relative PPI width, computed as $ (\widehat{\sigma}_{post,\ell}^{GMRF} - \widehat{\sigma}_{post,\ell}^{PH})/\widehat{\sigma}_{post,\ell}^{GMRF} $, and the sign of the relative width is further emphasized by the shape of the point. Red dots indicate that PPIs under piecewise homogeneous dynamics are wider and grey triangles indicate that PPIs under time--varying dynamics are wider.}
 	\label{fig:flu_rw_const_ppicomp}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\linewidth]{figures/flu_incid_2epoch_ode}
-	\caption{Posterior distributions of latent incidence in a stratified SIRS ODE model with piecewise homogeneous dynamics over two epochs for A(H1N1)pdm09 in Finland.}
-	\label{fig:fluincid2epochode}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\linewidth]{figures/flu_postpred_2epoch_ode}
-	\caption{Posterior predictive distributions of a stratified SIRS ODE model with piecewise homogeneous dynamics over two epochs for A(H1N1)pdm09 in Finland.}
-	\label{fig:flupostpred2epochode}
 \end{figure}
 
 \section{Discussion}
 \label{sec:flu_discussion}
+
+We began this chapter by highlighting the importance of allowing for the possibility that transmission dynamics might change over time. We used the LNA framework developed in Chapter \ref{chap:lna_for_sems} to fit an SIRS model with time--varying dynamics, where time--varying reproduction numbers were flexibly modeled using a Gaussian Markov random field that penalized the magnitude of week--to--week changes in basic reproduction numbers. We compared the results to those obtained using an SIRS model with time homogeneous dynamics and found that the model with time homogeneous dynamics, which unlike the flexible model was unable to accurately reconstruct the unobserved incidence, the time--varying aspects of the transmission dynamics, or even static model parameters.
+
+We then developed an age--vaccination stratified SIRS model for the spread of pandemic A(H1N1) influenza in Finland over two epidemic waves. We allowed for the possibility that various static and temporal aspects of transmission dynamics were different in youths and adults, and incorporated information about the contact patterns between individuals of different ages. The model also incorporated uncertainty about vaccine efficacy and loss of immunity, rather than fix these quantities as was done in previous analyses \cite{shubin2016revealing}. Critically, the model allowed for time--varying dynamics within each of three epochs by assigning GMRF shrinkage priors to the intrinsic reproduction numbers and rates of exogenous infection in each age stratum. This enabled the model to greatly outperform a piecewise homogeneous model that, in some aspects, yielded somewhat unreasonable estimates. 
+
+Due to the complexity of the model, we opted to use the ODE representation in fitting it. The lower computational burden involved in fitting the ODE model allowed us to more quickly iterate through various  parameterizations and to explore the effects of different priors, and in particular of alternative GMRF formulations. Run times for the model were on the order of 1--2 hours. We are confident that the model could also be fit using the LNA with some additional effort. One future line of inquiry is in comparing the statistical performance of models with varying dynamics fit via the LNA and ODE. It would be useful to know the extent to which randomness in the latent epidemic process and the time--varying aspects of its dynamics are separately identifiable from incidence data, especially if there are situations where the latent process and its dynamics are not separately identifiable.
+
+A strength of the analysis is that the two epidemic seasons were jointly modeled along with the pre--epidemic and inter--season periods. This provides us with a principled structure for incorporating uncertainty about the state of the population at the start of each epidemic wave. This is critical to making accurate inferences about the true incidence and model dynamics, especially during the second epidemic season where the dynamics inherently depend on the attack rate during the first season and the fraction of individuals who lost immunity during the inter--season period. Moreover, the assumption that vaccination was independent of the infection process implies that the distribution of vaccine doses at the beginning of the second season is also tied up with the attack rate in the first season (e.g., a low attack rate in the first season implies that there are many vaccinated susceptibles to start the second season). For these reasons, it is important to jointly model both epidemic seasons.
+
+There are a few aspects of the analysis that we point to as weaknesses and that should be improved in future work. First, it is important to recognize that our estimates of the cumulative incidence are predicated on the correctness of our assumptions about the effective population size. In a supplementary analysis, we found that centering the prior for the susceptible fraction of youths at 50\% instead of 25\%, while holding the prior for the susceptible fraction of adults constant, yielded estimates of cumulative incidence among youths that were roughly double the estimates reported in this chapter (Section \ref{subsec:flu_highsusc_sensitivity}). Frankly, it is doubtful that the reporting rates and true incidence can be unambiguously estimated from partially observed incidence data without strong assumptions when detection rates are low and in the absence of prevalence data to anchor estimates of the total outbreak size. We attempted to set the priors for the effective population size in a principled way based on known final size relations for SIR models combined with, what we felt, were reasonable assumptions about detection rates (Section \ref{subsubsec:flu_effpop_priors}). Our estimates are also in line with estimated attack rates for A(H1N1)pdm09 in Finland \cite{cuesta2016pandemic,shubin2014estimating,shubin2014estimating} and in other settings \cite{dawood2012estimated,opatowski2011transmission}. In this chapter, we did not incorporate data on severe cases and hospitalizations, which would help to calibrate inference of the total outbreak size, assuming that the case--hospitalization ratio is stable. This data is available and was previously analyzed in \cite{shubin2016revealing}. 
+ 
+Another aspect of the model that could be improved is the coarseness of the age structure. We dichotomized the population for simplicity and computational expediency. However, further stratifying the population would allow us to more faithfully represent age structure in contact rates, vaccination, and transmission dynamics. We suggest that, at a minimum, individuals age 0--4 could be split from individuals age 5--19, and that individuals of ages 65+ be split from other adults based on differences in the timing and coverage of vaccinations, observed patterns in attack rates, and contact patterns. 
