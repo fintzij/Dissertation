@@ -10,9 +10,9 @@
 We simulated an outbreak with SIRS dynamics in a population of $ N= 100,000$ individuals, ten of whom were initially infected, spanning two wave of the outbreak over thirty weeks. The mean infectious period duration was one week, and the mean duration of immunity was four weeks. The basic reproduction numbers of the outbreak, and hence the per--contact infectivity rates, varied sinusoidally with additive noise, over the course of the outbreak:
 \begin{equation}
 \label{eqn:sinfoi_true_R0t}
-R0(t) = \beta(t) N / \mu = 2 + 0.35(\sin(t / 3.5) + 0.1Z_t),
+R_0(t) = \beta(t) N / \mu = 2 + 0.35(\sin(t / 3.5) + 0.1Z_t),
 \end{equation} 
-where $ Z_t \sim N(0,1)$. The per--contact infection rates were then obtained as $ \beta(t) = R0(t) \mu / N $ The observed incidence was a negative binomial sample of the true incidence with mean case detection rate $ \rho $ and overdispersion parameter $ \phi $: 
+where $ Z_t \sim N(0,1)$.  The per--contact infection rates are given by $ \beta(t_\ell) = R_0(t_\ell) \mu / N $. The observed incidence was a negative binomial sample of the true incidence with mean case detection rate $ \rho $ and overdispersion parameter $ \phi $: 
 \begin{equation}
 Y_\ell \sim \mr{Neg.Binom.}\left (\mu  = \rho(N_{SI}(t_\ell) - N_{SI}(t_{\ell-1})), \sigma^2 = \mu(1 + \mu /\phi) \right ).
 \end{equation}
@@ -32,7 +32,16 @@ Y_\ell \sim \mr{Neg.Binom.}\left (\mu  = \rho(N_{SI}(t_\ell) - N_{SI}(t_{\ell-1}
 	\end{tabular}
 \end{table}
 
-We fit two models, one where the force of infection was constant over the course of the outbreak and another where the rates of infectious contact were time varying, with log--differences in the basic reproduction numbers penalized using a first order Gaussian Markov random field (GMRF) shrinkage prior where the standard deviation of the log--differences is given by $ \sigma_{RW1} $ (analogous to the models in Section \ref{sec:flu_tparam_models}). We employed non--centered parameterizations for both the LNA and the GMRF. The models were fit under informative priors, summarized in Table \ref{tab:tparam_sim_priors}. We ran five MCMC chains per model for 100,000 iterations per chain, alternating between five elliptical slice sampling (EllipSS) updates and one multivariate normal slice sampling (MVNSS) updates per MCMC iteration. The estimation scale on which the MCMC explored the parameter space was given by $\lbrace \log(R0(t_0)), \log(1/mu), \logit(\rho), 1/\sqrt(\phi) \rbrace$. The MVNSS proposal covariance matrix was adapted throughout the first 50,000 iterations, samples from which were subsequently discarded, using the gain factor sequence: the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.99}$. The contribution of isotropic Gaussian noise to the MVNSS proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}.
+We fit two models, one where the force of infection was constant over the course of the outbreak and another where the rates of infectious contact were time varying, with log--differences in the basic reproduction numbers penalized using a first order Gaussian Markov random field (GMRF) shrinkage prior where the standard deviation of the log--differences is given by $ \sigma_{GMRF} $ (analogous to the models in Section \ref{sec:flu_tparam_models}). 
+The first order GMRF shrinkage prior penalizes the magnitude of one--step differences in log reproduction numbers, $ \log(R_0(t_\ell)) - \log(R_0(t_{\ell-1}))\sim N(0,\sigma_{GMRF}^2) $. Sample paths of the GMRF are obtained by sampling the initial state and differences,
+\begin{align}
+\log(R_0(t_0)) &\sim N(\mu_0 = 0, \sigma_{0}^2 = 0.5^2)\\ 
+\log(\sigma_{GMRF}) &\sim N(-2.75,\ 0.25^2)\\
+\log(R_0(t_\ell)) - \log(R_0(t_{\ell-1})) &\sim N(0, \sigma_{GMRF}^2) \\
+\log(R_0(t_\ell)) &= \log(R_0(t_0)) + \sum_{k=1}^{\ell}\log(R_0(t_\ell)) - \log(R_0(t_{\ell-1})),\hspace{0.2in} \ell = 1,\dots,30
+\end{align}
+
+We used non--centered parameterizations for both the LNA and the GMRF. The models were fit under informative priors, summarized in Table \ref{tab:tparam_sim_priors}. We ran five MCMC chains per model for 100,000 iterations per chain, alternating between five elliptical slice sampling (EllipSS) updates and one multivariate normal slice sampling (MVNSS) updates per MCMC iteration. The estimation scale on which the MCMC explored the parameter space was given by $\lbrace \log(R0(t_0)), \log(1/mu), \logit(\rho), 1/\sqrt(\phi) \rbrace$. The MVNSS proposal covariance matrix was adapted throughout the first 50,000 iterations, samples from which were subsequently discarded, using the gain factor sequence: the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.99}$. The contribution of isotropic Gaussian noise to the MVNSS proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}.
 
 \newpage
 \subsection{Additional results}
@@ -164,24 +173,69 @@ Jointly sampling the LNA draws and the values of a GMRF, $ \bF $, in addition to
 \label{subsec:flu_mcmc_details}
 We fit age--vaccination stratified SIRS ODE models with time varying dynamics to pandemic A(H1N1) influenza incidence data. The vaccination adjusted reproduction numbers were modeled using either a GMRF or as piecewise homogeneous within three epochs. The models were fit using the same prior regimes, given in Table \ref{tab:flu_priors}. We ran five chains for each model, initialized at random parameter values, for 100,000 iterations per chain. Model parameters (excluding noncentered GMRF draws and hyperparameters, as described in Section \ref{subsec:flu_mcmc}) were jointly updated via MVNSS (see Section \ref{subsubsec:mvn_slice_sampling}). The empirical covariance for the MVNSS algorithm was adapted over the first 50,000 iterations using the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.9}$. The contribution of isotropic Gaussian noise to the proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. In the GMRF model, the non--centered GMRF draws were updated via ElliptSS along with their hyperparameters, hence MCMC alternated between one ElliptSS and one MVNSS update per MCMC iteration. The ElliptSS bracket width was reset after the first 5,000 MCMC iterations to $ \omega = 2\sqrt{2\log(10)}\sigma_{ElliptSS}$, where $ \sigma_{ElliptSS} $ was the standard deviation of the accepted angles over the initial iterations. The MCMC estimation scales for the non--GMRF parameters were parameterized as in Table \ref{tab:flu_params_est}, and the GMRF was parameterized using the NCP given in Section \ref{subsec:flu_gmrf}. Convergence was assessed visually by inspection of traceplots of posterior samples. The models took between roughly one hour to run.
 
+\newpage
 \subsection{Prior Specification}
 \label{subsec:flu_priors}
 
 \subsubsection{Priors for effective population sizes}
 \label{subsubsec:flu_effpop_priors}
 
+At the start of the modeling period, individuals in the population were assigned to either be susceptible or detached from the transmission process. The fraction of the population that was susceptible defines the effective population size. We identify the scale of the prior for the susceptible fraction of the population by inflating the total number of cases that were detected in each season by the case detection rate and the fraction of the effective population size that we would expect to be infected in a deterministic outbreak with SIR dynamics over a reasonable range of basic reproduction numbers. We ignored age structure for the sake of simplicity and assumed that the same fraction of youths and adults were initially susceptible. Results from a sensitivity analysis in which we assumed that a larger fraction of youths were initially susceptible are presented in Section \ref{subsec:flu_highsusc_sensitivity}.
+
+The final size relation for the SIR model \cite{miller2012note} relates the fraction of the population that is infected under SIR dynamics, $ \pi $, to the basic reproduction number via: 
+$$(1-\pi) = \exp^{-\pi R_0}.$$
+Roughly 10,000 cases were detected in all age groups over the course of both seasons. If the reproduction numbers and detection rates were stable across seasons, which might not be unreasonable if the lower attack rate in the second season is the result of depletion of susceptibles in the first season, a very crude estimate of the number of susceptibles is $$\what{s} = \frac{10000}{\rho(1-\pi)},$$
+where $ \rho $ is the detection rate. Hence, the fraction of the population that is in the susceptible compartment is $ \what{s}N $. Effective population sizes for different reproduction numbers that are typical of A(H1N1)pdm09 \cite{biggerstaff2014estimates} and detection rates \cite{shubin2016revealing} are given in Table \ref{tab:flu_effpop_priors}. 
+
+In the main analysis presented in Section \ref{sec:flu_results}, we used a multivariate normal approximation to a dirichlet--multinomial distribution for the initial distribution of individuals of each age stratum. The hyperparameter, $$ \balpha_j = ({S_{j,0}^{(u)}} = 25, {I_{j,0}^{(u)}}=0,{R_{j,0}^{(u)}}=0,D_{j,0}^{(v)} = 75), $$ was centered so that 25\% of each stratum was initially susceptible, with the central 80\% of the prior mass between 20\% and 30\%. 
+
+\begin{table}[htbp]
+	\caption{Effective fraction of the population that is susceptible for different reproduction numbers and dection rates.}
+	\label{tab:flu_effpop_priors}
+	\centering
+	\begin{tabular}{lcccc}
+		& \multicolumn{4}{c}{\textbf{Detection rate} ($ \rho $)}\\
+		\cmidrule{2-5}$ \mb{R_0} $&  0.0075 & 0.01 & 0.015 &0.02\\
+		\hline
+		1.25 & 0.40 & 0.30 & 0.20 & 0.15\\
+		1.5 & 0.60 & 0.45 & 0.30 & 0.22\\
+		1.75 & 0.87 & 0.65 & 0.43 & 0.33\\
+		\hline
+	\end{tabular}
+\end{table}
+
 \subsubsection{Priors for time--homogeneous parameters}
 \label{subsubsec:flu_param_priors_homog}
 
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
-		\caption[Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland.]{Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland, prior distributions used in the main analysis. Vaccination adjusted intrinsic reproduction numbers are defined as in equation \ref{eqn:R0t_vacc}.}
+		\caption[Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland.]{Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland, prior distributions used in the main analysis. Vaccination adjusted intrinsic reproduction numbers are defined as in equation (\ref{eqn:R0_adj}). The form of the parameter listed in the leftmost column corresponds to the estimation scale used in the MCMC. All parameters in this table were jointly updated using multivariate normal slice sampling.}
 		\label{tab:flu_priors}
 		\scriptsize
 		\centering
 		\begin{tabular}{lllrr}
 			\hline
-			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
+			\textbf{Param.} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (90\% Interval)} & \textbf{References/Justification} \\ \hline
+			$ \log(\psi_{Y,0}) $ & Intrinsic reproduction \# & $N$(log(1.1), $ 0.06^2 $) & $ \psi^{adj}_{Y,0} = 1.10\ (1.00, 1.21) $ & Nearly endemic dynamics \\ 
+			$ \log(\psi_{Y,19}) $ & Intrinsic reproduction \# & $N$(log(1.5), $ 0.175^2 $) & $ \psi_{Y,19} = 1.50\ (1.12, 2.00) $ & \cite{biggerstaff2014estimates} \\ 
+			$ \log(\psi^{adj}_{Y,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.3), $ 0.11^2 $) & $ \psi^{adj}_{Y,71} = 1.3\ (1.08, 1.56) $ & \cite{biggerstaff2014estimates} and  $ \psi^{adj}_{Y,71} < \psi^{adj}_{A,71} $ \\ 
+			$ \log(\psi^{adj}_{A,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{A,0} = 1.10\ (1.00, 1.21) $ & Nearly endemic dynamics \\ 
+			$ \log(\psi^{adj}_{A,19}) $ & Intrinsic reproduction \# & $N$(log(1.3), $ 0.11^2 $) & $ \psi^{adj}_{A,19} = 1.3\ (1.10, 1.78) $ & \cite{biggerstaff2014estimates} and$ \psi^{adj}_{A,19} < \psi^{adj}_{Y,19} $ \\ 
+			$ \log(\psi^{adj}_{A,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.4), $ 0.145^2 $) & $ \psi^{adj}_{A,71}= 1.4\ (1.10, 1.78) $ & \cite{biggerstaff2014estimates} and $ \psi^{adj}_{A,71} > \psi^{adj}_{Y,71} $ \\
+			$ \log(\alpha_{Y,0}N_Ys_y) $ & Scaled rate of exogenous infection & $ N $(1.8, $ 0.54^2 $) & 6.0 (2.5, 14.7) & Small w.r.t. $ s_YN_Y $ \\ 
+			$ \log(\alpha_{Y,19}\alpha_{Y,0}N_Ys_Y) $ & Scaled rate of exogenous infection& $ N $(2.3, $ 0.54^2 $) & 10.0 (4.1, 24.2) & Small w.r.t. $ s_YN_Y $ \\
+			$ \log(\alpha_{Y,71}\alpha_{Y,0}N_Ys_Y) $ &Scaled rate of exogenous infection& $ N $(1.6, $ 0.54^2 $) & 5.0 (2.0, 12.0) & Small w.r.t. $ s_YN_Y $\\
+			$ \log(\alpha_{A,0}\alpha_{A,0}N_As_A) $ & Scaled rate of exogenous infection & $ N $(3, $ 0.54^2 $) & 20 (8.2, 48.8) & Small w.r.t. $ s_AN_A $\\ 
+			$ \log(\alpha_{A,19}N_As_A) $ & Scaled rate of exogenous infection& $ N $(3.2, $ 0.54^2 $) & 24.5 (10.1, 59.6) & Small w.r.t. $ s_AN_A $\\
+			$ \log(\alpha_{A,71}N_as_A) $ & $ N $(2, $ 0.54^2 $) & Scaled rate of exogenous infection&  7.4 (3.0, 18.0) & Small w.r.t. $ s_AN_A $ \\
+			$ 7/\mu_{Y}-1 $ & Avg. infectious period, youths (days--1) & $N$(0.41, 0.32$ ^2 $) & $  7/\mu_Y =$ 2.5 (1.9, 3.55) & \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
+			$ 7/\mu_A -1 $ & Avg. infectious period, adults (days--1) & $N$(0.22, 0.165$ ^2 $) & $ 7/\mu_A =$ 2.25 (1.95, 2.63) & $ 1/\mu_Y > 1/\mu_A $,  \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
+			$ \log(52/\omega) $ & Mean duration of immunity (years) & $N$(1.1, 0.3$ ^2 $) & $ 52/\omega = 3 $ (1.8, 4.9) & $ \Pr(\text{Lose immunity in 1 year}) = 0.3 $ \\
+			$ \logit(\nu) $ & 1 - VE for susceptibility & $N$(-1.39, 1) & $ \nu = 0.2\ (0.05,\ 0.56) $ & \cite{lansbury2017effectiveness,syrjanen2014effectiveness}\\
+			$ \logit(\rho_Y) $ & Mean case detection rate, youths & $ N(\logit(0.0125),\ 0.31^2) $& $ \rho = 0.0125\ (0.0075,\ 0.02) $ & \cite{shubin2016revealing}\\
+			$ \logit(\rho_A) $ & Mean case detection rate, adults & $ N(\logit(0.01),\ 0.31^2) $& $ \rho = 0.01\ (0.006,\ 0.017) $ & $ \rho_A < \rho_Y $, \cite{shubin2016revealing}\\
+			$ \log(1/\sqrt{\phi_Y}) $ & Neg. binom. overdispersion, youths & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
+			$ \log(1/\sqrt{\phi_A}) $ & Neg. binom. overdispersion, adults & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
 			\hline
 		\end{tabular}
 	\end{fullpage}
@@ -190,13 +244,60 @@ We fit age--vaccination stratified SIRS ODE models with time varying dynamics to
 \subsubsection{Priors for GMRFs}
 \label{subsubsec:flu_gmrf_priors}
 
+\begin{table}
+	\caption[Priors for initial values of GMRFs for the numbers of exogenous infection in each age stratum.]{Priors for initial values of GMRFs for the numbers of exogenous infection in each age stratum. Parameters are subscripted by age stratum and week number, indexed from epiweek 15, 2009.}
+	\label{tab:flu_alpha_gmrf_initpriors}
+	\centering
+	\begin{tabular}{lrr}
+		\hline
+		\textbf{Parameter} & \textbf{Prior} & \textbf{Median (90\% Interval)} \\ 
+		$ \log(\alpha_{Y,0}) $ & $ N $(1.8, $ 0.54^2 $) & 6.0 (2.5, 14.7) \\ 
+		$ \log(\alpha_{Y,19}) $ & $ N $(2.3, $ 0.54^2 $) & 10.0 (4.1, 24.2) \\
+		$ \log(\alpha_{Y,71}) $ & $ N $(1.6, $ 0.54^2 $) & 5.0 (2.0, 12.0) \\
+		$ \log(\alpha_{A,0}) $ & $ N $(3, $ 0.54^2 $) & 20 (8.2, 48.8) \\ 
+		$ \log(\alpha_{A,19}) $ & $ N $(3.2, $ 0.54^2 $) & 24.5 (10.1, 59.6) \\
+		$ \log(\alpha_{A,71}) $ & $ N $(2, $ 0.54^2 $) & 7.4 (3.0, 18.0) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	\caption[Priors for standard deviations of GMRF increments of reproduction numbers and rates of exogenous infection.]{Priors for standard deviations of GMRF increments of reproduction numbers and rates of exogenous infection. Parameters are superscripted by whether they apply to a GRMF for intrinsic reproduction numbers, $ \psi $, or for numbers of exogenous infections, $ \alpha $, and are subscripted by age stratum and week number, indexed from epiweek 15, 2009.}
+	\label{key}
+	\centering
+	\begin{tabular}{lrr}
+		\hline
+		\textbf{Parameter} & \textbf{Prior} & \textbf{Median (90\% Interval)} \\ 
+		\hline
+		$ \log(\sigma^{\psi}_{Y,0}) $ & $ N(-5.25, 0.125^2) $ & 0.0052 (0.0043, 0.0064)\\
+		$ \log(\sigma^{\psi}_{Y,19}) $ & $ N(-4, 0.125^2) $ & 0.018 (0.015, 0.022)\\
+		$ \log(\sigma^{\psi}_{Y,71}) $ & $ N(-5.25, 0.125^2) $ & 0.014 (0.012, 0.018)\\
+		$ \log(\sigma^{\psi}_{A,0}) $ & $ N(-5.25, 0.125^2) $ & 0.0052 (0.0043, 0.0064)\\
+		$ \log(\sigma^{\psi}_{A,19}) $ & $ N(-3.75, 0.125^2) $ & 0.024 (0.019, 0.029)\\
+		$ \log(\sigma^{\psi}_{A,71}) $ & $ N(-5.25, 0.125^2) $ & 0.014 (0.012, 0.018)\\
+		$ \log(\sigma^{\alpha}_{Y,0}) $ & $ N(-4.25, 0.25^2) $ & 0.014 (0.0095, 0.022)\\
+		$ \log(\sigma^{\alpha}_{Y,19}) $ & $ N(-3.75, 0.25^2) $ & 0.024 (0.016, 0.035)\\
+		$ \log(\sigma^{\alpha}_{A,71}) $ & $ N(-4, 0.25^2) $ & 0.018 (0.012, 0.028)\\
+			$ \log(\sigma^{\alpha}_{Y,0}) $ & $ N(-4.25, 0.25^2) $ & 0.014 (0.0095, 0.022)\\
+		$ \log(\sigma^{\alpha}_{A,19}) $ & $ N(-3.75, 0.25^2) $ & 0.024 (0.016, 0.035)\\
+		$ \log(\sigma^{\alpha}_{A,71}) $ & $ N(-4, 0.25^2) $ & 0.018 (0.012, 0.028)\\
+		\hline
+	\end{tabular}
+\end{table}
+
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{figures/flu_RW1_prior}
-	\caption{Induced prior distribution of for vaccination adjusted basic reproduction numbers A(H1N1)pdm09 influenza in Finland.}
+	\caption[Induced prior distribution of for vaccination adjusted basic reproduction numbers A(H1N1)pdm09 influenza in Finland.]{Induced prior distribution of for vaccination adjusted basic reproduction numbers A(H1N1)pdm09 influenza in Finland. Shaded bands correspond to the central 50\%, 80\%, and 95\% prior probability intervals. }
 	\label{fig:flurw1prior}
 \end{figure}
 
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figures/flu_alpha_t_prior}
+	\caption[Induced prior distribution of for effective numbers of exogenous infections among youths and adults.]{Induced prior distribution of for the effective number of exogenous infections among youths and adults. Shaded bands correspond to the central 50\%, 80\%, and 95\% prior probability intervals. }
+	\label{fig:flualphaprior}
+\end{figure}
 
 \subsection{Additional Results}
 \label{subsec:flu_additional_results}
@@ -225,13 +326,27 @@ We fit age--vaccination stratified SIRS ODE models with time varying dynamics to
 
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
-		\caption[Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland.]{Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland, prior distributions used in the main analysis. Vaccination adjusted intrinsic reproduction numbers are defined as in equation \ref{eqn:R0t_vacc}.}
+		\caption[Parameters and priors for age--vaccination stratified piecewise homogeneous SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland.]{Parameters and priors for age--vaccination stratified piecewise homogeneous SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland, prior distributions used in the main analysis. Vaccination adjusted intrinsic reproduction numbers are defined as in equation (\ref{eqn:R0_adj}).}
 		\label{tab:flu_priors_const}
 		\scriptsize
 		\centering
 		\begin{tabular}{lllrr}
 			\hline
 			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
+			$ \log(\psi^{adj}_{Y,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{Y,0} = 1.05\ (1.00, 1.09) $ & Nearly endemic dynamics \\ 
+			$ \log(\psi^{adj}_{Y,19}) $ & Intrinsic reproduction \# & $N$(log(1.075), $ 0.03^2 $) & $ \psi^{adj}_{Y,19} = 1.075\ (1.00, 1.09) $ & Nearly endemic and $ \psi^{adj}_{Y,19} > \psi^{adj}_{Y,0} $ \\ 
+			$ \log(\psi^{adj}_{Y,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.2), $ 0.06^2 $) & $ \psi^{adj}_{Y,71} = 1.2\ (1.09, 1.32) $ & Nearly endemic with 10\% immune \\ 
+			$ \log(\psi^{adj}_{A,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{A,0} = 1.05\ (1.00, 1.09) $ & Nearly endemic dynamics \\ 
+			$ \log(\psi^{adj}_{A,19}) $ & Intrinsic reproduction \# & $N$(log(1.075), $ 0.03^2 $) & $ \psi^{adj}_{A,19} = 1.075\ (1.00, 1.09) $ & Nearly endemic and $ \psi^{adj}_{A,19} > \psi^{adj}_{A,0} $ \\ 
+			$ \log(\psi^{adj}_{A,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.3), $ 0.07^2 $) & $ \psi^{adj}_{A,71}= 1.3\ (1.16, 1.46) $ & Nearly endemic w/ 10\% immune, $ \psi^{adj}_{A,71} > \psi^{adj}_{Y,71} $ \\
+			$ 7/\mu_{Y}-1 $ & Avg. infectious period, youths (days--1) & $N$(0.41, 0.32$ ^2 $) & $  7/\mu_Y =$ 2.5 (1.9, 3.55) & \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
+			$ 7/\mu_A -1 $ & Avg. infectious period, adults (days--1) & $N$(0.22, 0.165$ ^2 $) & $ 7/\mu_A =$ 2.25 (1.95, 2.63) & $ 1/\mu_Y > 1/\mu_A $,  \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
+			$ \log(52/\omega) $ & Mean duration of immunity (years) & $N$(1.1, 0.3$ ^2 $) & $ 52/\omega = 3 $ (1.8, 4.9) & $ \Pr(\text{Lose immunity in 1 year}) = 0.3 $ \\
+			$ \logit(\nu) $ & 1 - VE for susceptibility & $N$(-1.39, 1) & $ \nu = 0.2\ (0.05,\ 0.56) $ & \cite{lansbury2017effectiveness,syrjanen2014effectiveness}\\
+			$ \logit(\rho_Y) $ & Mean case detection rate, youths & $ N(\logit(0.0125),\ 0.31^2) $& $ \rho = 0.0125\ (0.0075,\ 0.02) $ & \cite{shubin2016revealing}\\
+			$ \logit(\rho_A) $ & Mean case detection rate, adults & $ N(\logit(0.01),\ 0.31^2) $& $ \rho = 0.01\ (0.006,\ 0.017) $ & $ \rho_A < \rho_Y $, \cite{shubin2016revealing}\\
+			$ \log(1/\sqrt{\phi_Y}) $ & Neg. binom. overdispersion, youths & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
+			$ \log(1/\sqrt{\phi_A}) $ & Neg. binom. overdispersion, adults & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
 			\hline
 		\end{tabular}
 	\end{fullpage}
@@ -252,5 +367,68 @@ We fit age--vaccination stratified SIRS ODE models with time varying dynamics to
 	\label{fig:fluconstpairs}
 \end{sidewaysfigure}
 
+\newpage
 \subsection{Sensitivity to Distribution of Initial Numbers of Susceptibles}
 \label{subsec:flu_highsusc_sensitivity}
+
+We fit a supplementary model to explore the sensitivity of estimates of model parameters and incidence to the prior for the susceptible fraction of each age stratum. We again used a multivariate normal approximation to a dirichlet--multinomial distribution for the initial distribution of individuals. The hyperparameter for youths was $$ \balpha_Y = ({S_{Y,0}^{(u)}} = 25, {I_{Y,0}^{(u)}}=0,{R_{Y,0}^{(u)}}=0,D_{Y,0}^{(v)} = 25), $$ so that 50\% of youths were initially susceptible, with the central 80\% of the prior mass between 40\% and 60\%. The hyperparameter for adults was $$ \balpha_A = ({S_{A,0}^{(u)}} = 20, {I_{A,0}^{(u)}}=0,{R_{A,0}^{(u)}}=0,D_{A,0}^{(v)} = 60), $$ so that 25\% of each stratum was initially susceptible, with the central 80\% of the prior mass between 19\% and 31\%. The other priors and various aspects of the model and MCMC were otherwise the same as in the main model with time varying dynamics.
+
+The effect of centering the prior for the fraction of youths who were susceptible, but roughly holding constant the fraction of susceptible adults (the prior in the sensitivity analysis was slightly more diffuse), is that attack rates among youths are inflated, while attack rates among adults are largely similar (Table \ref{tab:flu_attack_rates_sensitivity}). Estimates of the rate parameters governing the model dynamics are largely unchanged from estimates from the main analysis (Table \ref{tab:flu_param_ests_sensitivity}). However, we find that the detection rate among youths is meaningfully lower than the estimated mean case detection rate in the main analysis, which is unsurprising since the estimated incidence is higher. The corresponding estimates for adults are essentially unchanged. In both analyses, the estimated susceptible fractions of each age stratum essentially recover the prior. This suggests that there is not enough signal in the partially observed incidence data to disentangle the effective population size and detection rate. 
+
+
+\begin{sidewaystable}[htbp]
+	\caption[Estimated A(H1N1) infections and attack rates by season and age stratum.]{Estimated infections (thousands) and attack rates by season and age stratum. Attack rates are calculated as the number of infections divided by the size of each stratum, assuming that cases are unique.}
+	\label{tab:flu_attack_rates_sensitivity}
+	\centering\footnotesize
+	\begin{tabular}{lrrrrrr}
+		\hline
+		&\multicolumn{6}{c}{\textbf{Main analysis}}\\
+		\cmidrule{2-7} & \multicolumn{2}{c}{\textit{Season 1}} & \multicolumn{2}{c}{\textit{Season 2}} & \multicolumn{2}{c}{\textit{Both Seasons}}\\
+		\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7} & 
+		Incidence ($ \times10^3 $) & Attack rate (\%) & Incidence ($ \times10^3 $)& Attack rate (\%) & Incidence ($ \times10^3 $) & Attack rate (\%)\\
+		\hline
+		Ages 0-19 & 174 (127, 231) & 14.2 (10.4, 18.9) & 68.6 (46.6, 100) & 5.6 (3.8, 8.2) & 244 (181, 321) & 19.9 (14.8, 26.2)\\
+		Ages 20+ & 356 (243, 501) & 8.6 (5.9, 12.1) & 171 (117, 245) & 4.1 (2.8, 5.9) & 530 (378, 720) & 12.8 (9.2, 17.4)\\
+		All ages & 532 (393, 703) & 9.9 (7.4, 13.1) & 240 (172, 333) & 4.5 (3.2, 6.2) & 774 (586, 1,010) & 14.5 (11, 18.8)\\
+		\hline &&&&&&\\
+		&\multicolumn{6}{c}{\textbf{Higher susceptible \%}}\\
+		\cmidrule{2-7}	& \multicolumn{2}{c}{\textit{Season 1}} & \multicolumn{2}{c}{\textit{Season 2}} & \multicolumn{2}{c}{\textit{Both Seasons}}\\
+		\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7} & 
+		Incidence ($ \times10^3 $) & Attack rate (\%)& Incidence ($ \times10^3 $) & Attack rate (\%)& Incidence ($ \times10^3 $) & Attack rate (\%)\\
+		\hline
+		Ages 0-19 & 281 (198, 384) & 23 (16.2, 31.4) & 95.2 (66, 141) & 7.8 (5.4, 11.5) & 377 (276, 502) & 30.9 (22.6, 41)\\
+		Ages 20+ & 349 (232, 496) & 8.4 (5.6, 12) & 175 (119, 251) & 4.2 (2.9, 6.1) & 526 (367, 717) & 12.7 (8.9, 17.4)\\
+		All ages & 632 (470, 823) & 11.8 (8.8, 15.4) & 272 (193, 374) & 5.1 (3.6, 7) & 907 (689, 1,170) & 16.9 (12.9, 21.8)\\
+		\hline
+	\end{tabular}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}[htbp]
+	\caption[Posterior estimates of SIRS model parameters for pandemic A(H1N1) influenza in Finland --- Sensitivity analysis to prior distribution for the effective population size.]{Posterior estimates of SIRS model parameters from the main analysis compared to estimates obtained with a higher number of susceptible youths. Estimated posterior medians (95\% Bayesian credible intervals).} 
+	\label{tab:flu_param_ests_sensitivity}
+	\centering\footnotesize
+	\begin{tabular}{clrr}
+		\hline
+		&&\multicolumn{2}{c}{\textbf{Dynamics}}\\
+		\cmidrule{3-4}\textbf{Parameter} & \textbf{Interpretation} & \textit{Main analysis} & \textit{Higher susceptible \%}\\
+		\hline
+		$ \psi_{Y,0} $ & Intrinsic $ R_0 $ for youths at epiweek 15, 2009  & 1 (0.99, 1.1) & 1 (0.99, 1.1)\\
+		$ \psi_{Y,19} $ & Intrinsic $ R_0 $ for youths at epiweek 35, 2009 & 1.1 (1, 1.1) & 1.1 (1, 1.1)\\
+		$ \psi_{Y,71}^{adj} $ & Vaccination adjusted intrinsic $ R_0 $ for youths at epiweek 33, 2010 & 1.2 (1, 1.3) & 1.2 (1, 1.3)\\
+		$ \psi_{A,0} $ & Intrinsic $ R_0 $ for adults at epiweek 15, 2009  & 1 (1, 1.1) & 1 (1, 1.1)\\
+		$ \psi_{A,19} $ & Intrinsic $ R_0 $ for adults at epiweek 35, 2009 & 1 (0.98, 1.1) & 1 (0.97, 1.1)\\
+		$ \psi_{A,71}^adj $ & Vaccination adjusted intrinsic $ R_0 $ for adults at epiweek 33, 2010 & 1.3 (1.2, 1.5) & 1.3 (1.2, 1.5)\\
+		$ 1/\mu_{Y} $ & Mean infectious period for youths (days) & 2.5 (1.9, 3.5) & 2.3 (1.8, 3.1)\\
+		$ 1/\mu_A $ & Mean infectious period for adults (days) & 2.1 (1.8, 2.4) & 2.1 (1.8, 2.5)\\
+		$ 1/\omega $ & Mean duration of immunity (years) & 3.6 (2.4, 5.8) & 3.6 (2.4, 5.8)\\
+		$ \nu $ & 1 - VE for susceptibility & 0.19 (0.039, 0.54) & 0.17 (0.036, 0.5)\\
+		$ s_Y $ & \% susceptible youths, $ S^{(u)}_Y(t_0) / N_Y $ & 0.28 (0.21, 0.36) & 0.5 (0.38, 0.63)\\
+		$ s_A $ & \% susceptible adults, $ S_A^{(u)}(t_0) / N_A $ & 0.28 (0.21, 0.35) & 0.28 (0.21, 0.36)\\
+		$ \rho_Y $ & Mean case detection rate for youths & 0.013 (0.0097, 0.019) & 0.0099 (0.0072, 0.013)\\
+		$ \rho_A $ & Mean case detection rate for adults & 0.0084 (0.0061, 0.012) & 0.0081 (0.006, 0.011)\\		
+		$ 1/\sqrt{\phi_Y} $ & Negative binomial overdispersion for youths & 0.71 (0.55, 0.92) & 0.65 (0.5, 0.86)\\
+		$ 1/\sqrt{\phi_A} $ & Negative binomial overdispersion for adults & 0.56 (0.37, 0.76) & 0.54 (0.38, 0.74)\\
+		\hline
+	\end{tabular}
+\end{sidewaystable}
