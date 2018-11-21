@@ -4,7 +4,7 @@
 \section{Mathematical Models for the Spread of Infectious Diseases}
 \label{sec:sem_background}
 
-Our objective is to estimate the posterior distribution of parameters, $ \btheta $, that govern the dynamics of an outbreak, given the data $ \bY = (\bY_1,\dots,\bY_L) $, which are accrued at a set of discrete observation times, $ \lbrace t_\ell:\ \ell=1,\dots,L\rbrace $. The data are not independent and typically exhibit complicated temporal (and spatial) dependencies in the data. Therefore, the observed data likelihood in the posterior is not a simple product of independent densities, i.e.,
+Our objective is to estimate the posterior distribution of parameters, $ \btheta $, that govern the dynamics of an outbreak, given the data $ \bY = (\bY_1,\dots,\bY_L) $, which are accrued at a set of discrete observation times, $ \lbrace t_\ell:\ \ell=1,\dots,L\rbrace $. The data are not independent and typically exhibit complicated temporal (and spatial) dependencies \vmdel{in the data}. Therefore, the observed data likelihood in the posterior is not a simple product of independent densities, i.e.,
 \begin{align*}
 \pi(\btheta|\bY) &\propto\ L(\bY|\btheta)\pi(\btheta) \\
 &= \prod_{\ell = 1}^{L} \pi(\bY_\ell|\bY_{1},\dots,\bY_{\ell-1},\btheta)\pi(\btheta) \neq \prod_{\ell = 1}^{L} \pi(\bY_\ell|\btheta)\pi(\btheta).
@@ -14,6 +14,7 @@ Furthermore, the transition density, $ \pi(\bY_{\ell}|\bY_{1},\dots,\bY_{\ell-1}
 \label{eqn:sem_post}
 \pi(\btheta|\bY) \propto \int L(\bY|\bX,\btheta) \pi(\bX|\btheta)\pi(\btheta)\rmd\bX.
 \end{equation}
+\vmcomment{It is strange that you are talking about integral in transition densities, but then show the integral in the overall posterior. Not incorrect, but not intuitive.}
 This integral is analytically intractable when the state space of $ \bX $ is of even moderate size. Simply put, it is difficult to enumerate how the data could have arisen, given the vastness of possibilities for how an unseen outbreak might have evolved. 
 
 In this dissertation, we will describe the latent epidemic process using continuous--time models that possess the Markov property, meaning that the forward--time evolution of the latent process depends on its history only through its current state. This choice reduces the structure of (\ref{eqn:sem_post}) to that of a hidden Markov model wherein the data are conditionally independent given the latent epidemic process (diagrammed in Figure \ref{fig:semhmm}). The  posterior is 
@@ -55,7 +56,7 @@ where $ \tau_I^{(j)} $ and $ \tau_{R}^{(j)} $ are the infection and recovery tim
 	\label{fig:subjectsamplepaths}
 \end{figure}
 
-The waiting times between subject--level transition events are typically taken to be exponentially distributed. This will allow us to take advantage of several useful properties of exponential random variables (Figure \ref{fig:exp_props}, see \cite{wilkinson2011stochastic} for proofs). Critically, this choice also implies that $ \bX $ evolves as a continuous--time Markov chain (CTMC) with transition rate from configuration $ \bX $ to $ \bX^\prime $, differing only in the state of a single subject, given by
+The waiting times between subject--level transition events are typically taken to be exponentially distributed. This will allow us to take advantage of several useful properties of exponential random variables (\vmdel{Figure} \vmadd{List} \ref{list:exp_props}, see \cite{wilkinson2011stochastic} for proofs). Critically, this choice also implies that $ \bX $ evolves as a continuous--time Markov chain (CTMC) with transition rate from configuration $ \bX $ to $ \bX^\prime $, differing only in the state of a single subject, given by
 \begin{equation}
 \lambda_{\bX,\bX^\prime} = \left \lbrace \begin{array}{rl}
 \beta I,\ &\text{if } \bX\ \text{and } \bX^\prime\ \text{differ only in subject }j \text{, with }\bX_j=S\text{, and }\bX_j^\prime=I,\\
@@ -84,6 +85,7 @@ where $ \bx^\prime,\bx \in \mcS$. $ \bX $ is \textit{time--homogeneous} since th
 		\Pr(k|Z_k = \min(Z_1,\dots,Z_n)) = \frac{\lambda_k}{\sum_j\lambda_j}.
 		\end{equation} 
 	\end{itemize}
+	\vmcomment{I would also add that $\text{min}(Z_i)$ and $k$ are independent.}
 \end{framed}
 
 Let $ \btau = \lbrace\tau_0,\dots,\tau_{K+1}\rbrace $, be the (ordered) set of $ K $ infection and recovery times of all individuals along with the endpoints of the time period $ [\tau_0,\ \tau_{K+1}] $. Let $ \ind{\tau_k \corresponds I} $ and $ \ind{\tau_k \corresponds R} $ indicate whether $ \tau_k $ is an infection or recovery time, and let $ \btheta = (\beta, \mu, \bX_0) $ denote the vector of parameters, including the initial state of $ \bX $ at time $ \tau_0 $. The CTMC likelihood of $ \bX $ over $ [\tau_0,\ \tau_{K+1}] $ is a product of exponential waiting time densities,
@@ -94,6 +96,7 @@ L(\bX| \btheta) &= \prod_{k = 1}^{K}\left \lbrace \left [\beta I_{\tau_k}\times\
 \end{align}
 
 In contrast with the population--level CTMC, $ \bX $, the subject--level subprocess, $ \bX_j $, is a \textit{time--inhomogeneous} CTMC with transition rate matrix
+\vmcomment{You have to be careful here. First, you are conditioning on the rest of the trajectories. Second, are you sure this is the right full conditional? I am not. Lastly, I would remove this paragraph from the intro and discuss this technicality only in chapter 3.}.
 \begin{equation} 
 \label{eqn:sir_subj_rate_mtx}
 \bLambda^{j}(\btheta)(\tau) = \bordermatrix{ & S & I & R \cr
