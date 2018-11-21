@@ -119,7 +119,9 @@ and that its transition probabilities are
 \begin{equation*}
 \Pr(\overline{\bX}(t+\Delta t) = S_j | \overline{\bX}(t)=\overline{\bx}(t^\prime), t^\prime \leq t) = \Pr(\overline{\bX}(t+\Delta t) \in S_j | \bX(t)=\bx(t^\prime), t^\prime \leq t),
 \end{equation*}
-where $ \overline{\bx}(t^\prime) $  and $ \bx(t^\prime) $ denote the paths of the complete Markov process and the new process. We say that the complete Markov process is \textit{lumpable} with respect to a partition, $ \overline{\mcS} $, of its state space if lumping the complete process results in a Markov process with respect to the lumped state space for every choice of $ \pi $ whose transition probabilities do not depend on $ \pi $. We refer to the process obtained by lumping as the \textit{lumped} Markov jump process (MJP). If the jump chain of the lumped MJP is the same as the lumped jump chain of the complete MJP, we say that the complete process is \textit{commutative} with respect to lumping.  
+where $ \overline{\bx}(t^\prime) $  and $ \bx(t^\prime) $ denote the paths of the complete Markov process and the new process. We say that the complete Markov process is \textit{lumpable} with respect to a partition, $ \overline{\mcS} $, of its state space if lumping the complete process results in a Markov process with respect to the lumped state space for every choice of $ \pi $ whose transition probabilities do not depend on $ \pi $. We refer to the process obtained by lumping as the \textit{lumped} Markov jump process (MJP). 
+If the jump chain of the lumped MJP is the same as the lumped jump chain of the complete MJP, we say that the complete process is \textit{commutative} with respect to lumping.  
+\vmcomment{Jump chains are random, so how can they be the same? I am not getting something here about the commutativity.}
 
 Let $ S_A $ and $ S_B $ be elements of $ \overline{\mcS} $, i.e., sets of states $ s_j \in \mcS $. The rate matrix of a CTMC is lumpable if
 \begin{equation*}
@@ -129,6 +131,7 @@ for any pair of sets $S_A,S_B \in \overline{\mcS} $ and any pair of states  $(s_
 
 Suppose $ \bX $ is lumpable with respect to the partition $ \overline{\mcS} $ of $ \mcS $. Then $ \bX $ is commutative with respect to the partition if and only if the rate matrix of $ \bX $ satisfies
 $$\lambda_{s_a,s_b} = 0,\ \text{if}\ s_a,s_b\in S_A,\ \text{and}\ s_a\neq s_b. $$ In our context, commutativity means that the transition rate is zero between different configurations $ \bx_a $ and $ \bx_b $ with equal compartment counts. Commutativity implies that lumped quantities of interest for $ \bX $, such as transition rates or transition probabilities, can be equivalently computed based on $ \bX $, or based on the lumped process, $ \overline{\bX} $ \cite{tian2006lumpability}. 
+\vmcomment{Is commutativity here to make things more technically complete? I don't see why we need to talk about it. Are we using heavily later?}
 
 \begin{figure}
 	\centering
@@ -164,12 +167,17 @@ L(\overline{\bX}| \btheta) &= \prod_{k = 1}^{K}\left \lbrace \left [\beta S_{\ta
 We briefly digress from our discussion of epidemic models to review some basic properties of CTMCs in a bit more generality. The following discussion is not intended to be comprehensive, but rather to provide an overview of some results that will be useful in this dissertation. We refer to \cite{bremaud1999markov,fuchs2013inference,guttorp1995stochastic,wilkinson2011stochastic} for more complete and rigorous discussions of the following material. For simplicity, we will focus on CTMCs with finite state spaces. 
 
 The forward--time evolution of a CTMC is described by its transition kernel $$\Pr(\bX(\tau^\prime) = \bx^\prime | \bX(\tau) = \bx) = P_{\bx,\bx^\prime}(\tau,\tau^\prime),$$
-where $ \bx,\bx^\prime\in\mcS $ and $ 0\leq\tau\leq\tau^\prime $. The transition kernel only depends on the time--elapsed when the process is time--homogeneous $ P_{\bx,\bx^\prime}(\tau,\tau^\prime) = P_{\bx,\bx^\prime}(|\tau^\prime - \tau|) \equiv P_{\bx,\bx^\prime}(\tau^\prime) $. In matrix form, the transition kernel, $ P $, is an $ r\times r $ stochastic matrix, where $ r = |\mcS| $, the rows of $ P $ sum to one, and $ P_{ii} = -\sum_{j\neq i}P_{ij}$. Trivially, $ P_{\bx,\bx^\prime}(0) = I $, i.e., there are no state changes in a time interval of zero length, almost surely. By the Markov property, the probability of transitioning from state $ i $ to state $ k $ in time $ s+t $ is 
+where $ \bx,\bx^\prime\in\mcS $ and $ 0\leq\tau\leq\tau^\prime $. The transition kernel only depends on the time--elapsed when the process is time--homogeneous $ P_{\bx,\bx^\prime}(\tau,\tau^\prime) = P_{\bx,\bx^\prime}(|\tau^\prime - \tau|) \equiv P_{\bx,\bx^\prime}(\tau^\prime) $. 
+\vmcomment{typo in the second equality; not sure what you wanted to say there}
+In matrix form, the transition kernel, $ P $, is an $ r\times r $ stochastic matrix, where $ r = |\mcS| $, the rows of $ P $ sum to one, and $ P_{ii} = -\sum_{j\neq i}P_{ij}$. 
+\vmcomment{It is confusing that you lost time dependence of P in the above sentence.}
+Trivially, $ P_{\bx,\bx^\prime}(0) = I $, i.e., there are no state changes in a time interval of zero length, almost surely. By the Markov property, the probability of transitioning from state $ i $ to state $ k $ in time $ s+t $ is 
 \begin{equation}
 \label{eqn:chapman_kolmogorov}
 P_{ik}(s+t) = \sum_{j\in\mcS}P_{ij}(s)P_{jk}(t),
 \end{equation}
 or in matrix form, $$P(s+t) = P(s)P(t).$$
+\vmcomment{Don't forget to bold matrices and vectors.}
 Equation (\ref{eqn:chapman_kolmogorov}) is known as the \textit{Chapman--Kolmogorov} master equation. 
 
 The transition rate matrix (or \textit{infinitesimal generator}) of $ \bX $ is defined as the derivative of $ P(\tau) $ at $ \tau = 0 $, i.e.,
@@ -181,8 +189,8 @@ The transition rate matrix (or \textit{infinitesimal generator}) of $ \bX $ is d
 \end{align*}
 Thus, for example, the infinitesimal transition probabilities for the population--level SIR model are
 \begin{align*}
-\Pr\left (\bX(\tau+\dtau) = (S-1, I+1, R) | \bX(\tau) = (S,I,R)\right ) &= \beta SI + o(\dtau), \\
-\Pr\left (\bX(\tau+\dtau) = (S, I-1, R+1) | \bX(\tau) = (S,I,R)\right ) &= \mu I + o(\dtau).
+\Pr\left (\bX(\tau+\dtau) = (S-1, I+1, R) | \bX(\tau) = (S,I,R)\right ) &= \beta SI {\color{red} \dtau} + o(\dtau), \\
+\Pr\left (\bX(\tau+\dtau) = (S, I-1, R+1) | \bX(\tau) = (S,I,R)\right ) &= \mu I {\color{red} \dtau} + o(\dtau).
 \end{align*}
 The transition probability matrix over an interval of arbitrary length, $ \tau $, solves the matrix differential equation,  \begin{equation}\label{eqn:kolmogorov_forward}
 \deriv{}{\tau}P(\tau) = \bLambda P(\tau),\hspace{0.2in} s.t.\  P(0) = I.
