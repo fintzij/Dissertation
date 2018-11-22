@@ -48,7 +48,7 @@ We would like to make inferences about the posterior distribution of the paramet
 \begin{align}
 \label{eqn:intractable_posterior}
  \pi(\btheta|\bY)&\propto \pi(\bY|\btheta)\pi(\btheta) = \int L(\bY|\bN^c,\btheta)\pi(\bN^c|\btheta)\pi(\btheta)\rmd\bN^c\nonumber\\
- &= \int_{\mcS^c}\prod_{\ell=1}^L \Pr\left (Y_\ell|\Delta\bN_{SI}^c(t_\ell),\btheta\right )\pi\left (\bN^c(t_\ell)|\bn^c(t_{\ell-1}),\btheta\right )\pi(\btheta)\rmd\bN^c
+ &= \int_{\mcS^c}\prod_{\ell=1}^L \Pr\left (Y_\ell|\Delta\bN_{SI}^c(t_\ell),\btheta\right )\pi\left (\bN^c(t_\ell)|\bn^c(t_{\ell-1}),\btheta\right )\pi(\btheta)\rmd\bN^c\vmadd{,}
 \end{align}
 where $ \pi(\btheta) $ specifies the prior density of the model parameters. However, this integral is analytically intractable and is challenging to compute numerically due to the size of the state space of $ \bN^c $. In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:intractable_posterior}) into an integral over a more computationally tractable product of Gaussian densities and non--Gaussian emission probabilities. As we shall see, approximating the complete data likelihood in the posterior $ \pi(\btheta,\bN^c|\btheta) $ with a Gaussian state space model will facilitate the use of efficient algorithms for sampling from the approximate posterior. 
 
@@ -303,7 +303,7 @@ The fidelity of each approximation to the original MJP depends on the population
 	\begin{tabular}{cllc}
 		\hline
 		\textbf{Parameter} & \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} \\ \hline
-		$ R0-1 $ & Basic reproduction \# - 1 & LogNormal(0, 0.5) & $ \implies R0 = $ 2.00 (1.38, 3.66) \\ 
+		$ R_{\color{red} 0}\vmdel{0}-1 $ & Basic reproduction \# - 1 & LogNormal(0, 0.5) & $ \implies _{\color{red} 0}\vmdel{0} = $ 2.00 (1.38, 3.66) \\ 
 		$ 1/\mu $ & Mean infectious period & LogNormal(-0.7, 0.35)& 1.43 (0.72, 2.84) \\
 		$ \rho / (1-\rho) $ & Odds of case detection & LogNormal(0, 1) & $ \implies \rho =$ 0.5 (0.12, 0.88) \\
 		$ \phi $ & Neg.Binom. over--dispersion & Exponential(0.1) & 6.93 (0.25, 36.89)\\
