@@ -448,7 +448,10 @@ An attractive property of the Gibbs sampler is that there are no tuning paramete
 	\begin{algorithmic}[1]
 		\Procedure{Gibbs}{$ \cur{\btheta},\ \mcI = \lbrace J_1,\dots,J_p\rbrace $ parameter block indices.}
 		\For{$ k\in1,\dots,p $}
-			\State Sample: $ \btheta_{J_k}|\btheta_{-J_k},\by\sim\pi(\btheta_{J_k}|\btheta_{-J_k},\by) $
+			\State Sample: $ \btheta^{new}_{J_1}|\bY,\btheta^{cur}_{J_{2,\dots,p}}\hspace{0.45in} \sim\pi(\btheta_{J_1}|\bY,\btheta^{cur}_{J_{2,\dots,p}}) $
+			\State Sample: $ \btheta^{new}_{J_2}|\bY,\btheta^{new}_{J_1},\btheta^{cur}_{J_{3,\dots,p}}\ \sim\pi(\btheta_{J_1}|\bY,\btheta^{new}_{J_1},\btheta^{cur}_{J_{3,\dots,p}}) $
+			\State \hspace{0.2in} \vdots
+			\State Sample: $ \btheta^{new}_{J_p}|\bY,\btheta_{J_{1,\dots,p-1}}^{new} \hspace{0.33in} \sim \pi(\btheta_{J_p}|\bY,\btheta_{J_{1,\dots,p-1}}^{new}) $
 		\EndFor
 		\EndProcedure
 	\end{algorithmic}
