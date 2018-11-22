@@ -433,7 +433,7 @@ The computational efficiency of the MH algorithm depends on having a proposal di
 \subsubsection{Gibbs sampler}
 \label{subsubsec:gibbs}
 
-The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter using its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},\by) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters from their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},\by) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
+The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter using its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},\by) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters using their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},\by) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
 
 The MH acceptance probability for the Gibbs sampler is one, thus all Gibbs proposals are automatically accepted. To see why this is so, note that $$q(\btheta_{J}|\btheta_{-J},\bY) = \frac{\pi(\btheta|\bY)}{\pi(\btheta_{-J}|\bY)} \propto\pi(\btheta|\bY).$$
 Therefore, the MH ratio simplifies as
