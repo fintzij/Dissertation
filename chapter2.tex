@@ -4,7 +4,7 @@
 \section{Mathematical Models for the Spread of Infectious Diseases}
 \label{sec:sem_background}
 
-Our objective is to estimate the posterior distribution of parameters, $ \btheta $, that govern the dynamics of an outbreak, given the data $ \bY = (\bY_1,\dots,\bY_L) $, which are accrued at a set of discrete observation times, $ \lbrace t_\ell:\ \ell=1,\dots,L\rbrace $. The data are not independent and typically exhibit complicated temporal (and spatial) dependencies \vmdel{in the data}. Therefore, the observed data likelihood in the posterior is not a simple product of independent densities, i.e.,
+Our objective is to estimate the posterior distribution of parameters, $ \btheta $, that govern the dynamics of an outbreak, given the data $ \bY = (\bY_1,\dots,\bY_L) $, which are accrued at a set of discrete observation times, $ \lbrace t_\ell: \ell=1,\dots,L\rbrace $. The data are not independent and typically exhibit complicated temporal (and spatial) dependencies. Therefore, the observed data likelihood in the posterior is not a simple product of independent densities, i.e.,
 \begin{align*}
 \pi(\btheta|\bY) &\propto\ L(\bY|\btheta)\pi(\btheta) \\
 &= \prod_{\ell = 1}^{L} \pi(\bY_\ell|\bY_{1},\dots,\bY_{\ell-1},\btheta)\pi(\btheta) \neq \prod_{\ell = 1}^{L} \pi(\bY_\ell|\btheta)\pi(\btheta).
@@ -12,9 +12,8 @@ Our objective is to estimate the posterior distribution of parameters, $ \btheta
 Furthermore, the transition density, $ \pi(\bY_{\ell}|\bY_{1},\dots,\bY_{\ell-1}) $, involves a high dimensional integral over an unobserved epidemic process, $ \bX $, 
 \begin{equation}
 \label{eqn:sem_post}
-\pi(\btheta|\bY) \propto \int L(\bY|\bX,\btheta) \pi(\bX|\btheta)\pi(\btheta)\rmd\bX.
+\pi(\btheta|\bY) \propto \int \prod_{\ell = 1}^{L} \pi(\bY_\ell|\bY_{1},\dots,\bY_{\ell-1},\bX,\btheta)\pi(\bX|\btheta)\pi(\btheta)\rmd\bX.
 \end{equation}
-\vmcomment{It is strange that you are talking about integral in transition densities, but then show the integral in the overall posterior. Not incorrect, but not intuitive.}
 This integral is analytically intractable when the state space of $ \bX $ is of even moderate size. Simply put, it is difficult to enumerate how the data could have arisen, given the vastness of possibilities for how an unseen outbreak might have evolved. 
 
 In this dissertation, we will describe the latent epidemic process using continuous--time models that possess the Markov property, meaning that the forward--time evolution of the latent process depends on its history only through its current state. This choice reduces the structure of (\ref{eqn:sem_post}) to that of a hidden Markov model wherein the data are conditionally independent given the latent epidemic process (diagrammed in Figure \ref{fig:semhmm}). The  posterior is 
@@ -56,7 +55,7 @@ where $ \tau_I^{(j)} $ and $ \tau_{R}^{(j)} $ are the infection and recovery tim
 	\label{fig:subjectsamplepaths}
 \end{figure}
 
-The waiting times between subject--level transition events are typically taken to be exponentially distributed. This will allow us to take advantage of several useful properties of exponential random variables (\vmdel{Figure} \vmadd{List} \ref{list:exp_props}, see \cite{wilkinson2011stochastic} for proofs). Critically, this choice also implies that $ \bX $ evolves as a continuous--time Markov chain (CTMC) with transition rate from configuration $ \bX $ to $ \bX^\prime $, differing only in the state of a single subject, given by
+The waiting times between subject--level transition events are typically taken to be exponentially distributed. This will allow us to take advantage of several useful properties of exponential random variables (List \ref{list:exp_props}, see \cite{wilkinson2011stochastic} for proofs). Critically, this choice also implies that $ \bX $ evolves as a continuous--time Markov chain (CTMC) with transition rate from configuration $ \bX $ to $ \bX^\prime $, differing only in the state of a single subject, given by
 \begin{equation}
 \lambda_{\bX,\bX^\prime} = \left \lbrace \begin{array}{rl}
 \beta I,\ &\text{if } \bX\ \text{and } \bX^\prime\ \text{differ only in subject }j \text{, with }\bX_j=S\text{, and }\bX_j^\prime=I,\\
@@ -71,6 +70,13 @@ with per--contact infection rate,  $ \beta $, and recovery rate, $ \mu $. The qu
 \end{equation}
 where $ \bx^\prime,\bx \in \mcS$. $ \bX $ is \textit{time--homogeneous} since the rates of transition between configurations in the state space of $ \bX $ are constant over time. 
 
+Let $ \btau = \lbrace\tau_0,\dots,\tau_{K+1}\rbrace $, be the (ordered) set of $ K $ infection and recovery times of all individuals along with the endpoints of the time period $ [\tau_0,\ \tau_{K+1}] $. Let $ \ind{\tau_k \corresponds I} $ and $ \ind{\tau_k \corresponds R} $ indicate whether $ \tau_k $ is an infection or recovery time, and let $ \btheta = (\beta, \mu, \bX_0) $ denote the vector of parameters, including the initial state of $ \bX $ at time $ \tau_0 $. The CTMC likelihood of $ \bX $ over $ [\tau_0,\ \tau_{K+1}] $ is a product of exponential waiting time densities,
+\begin{align} 
+\label{eqn:sir_subj_likelihood}
+L(\bX| \btheta) &= \prod_{k = 1}^{K}\left \lbrace \left [\beta I_{\tau_k}\times\ind{\tau_k \corresponds I} + \mu\times\ind{\tau_k \corresponds R}\right ] \exp{\left [-\left (\tau_k - \tau_{k-1}\right )\left (\beta I_{\tau_k} S_{\tau_k} + \mu I_{\tau_k}\right )\right ]}\right \rbrace \nonumber \\
+& \hspace{0.2in} \times \exp \left [-\left (t_L - \tau_K\right )\left (\beta I_{\tau_K^+}S_{\tau_K^+} + \mu I_{\tau_K^+}\right )\right ]. 
+\end{align}
+
 \begin{framed}
 	\begin{itemize}
 		\begin{lstlisting}[caption={Useful properties of exponential random variables.},label={list:exp_props}]
@@ -84,27 +90,9 @@ where $ \bx^\prime,\bx \in \mcS$. $ \bX $ is \textit{time--homogeneous} since th
 		\item (Index of minimum) If $ Z_i\sim\mr{Exp}(\lambda_i),\ i=1,\dots,n $, are independent, then the index $ k $ of the minimum of $ Z_i $ is a random variable with probability mass function \begin{equation}\label{eqn:ind_of_min}
 		\Pr(k|Z_k = \min(Z_1,\dots,Z_n)) = \frac{\lambda_k}{\sum_j\lambda_j}.
 		\end{equation} 
+		\item (Minimum is independent of its index) If $ Z_i\sim \mr{Exp}(\lambda_i)$ are independent, then $ M = \underset{i}{\mr{min}}(Z_i) $, which is the minimum of $ Z_i $, and $ I $, the index of the minimum taking value $ I=k $ if $ Z_k=M$, are independent.
 	\end{itemize}
-	\vmcomment{I would also add that $\text{min}(Z_i)$ and $k$ are independent.}
 \end{framed}
-
-Let $ \btau = \lbrace\tau_0,\dots,\tau_{K+1}\rbrace $, be the (ordered) set of $ K $ infection and recovery times of all individuals along with the endpoints of the time period $ [\tau_0,\ \tau_{K+1}] $. Let $ \ind{\tau_k \corresponds I} $ and $ \ind{\tau_k \corresponds R} $ indicate whether $ \tau_k $ is an infection or recovery time, and let $ \btheta = (\beta, \mu, \bX_0) $ denote the vector of parameters, including the initial state of $ \bX $ at time $ \tau_0 $. The CTMC likelihood of $ \bX $ over $ [\tau_0,\ \tau_{K+1}] $ is a product of exponential waiting time densities,
-\begin{align} 
-\label{eqn:sir_subj_likelihood}
-L(\bX| \btheta) &= \prod_{k = 1}^{K}\left \lbrace \left [\beta I_{\tau_k}\times\ind{\tau_k \corresponds I} + \mu\times\ind{\tau_k \corresponds R}\right ] \exp{\left [-\left (\tau_k - \tau_{k-1}\right )\left (\beta I_{\tau_k} S_{\tau_k} + \mu I_{\tau_k}\right )\right ]}\right \rbrace \nonumber \\
-& \hspace{0.2in} \times \exp \left [-\left (t_L - \tau_K\right )\left (\beta I_{\tau_K^+}S_{\tau_K^+} + \mu I_{\tau_K^+}\right )\right ]. 
-\end{align}
-
-In contrast with the population--level CTMC, $ \bX $, the subject--level subprocess, $ \bX_j $, is a \textit{time--inhomogeneous} CTMC with transition rate matrix
-\vmcomment{You have to be careful here. First, you are conditioning on the rest of the trajectories. Second, are you sure this is the right full conditional? I am not. Lastly, I would remove this paragraph from the intro and discuss this technicality only in chapter 3.}.
-\begin{equation} 
-\label{eqn:sir_subj_rate_mtx}
-\bLambda^{j}(\btheta)(\tau) = \bordermatrix{ & S & I & R \cr
-	S & -\beta I^{(-j)}(\tau) & \beta I^{(-j)}(\tau) & 0 \cr 
-	I & 0 & -\mu & \mu \cr
-	R & 0 & 0 & 0 },
-\end{equation}
-since $ I^{(-j)}(\tau) $, the number of infected individuals in the population at time $ \tau $, excluding individual $ j $, changes over time. We could also describe $ \bX_j $ as piecewise--homogeneous since the rate of infection for subject $ j $ is constant between times at which other individuals become infected and recover. 
 
 \subsection{A Population--Level Susceptible--Infected--Recovered Model}
 \label{subsec:sir_population_mod}
@@ -119,9 +107,7 @@ and that its transition probabilities are
 \begin{equation*}
 \Pr(\overline{\bX}(t+\Delta t) = S_j | \overline{\bX}(t)=\overline{\bx}(t^\prime), t^\prime \leq t) = \Pr(\overline{\bX}(t+\Delta t) \in S_j | \bX(t)=\bx(t^\prime), t^\prime \leq t),
 \end{equation*}
-where $ \overline{\bx}(t^\prime) $  and $ \bx(t^\prime) $ denote the paths of the complete Markov process and the new process. We say that the complete Markov process is \textit{lumpable} with respect to a partition, $ \overline{\mcS} $, of its state space if lumping the complete process results in a Markov process with respect to the lumped state space for every choice of $ \pi $ whose transition probabilities do not depend on $ \pi $. We refer to the process obtained by lumping as the \textit{lumped} Markov jump process (MJP). 
-If the jump chain of the lumped MJP is the same as the lumped jump chain of the complete MJP, we say that the complete process is \textit{commutative} with respect to lumping.  
-\vmcomment{Jump chains are random, so how can they be the same? I am not getting something here about the commutativity.}
+where $ \overline{\bx}(t^\prime) $  and $ \bx(t^\prime) $ denote the paths of the complete Markov process and the new process. We say that the complete Markov process is \textit{lumpable} with respect to a partition, $ \overline{\mcS} $, of its state space if lumping the complete process results in a Markov process with respect to the lumped state space for every choice of $ \pi $ whose transition probabilities do not depend on $ \pi $. We refer to the process obtained by lumping as the \textit{lumped} Markov jump process (MJP). We say that the complete process is \textit{commutative} with respect to lumping if the set of jump chains obtained by applying the lumping to jump chains of the complete MJP are equal in distribution to jump chains of the lumped MJP.
 
 Let $ S_A $ and $ S_B $ be elements of $ \overline{\mcS} $, i.e., sets of states $ s_j \in \mcS $. The rate matrix of a CTMC is lumpable if
 \begin{equation*}
@@ -131,7 +117,6 @@ for any pair of sets $S_A,S_B \in \overline{\mcS} $ and any pair of states  $(s_
 
 Suppose $ \bX $ is lumpable with respect to the partition $ \overline{\mcS} $ of $ \mcS $. Then $ \bX $ is commutative with respect to the partition if and only if the rate matrix of $ \bX $ satisfies
 $$\lambda_{s_a,s_b} = 0,\ \text{if}\ s_a,s_b\in S_A,\ \text{and}\ s_a\neq s_b. $$ In our context, commutativity means that the transition rate is zero between different configurations $ \bx_a $ and $ \bx_b $ with equal compartment counts. Commutativity implies that lumped quantities of interest for $ \bX $, such as transition rates or transition probabilities, can be equivalently computed based on $ \bX $, or based on the lumped process, $ \overline{\bX} $ \cite{tian2006lumpability}. 
-\vmcomment{Is commutativity here to make things more technically complete? I don't see why we need to talk about it. Are we using heavily later?}
 
 \begin{figure}
 	\centering
@@ -166,48 +151,45 @@ L(\overline{\bX}| \btheta) &= \prod_{k = 1}^{K}\left \lbrace \left [\beta S_{\ta
 
 We briefly digress from our discussion of epidemic models to review some basic properties of CTMCs in a bit more generality. The following discussion is not intended to be comprehensive, but rather to provide an overview of some results that will be useful in this dissertation. We refer to \cite{bremaud1999markov,fuchs2013inference,guttorp1995stochastic,wilkinson2011stochastic} for more complete and rigorous discussions of the following material. For simplicity, we will focus on CTMCs with finite state spaces. 
 
-The forward--time evolution of a CTMC is described by its transition kernel $$\Pr(\bX(\tau^\prime) = \bx^\prime | \bX(\tau) = \bx) = P_{\bx,\bx^\prime}(\tau,\tau^\prime),$$
-where $ \bx,\bx^\prime\in\mcS $ and $ 0\leq\tau\leq\tau^\prime $. The transition kernel only depends on the time--elapsed when the process is time--homogeneous $ P_{\bx,\bx^\prime}(\tau,\tau^\prime) = P_{\bx,\bx^\prime}(|\tau^\prime - \tau|) \equiv P_{\bx,\bx^\prime}(\tau^\prime) $. 
-\vmcomment{typo in the second equality; not sure what you wanted to say there}
-In matrix form, the transition kernel, $ P $, is an $ r\times r $ stochastic matrix, where $ r = |\mcS| $, the rows of $ P $ sum to one, and $ P_{ii} = -\sum_{j\neq i}P_{ij}$. 
-\vmcomment{It is confusing that you lost time dependence of P in the above sentence.}
-Trivially, $ P_{\bx,\bx^\prime}(0) = I $, i.e., there are no state changes in a time interval of zero length, almost surely. By the Markov property, the probability of transitioning from state $ i $ to state $ k $ in time $ s+t $ is 
+The forward--time evolution of a CTMC is described by its transition kernel $$\Pr(\bX(\tau^\prime) = \bx^\prime | \bX(\tau) = \bx) = \bP_{\bx,\bx^\prime}(\tau,\tau^\prime),$$
+where $ \bx,\bx^\prime\in\mcS $ and $ 0\leq\tau\leq\tau^\prime $. The transition kernel only depends on the time--elapsed when the process is time--homogeneous $ \bP_{\bx,\bx^\prime}(\tau,\tau^\prime) = \bP_{\bx,\bx^\prime}(|\tau^\prime - \tau|)$. We will use the shorthand notation $ \bP(\tau) $ to simply denote the transition kernel for a time--homogeneous CTMC over a time interval of length $ \tau $, and $ P_{ij}(\tau) $ to denote its $ i,j $ element. 
+In matrix form, the transition kernel, $ \bP(\tau) $, is an $ r\times r $ stochastic matrix, where $ r = |\mcS| $, the rows of $ \bP(\tau) $ sum to one, and $ P_{ii}(\tau) = -\sum_{j\neq i}P_{ij}(\tau)$. 
+Trivially, $ \bP(0) = \bI $, i.e., there are no state changes in a time interval of zero length, almost surely. By the Markov property, the probability of transitioning from state $ i $ to state $ k $ in time $ s+t $ is 
 \begin{equation}
 \label{eqn:chapman_kolmogorov}
 P_{ik}(s+t) = \sum_{j\in\mcS}P_{ij}(s)P_{jk}(t),
 \end{equation}
-or in matrix form, $$P(s+t) = P(s)P(t).$$
-\vmcomment{Don't forget to bold matrices and vectors.}
+or in matrix form, $$\bP(s+t) = \bP(s)\bP(t).$$
 Equation (\ref{eqn:chapman_kolmogorov}) is known as the \textit{Chapman--Kolmogorov} master equation. 
 
-The transition rate matrix (or \textit{infinitesimal generator}) of $ \bX $ is defined as the derivative of $ P(\tau) $ at $ \tau = 0 $, i.e.,
+The transition rate matrix (or \textit{infinitesimal generator}) of $ \bX $ is defined as the derivative of $ \bP(\tau) $ at $ \tau = 0 $, i.e.,
 \begin{align*}
 \label{eqn:ctmc_generator}
-\bLambda &= \underset{\dtau \rightarrow 0}{\lim}\frac{P(\dtau) - P(0)}{\dtau} \\
-&= \underset{\dtau \rightarrow 0}{\lim}\frac{P(\dtau) - I}{\dtau}, \\
-\shortintertext{which implies that the infinitesimal transition matrix is} P(\dtau) &= I + \bLambda\dtau.
+\bLambda &= \underset{\dtau \rightarrow 0}{\lim}\frac{\bP(\dtau) - \bP(0)}{\dtau} \\
+&= \underset{\dtau \rightarrow 0}{\lim}\frac{\bP(\dtau) - \bI}{\dtau}, \\
+\shortintertext{which implies that the infinitesimal transition matrix is} \bP(\dtau) &= \bI + \bLambda\dtau.
 \end{align*}
 Thus, for example, the infinitesimal transition probabilities for the population--level SIR model are
 \begin{align*}
-\Pr\left (\bX(\tau+\dtau) = (S-1, I+1, R) | \bX(\tau) = (S,I,R)\right ) &= \beta SI {\color{red} \dtau} + o(\dtau), \\
-\Pr\left (\bX(\tau+\dtau) = (S, I-1, R+1) | \bX(\tau) = (S,I,R)\right ) &= \mu I {\color{red} \dtau} + o(\dtau).
+\Pr\left (\bX(\tau+\dtau) = (S-1, I+1, R) | \bX(\tau) = (S,I,R)\right ) &= \beta SI\dtau + o(\dtau), \\
+\Pr\left (\bX(\tau+\dtau) = (S, I-1, R+1) | \bX(\tau) = (S,I,R)\right ) &= \mu I\dtau + o(\dtau).
 \end{align*}
 The transition probability matrix over an interval of arbitrary length, $ \tau $, solves the matrix differential equation,  \begin{equation}\label{eqn:kolmogorov_forward}
-\deriv{}{\tau}P(\tau) = \bLambda P(\tau),\hspace{0.2in} s.t.\  P(0) = I.
+\deriv{}{\tau}\bP(\tau) = \bLambda P(\tau),\hspace{0.2in} s.t.\  \bP(0) = \bI.
 \end{equation} 
-Thus, $ P(\tau) = \exp(\bLambda\tau) $, can be computed using the matrix exponential. There are many ways to compute the matrix exponential \cite{moler2003nineteen}. We will typically do so by diagonalizing $ \bLambda $ and exponentiating the eigenvalues. Section \ref{sec:mtx_exp} outlines this procedure in two separate cases: when $ \bLambda$ has real--valued eigenvalues, and also when the eigenvalues are complex. Equation (\ref{eqn:kolmogorov_forward}) is known as the \textit{forward} Kolmogorov equation, and is obtained by computing the derivative
+Thus, $ \bP(\tau) = \exp(\bLambda\tau) $, can be computed using the matrix exponential. There are many ways to compute the matrix exponential \cite{moler2003nineteen}. We will typically do so by diagonalizing $ \bLambda $ and exponentiating the eigenvalues. Section \ref{sec:mtx_exp} outlines this procedure in two separate cases: when $ \bLambda$ has real--valued eigenvalues, and also when the eigenvalues are complex. Equation (\ref{eqn:kolmogorov_forward}) is known as the \textit{forward} Kolmogorov equation, and is obtained by computing the derivative
 \begin{align*}
-\deriv{}{\tau}P(\tau) &= \frac{P(\tau + \dtau) - P(\tau)}{\dtau} \\
-&= \frac{P(\dtau)P(\tau) - P(\tau)}{\dtau} \\
-&= \frac{P(\dtau) - I}{\dtau}P(\tau)\\
-&= \bLambda P(\tau).
+\deriv{}{\tau}\bP(\tau) &= \frac{\bP(\tau + \dtau) - \bP(\tau)}{\dtau} \\
+&= \frac{\bP(\dtau)\bP(\tau) - \bP(\tau)}{\dtau} \\
+&= \frac{\bP(\dtau) - \bI}{\dtau}\bP(\tau)\\
+&= \bLambda \bP(\tau).
 \end{align*}
 The \textit{backward} Kolmogorov equation is similarly obtained by
 \begin{align}
-\deriv{}{\tau}P(\tau) &= \frac{P(\tau + \dtau) - P(\tau)}{\dtau} \nonumber \\
-&= \frac{P(\tau)P(\dtau) - P(\tau)}{\dtau} \nonumber \\
-&= P(\tau)\frac{P(\dtau) - I}{\dtau}\nonumber\\
-&= P(\tau)\bLambda .
+\deriv{}{\tau}\bP(\tau) &= \frac{\bP(\tau + \dtau) - \bP(\tau)}{\dtau} \nonumber \\
+&= \frac{\bP(\tau)\bP(\dtau) - \bP(\tau)}{\dtau} \nonumber \\
+&= \bP(\tau)\frac{\bP(\dtau) - \bI}{\dtau}\nonumber\\
+&= \bP(\tau)\bLambda .
 \end{align}
 
 \subsection{Large Population Approximations}
@@ -215,21 +197,20 @@ The \textit{backward} Kolmogorov equation is similarly obtained by
 
 It is often infeasible to work with the CTMC formulation of a SEM when modeling an outbreak in a large population, particularly when working within a Bayesian MCMC framework. The cardinality of model's state space grows polynomially in the population size. This makes it difficult to efficiently sample from the posterior or to explore the likelihood surface, even when fitting SEMs with relatively simple dynamics. A second challenge is that as the population size grows, so too do the numbers of transition events. Hence, repeatedly evaluating the likelihoods (\ref{eqn:sir_subj_likelihood}) and (\ref{eqn:sir_pop_likelihood}) is prohibitively expensive. 
 
-Two commonly used approximations of the MJP representation of a SEM are through a system of ordinary differential equations (ODEs) and through a system of stochastic differential equations (SDEs). We will not go into detail on the derivations of these representations, except to give some intuition about the conditions under which they are appropriate, and refer to \cite{allen2017primer,greenwood2009stochastic} for more detailed overviews. However, it is interesting to note that the Kolmogorov equations for the ODE, SDE, and MJP formulations of a SEM arise as special cases of a \textit{differential Chapman--Kolmogorov master equation} that generalizes (\ref{eqn:chapman_kolmogorov}) \cite{fuchs2013inference}. 
-\vmcomment{I appreciate that you are trying to connect everything here, but your statement is not very precise. For example, I don't think Kolmogorov equations exist for ODE formulations --- you need probability for this. You probably mean asymptotic mean, but it is hard to tell from the sentence.}
+Two commonly used approximations of the MJP representation of a SEM are through a system of ordinary differential equations (ODEs) and through a system of stochastic differential equations (SDEs). We will not go into detail on the derivations of these representations, except to give some intuition about the conditions under which they are appropriate, and refer to \cite{allen2017primer,greenwood2009stochastic} for more detailed overviews. 
 
 We presented the MJP representation of the SIR model as an \textit{extensive}, $ \bX $, where transition events led to jumps of size one in the compartment counts. We could have equivalently defined the model in terms of an \textit{intensive} process, $ \bXtil = \bX / N = (S/N,I/N,R/N) $, where transition events led to jumps of size $ 1/N $. As $ N\longrightarrow \infty$ , it becomes reasonable to consider approximating $ \bXtil $ by a process with continuous sample paths. The large population stochastic \textit{approximation} is the solution to an It\^{o} diffusion whose sample paths are continuous but nowhere differentiable. The infinite population deterministic functional \textit{limit} solves a system of ODEs and has smooth sample paths. We will present extensive forms of the SDE and ODE models, which are obtained by simply rescaling the intensive processes from which the approximations derive. 
 
-\subsubsection{Deterministic representation as a system of ODEs \vmcomment{Decide on capitalization in subsection titles and stick with it}}
+\subsubsection{Deterministic representation as a system of ODEs}
 \label{subsec:deterministic_models}
 
-In the infinite population limit \vmcomment{Why not to be precise here and define $S(t) = \lim_{N \rightarrow \infty} E(S(t))$. This definition is useful, because it shows that you shouldn't be using the same letter $S$ in both stochastic and deterministic equations.}, sample paths of the SIR model are solutions to the following system of ODEs, subject to the initial constraint that $ \bX(\tau_0) = \bx_0 $:
+In the infinite population limit, sample paths of the MJP converge pointwise to their deterministic functional limit, which is given by the solution to a system of ordinary differential equations \cite{greenwood2009stochastic,kurtz1981approximation}. For the SIR model, $ \bX(t)  = \lim_{N \rightarrow \infty} \E(N\bXtil(t))$ is the solution to the following system of ODEs, subject to the initial constraint that $ \bX(\tau_0) = \bx_0 $:
 \begin{align*}
 \deriv{S}{t} = -\beta S I,\hspace{0.25in} 
 \deriv{I}{t} = \beta S I - \mu I,\hspace{0.25in} 
 \deriv{R}{t} = \mu I.
 \end{align*}
-The state space of the ODE representation of the SIR model is $$ \mcS^R =  \lbrace(j,k,l):\ j,k,l\in[0,N], j+k+l = N\rbrace. $$ Note that the ODE model implies that if $ I(\tau) > 0 $ at any time $ \tau $, then $ I(\tau) > 0\ \forall\ \tau\in[0,\infty)$. Therefore, the ODE model is not appropriate if we are interested in answering questions about the stochastic emergence or extinction of an outbreak.
+The state space of the ODE representation of the SIR model is $$ \mcS^R =  \lbrace(j,k,l):\ j,k,l\in[0,N],\  j+k+l = N\rbrace. $$ Note that the ODE model implies that if $ I(\tau) > 0 $ at any time $ \tau $, then $ I(\tau) > 0\ \forall\ \tau\in[0,\infty)$. Therefore, the ODE model is not appropriate if we are interested in answering questions about the stochastic emergence or extinction of an outbreak.
 
 ODE formulations of SEMs are particularly useful, in part, because they more easily lend themselves mathematical analysis. One important quantity that is straightforwardly derived for ODE models is the basic reproduction number, $ R_0 $, which is interpreted as the expected number of secondary infections attributable to a single index case in an otherwise susceptible population (of infinite size). The basic reproduction number can be related to both the final size distribution and to the probability of a major outbreak \cite{allen2017primer,greenwood2009stochastic,miller2012note}. Estimation \vmcomment{``Estimation''? Do you mean definition or formulation?} of $ R_0 $ is more complicated for stochastic models, though it can be derived from a branching process approximation for the early behavior of an outbreak \cite{allen2008introduction}. In the case of deterministic models, $ R_0 $ is given by the spectral radius of the next generation matrix (NGM) for the linearized system of ODEs at the disease free equilibrium (DFE) \cite{diekmann2009construction,van2017reproduction}. Other methods exist, e.g., by analyzing the survival function or by fitting phenomenological models when the growth rate of the outbreak is observed to be subexponential \cite{van2017reproduction}.
 \vmcomment{Again, it seems you are conflating mathematical definition of $R_0$ and its estimation.}
@@ -242,15 +223,15 @@ The linearized system of ODEs at the DFE is
 \deriv{I^{(u)}}{t} &= \beta \left (I^{(u)} + \nu_iI^{(v)}\right )N^{(u)} - \mu I^{(u)},\hspace{0.2in} 
 \deriv{I^{(v)}}{t} = \beta \nu_s\left (I^{(u)} + \nu_iI^{(v)}\right )N^{(v)} - \mu\nu_r I^{(v)}.
 \end{align*}	
-The NGM is constructed as $K=-T\Sigma^{-1}$, where $T$ gives the rates of infectious contact between states at infection, $ I^{(u)} $ and $ I^{(v)} $, and $\Sigma$ contains the recovery rates out of states at infection. Here,
+The NGM is constructed as $\bK=-\bT\bSigma^{-1}$, where $bT$ gives the rates of infectious contact between states at infection, $ I^{(u)} $ and $ I^{(v)} $, and $\bSigma$ contains the recovery rates out of states at infection. Here,
 \begin{align*}
-T &= \kbordermatrix{ & I^{(u)} & I^{(v)} \\
+\bT &= \kbordermatrix{ & I^{(u)} & I^{(v)} \\
 	I^{(u)} & \beta N^{u} & \nu_i\beta N^u\\
 	I^{(v)} & \nu_s \beta N^{v} & \nu_s\nu_i\beta N^v}, & &\hspace{-2in}
-\Sigma = \kbordermatrix{ & I^{(u)} & I^{(v)} \\
-I^{(u)}&-\mu & 0 \\
-I^{(v)}& 0 & -\mu\nu_r},\\
-&\hspace{1.25in} K =\kbordermatrix{ & I^{(u)} & I^{(v)} \\
+\bSigma = \kbordermatrix{ & I^{(u)} & I^{(v)} \\
+	I^{(u)}&-\mu & 0 \\
+	I^{(v)}& 0 & -\mu\nu_r},\\
+&\hspace{1.25in} \bK =\kbordermatrix{ & I^{(u)} & I^{(v)} \\
 	I^{(u)} & \frac{\beta N^{u}}{\mu} & \frac{\nu_i\beta N^u}{\nu_r\mu}\\
 	I^{(v)} & \frac{\nu_s \beta N^{v}}{\mu} & \frac{\nu_s\nu_i\beta N^v}{\nu_r\mu}}.
 \end{align*}
@@ -306,7 +287,7 @@ The SDE for the SIR model is
 \end{equation}
 This SDE is referred to as the \textit{chemical Langevin equation} (CLE). If we wanted to change the model dynamics, the expressions for $ \bA $ and $ \blambda $ would differ, but the diffusion approximation would be of the same form (with the caveat that $ \blambda $ must satisfy certain Lipschitz conditions to ensure existence of the SDE, see \cite{fuchs2013inference,oksendal2003stochastic}). 
 
-\subsubsection{Linear Noise Approximation}
+\subsubsection{Linear noise approximation}
 \label{subsubsec:lna_background}
 
 The intractability of the CLE transition density is problematic when using the CLE as a basis for inference. Absent additional simplifying assumptions, e.g., as in \cite{cauchemez2008}, inference with SDEs typically relies on simulation based methods, e.g., \cite{dukic2012,golightly2013simulation,golightly2018efficient}. An attractive alternative, dating to at least the 1970s \cite{kurtz1970solutions,kurtz1971limit}, but that has received attention in recent years, involves approximating the CLE by a Gaussian state space model, the moments of which are solutions to systems of ODEs that are related to the transition rates of the MJP and its SDE approximation. This approximation is known as the \textit{linear noise approximation} (LNA) and it will be the methodological basis for Chapters \ref{chap:lna_for_sems} and \ref{chap:lna_extensions} of this dissertation. Our informal derivation of the LNA follows \cite{golightly2013simulation,wilkinson2011stochastic}. Rigorous derivations can be found in \cite{elf2003fast,kurtz1981approximation,vankampen2007stochastic,wallace2012linear}. 
@@ -417,7 +398,7 @@ where $ \what{n}_{eff} = n / \left (1 + 2\sum_{\ell=1}^{\infty}\what{\rho}(\ell)
 
 It is often challenging to design an MCMC scheme that explores the posterior efficiently. The theory of MCMC merely guarantees that samples from a Markov chain will approximate the target posterior if we run it long enough. In practice, the choice of MCMC transition kernel, along with the model parameterization, are critically important to the computational efficiency of the MCMC and, moreover, to the validity of the MCMC sample as an approximation to the posterior \cite{betancourt2017conceptual}. We now present several MCMC algorithms that will be used throughout this dissertation. 
 
-\subsubsection{Metropolis--Hastings Sampler}
+\subsubsection{Metropolis--Hastings sampler}
 \label{subsubsec:metropolis_hastings}
 
 One of the most important MCMC sampler, due to its simplicity and generality, is the Metropolis--Hastings (MH) algorithm \cite{hastings1970monte,metropolis1953equation}. At each step in the Markov chain, a new state is proposed from the distribution $ q(\prop{\theta}|\cur{\theta}) $, and is accepted with probability
@@ -450,7 +431,7 @@ The computational efficiency of the MH algorithm depends on having a proposal di
 	\end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Gibbs Sampler}
+\subsubsection{Gibbs sampler}
 \label{subsubsec:gibbs}
 
 The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter, from its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},y) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters from their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},y) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
