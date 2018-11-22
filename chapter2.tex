@@ -433,7 +433,7 @@ The computational efficiency of the MH algorithm depends on having a proposal di
 \subsubsection{Gibbs sampler}
 \label{subsubsec:gibbs}
 
-The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter using its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},\by) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters from their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},\by) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
+The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter using its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},\by) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters using their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},\by) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
 
 The MH acceptance probability for the Gibbs sampler is one, thus all Gibbs proposals are automatically accepted. To see why this is so, note that $$q(\btheta_{J}|\btheta_{-J},\bY) = \frac{\pi(\btheta|\bY)}{\pi(\btheta_{-J}|\bY)} \propto\pi(\btheta|\bY).$$
 Therefore, the MH ratio simplifies as
@@ -448,7 +448,7 @@ An attractive property of the Gibbs sampler is that there are no tuning paramete
 	\begin{algorithmic}[1]
 		\Procedure{Gibbs}{$ \cur{\btheta},\ \mcI = \lbrace J_1,\dots,J_p\rbrace $ parameter block indices.}
 		\For{$ k\in1,\dots,p $}
-			\State Update: $ \btheta_{J_k}|\btheta_{-J_k},\by\sim\pi(\btheta_{J_k}|\btheta_{-J_k},\by) $
+			\State Sample: $ \btheta_{J_k}|\btheta_{-J_k},\by\sim\pi(\btheta_{J_k}|\btheta_{-J_k},\by) $
 		\EndFor
 		\EndProcedure
 	\end{algorithmic}
@@ -464,7 +464,7 @@ We introduce slice sampling by considering the task of sampling a random variabl
 \pi(u|\theta) &\sim Unif(0,f(\theta)) \\
 \pi(\theta|u) &\sim \mathrm{Unif}(\mcS),\ S = \lbrace \theta: f(\theta) > u\rbrace.
 \end{align*}
-In the case of slice sampling $ \theta $ from its posterior, $ \pi(\theta|y)\propto f(\theta) \equiv L(y|\theta)\pi(\theta) $. The algorithm is otherwise unchanged. 
+In the case of slice sampling $ \theta $ from its posterior, $ \pi(\theta|\by)\propto f(\theta) \equiv L(\by|\theta)\pi(\theta) $. The algorithm is otherwise unchanged. 
 
 \begin{algorithm}[htbp]
 	\caption{Univariate slice sampling intuition.}\label{alg:univar_slice_intuition}
@@ -511,13 +511,13 @@ Univariate slice samplers can suffer from poor mixing in moderate-- to high--dim
 
 We present a simple method for sampling a parameter vector, $ \btheta\in\bbR^d $, where we perform univariate slice sampling updates along rays drawn from a non--isotropic angular central Gaussian distribution, which is tuned to match the covariance structure of the posterior. This helps to account for linear correlations among model parameters. The method, which we refer to as the multivariate normal slice sampler (MVNSS), is similar to the algorithm in \cite{ahmadian2011efficient}. Our approach differs in that we typically adapt the proposal covariance matrix using a Robbins--Monro recursion, discussed in the next section. This adaptation is helped by slight modifications to the algorithm during the adaptation phase of the MCMC \cite{andrieu2008tutorial,liang2011advanced}. The computational cost of MVNSS does not increase dramatically with the dimensionality of the parameter space, though we have found that multiple MVNSS updates per MCMC iteration can, in some cases, improve performance. The algorithm is amenable to tuning of the initial bracket width as in \cite{tibbits2014automated}, which helps to reduce the number of likelihood evaluations per iteration.
 
-As in the previous section, we suppress dependence on the data for notational clarity since slice sampling $ \btheta\in\bbR^d $ from its posterior $ \pi(\btheta|y) $ is, again, largely the same as sampling $ \btheta \sim \pi(\btheta)\propto f(\btheta)$. Let $ \bSigma = \Cov(\btheta) = \bL\bL^T $, where $ \bL $ is the lower triangular matrix of the Cholesky decomposition of $ \bL $ (any other matrix square root would do). In practice, $ \bSigma $ is approximated by $ \what{\bSigma}_n $, which is estimated over an initial MCMC run. The strategy in MVNSS is to propose $ \prop{\btheta} = \cur{\btheta} + c\bxi $, where $ \bxi = h(\bz),\ \bz\sim MVN(\mb{0},\bSigma),\ h(\bz) = \bz / ||\bz|| $, and to sample $ c $ in a univariate slice sampling update. Normalizing $ \bz $ allows us to more easily tune the initial bracket width. During an adaptation phase, we construct proposals as $ \prop{\btheta} = \cur{\btheta} + ch(w\bxi_1 + (1-w)\bxi_2) $, where $ \bxi_1 = h(\bz_1),\ \bz_1\sim MVN(\mb{0},\bSigma),\,\ \bxi_2 = h(\bz_2),\ \bz_2\sim MVN(\mb{0}, \mb{I}_d), \ h(\bz) = \bz / ||\bz|| $, and $ w\in[0,1] $. The weight given to $ \bz_2 $ is typically quite small, but helps to avoid degeneracy of the empirical covariance matrix during adaptation. We give the non--adaptive version of the algorithm below. 
+As in the previous section, we suppress dependence on the data for notational clarity since slice sampling $ \btheta\in\bbR^d $ from its posterior $ \pi(\btheta|\by) $ is, again, largely the same as sampling $ \btheta \sim \pi(\btheta)\propto f(\btheta)$. Let $ \bSigma = \Cov(\btheta) = \bL\bL^T $, where $ \bL $ is the lower triangular matrix of the Cholesky decomposition of $ \bL $ (any other matrix square root would do). In practice, $ \bSigma $ is approximated by $ \what{\bSigma}_n $, which is estimated over an initial MCMC run. The strategy in MVNSS is to propose $ \prop{\btheta} = \cur{\btheta} + c\bxi $, where $ \bxi = h(\bz),\ \bz\sim MVN(\mb{0},\bSigma),\ h(\bz) = \bz / ||\bz|| $, and to sample $ c $ in a univariate slice sampling update. Normalizing $ \bz $ allows us to more easily tune the initial bracket width. During an adaptation phase, we construct proposals as $ \prop{\btheta} = \cur{\btheta} + ch(w\bxi_1 + (1-w)\bxi_2) $, where $ \bxi_1 = h(\bz_1),\ \bz_1\sim MVN(\mb{0},\bSigma),\,\ \bxi_2 = h(\bz_2),\ \bz_2\sim MVN(\mb{0}, \mb{I}_d), \ h(\bz) = \bz / ||\bz|| $, and $ w\in[0,1] $. The weight given to $ \bz_2 $ is typically quite small, but helps to avoid degeneracy of the empirical covariance matrix during adaptation. We give the non--adaptive version of the algorithm below. 
 
 \begin{algorithm}[htbp]
 	\caption{Multivariate normal slice sampling with stepping out.}\label{alg:mvnss}
 	\begin{algorithmic}[1]
 		\Procedure{MVNSS}{$ \cur{\btheta},\ \bL,\ S^\prime = (0,\omega)$}
-		\State $ u \sim \mr{Unif}(0,f(\cur{\theta})) $
+		\State $ u \sim \mr{Unif}(0,f(\cur{\btheta})) $
 		\Comment{Set threshold}
 		\State $\bz\sim MVN(\mb{0},\mb{I}_d),\ \bxi\gets h(\bL\bz)$ \Comment{Propose direction}
 		\State $ p\sim \mr{Unif}(0,1) $; $ L \gets - \omega p,\ U \gets L+\omega $ \Comment{Position $ S' $ around $ 0 $}
@@ -539,7 +539,7 @@ As in the previous section, we suppress dependence on the data for notational cl
 \subsubsection{Elliptical slice sampling}
 \label{subsubsec:elliptical_slice_sampling}
 
-The elliptical slice sampler (ElliptSS) of \cite{murray2010} is an algorithm for efficiently sampling normally distributed random variables. The conditions we need for ElliptSS to be valid are that $ \bx\sim N(\mathbf{0}, \bSigma) $, and that the posterior factors as $ \pi(\bx|\by)= \frac{1}{Z}N(\bx;\bs{0}, \bSigma)L_\by(\bx) $. The strategy behind ElliptSS is to reparameterize the model by introducing auxiliary variables in a way that preserves the marginal distribution of $ \bx $, and thus preserves the likelihood of the data conditional on $ \bx $.
+The elliptical slice sampler (ElliptSS) of \cite{murray2010} is an algorithm for efficiently sampling normally distributed random variables. The conditions we need for ElliptSS to be valid are that $ \bx\sim N(\mathbf{0}, \bSigma) $, and that the posterior factors as $ \pi(\bx|\by)= \frac{1}{Z}N(\bx;\bs{0}, \bSigma)L(\bY|\bx) $. The strategy behind ElliptSS is to reparameterize the model by introducing auxiliary variables in a way that preserves the marginal distribution of $ \bx $, and thus preserves the likelihood of the data conditional on $ \bx $.
 
 We introduce auxiliary variables, $
 \boeta_0 \sim N(\bs{0}, \bSigma),\
