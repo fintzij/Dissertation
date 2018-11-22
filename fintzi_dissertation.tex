@@ -1,6 +1,6 @@
  
 \documentclass [12pt, proquest] {uwthesis}[10/05/2018]
- 
+
 \usepackage[noend]{algpseudocode}
 \usepackage{algorithm}
 \usepackage{alltt}  
@@ -32,7 +32,7 @@
 \def\bibpreamble{\protect\addcontentsline{toc}{chapter}{Bibliography}}
 
 \setcounter{tocdepth}{2}  % Print the chapter and sections to the toc
- 
+
 % list of lists float
 \renewcommand{\lstlistingname}{List}% Listing -> List
 \renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Lists
@@ -92,6 +92,8 @@
 \newcommand{\bYtil}{\widetilde{\mathbf{Y}}}
 \newcommand{\br}{\mathbf{r}}
 \newcommand{\bX}{\mathbf{X}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bT}{\mathbf{T}}
 \newcommand{\bx}{\mathbf{x}}
 \newcommand{\bY}{\mathbf{Y}}
 \newcommand{\by}{\mathbf{Y}}
@@ -139,53 +141,54 @@
 \renewcommand{\kbrdelim}{)}
 
 \newenvironment{demo}
-  {\begin{alltt}\leftskip3em
-     \def\\{\ttfamily\char`\\}%
-     \def\{{\ttfamily\char`\{}%
-     \def\}{\ttfamily\char`\}}}
-  {\end{alltt}}
- 
+{\begin{alltt}\leftskip3em
+		\def\\{\ttfamily\char`\\}%
+		\def\{{\ttfamily\char`\{}%
+		\def\}{\ttfamily\char`\}}}
+	{\end{alltt}}
+
 % metafont font.  If logo not available, use the second form
 %
 % \font\mffont=logosl10 scaled\magstep1
 \let\mffont=\sf
 % --- end-of-sample-stuff ---
- 
+
 \usepackage{ulem}
-\newcommand{\vmdel}[1]{\sout{#1}}
+\newcommand\redsout{\bgroup\markoverwith{\textcolor{red}{\rule[0.5ex]{2pt}{1.4pt}}}\ULon}
+\newcommand{\vmdel}[1]{\redsout{#1}}
 \newcommand{\vmadd}[1]{\textbf{\color{red}{#1}}}
 \newcommand{\vmcomment}[1]{({\color{magenta}{VM's comment:}} \textbf{\color{magenta}{#1}})}
 
 \begin{document}
- 
-% Preliminary pages ----------------
-\prelimpages
-\include{preliminaries}
-
-% Text pages -------------
-\textpages
-\include{chapter1} % introduction
-\include{chapter2} % background
-\include{chapter3} % agent--based data augmentation
-\include{chapter4} % linear noise approximation
-\include{chapter5} % pandemic influenza analysis
-\include{chapter6} % discussion and future work
-
-\printendnotes
-
-%
-% ==========   Bibliography
-%
-\nocite{*}   % include everything in the uwthesis.bib file
-\bibliographystyle{plain}
-\bibliography{fintzi_dissertation}
-%
-% ==========   Appendices
-%
-\appendix
-\raggedbottom\sloppy
-\include{appendixB} % Data augmentation appendix
-\include{appendixC} % LNA methods appendix 
-\include{appendixD} % Flu analysis appendix
-
+	
+	% Preliminary pages ----------------
+	\prelimpages
+	\include{preliminaries}
+	
+	% Text pages -------------
+	\textpages
+	\include{chapter1} % introduction
+	\include{chapter2} % background
+	\include{chapter3} % agent--based data augmentation
+	\include{chapter4} % linear noise approximation
+	\include{chapter5} % pandemic influenza analysis
+	\include{chapter6} % discussion and future work
+	
+	\printendnotes
+	
+	%
+	% ==========   Bibliography
+	%
+	\nocite{*}   % include everything in the uwthesis.bib file
+	\bibliographystyle{plain}
+	\bibliography{fintzi_dissertation}
+	%
+	% ==========   Appendices
+	%
+	\appendix
+	\raggedbottom\sloppy
+	\include{appendixB} % Data augmentation appendix
+	\include{appendixC} % LNA methods appendix 
+	\include{appendixD} % Flu analysis appendix
+	
 \end{document}
