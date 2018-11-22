@@ -204,7 +204,7 @@ We presented the MJP representation of the SIR model as an \textit{extensive}, $
 \subsubsection{Deterministic representation as a system of ODEs}
 \label{subsec:deterministic_models}
 
-In the infinite population limit, sample paths of the MJP converge pointwise to their deterministic functional limit, which is given by the solution to a system of ordinary differential equations \cite{greenwood2009stochastic,kurtz1981approximation}. For the SIR model, $ \bXtil(t)  = \lim_{N \rightarrow \infty} \E(\bXtil(t))$ is the solution to the following system of ODEs, subject to the initial constraint that $ \bX(\tau_0) = \bx_0 $:
+In the infinite population limit, sample paths of the MJP converge pointwise to their deterministic functional limit, which is given by the solution to a system of ordinary differential equations \cite{greenwood2009stochastic,kurtz1981approximation}. For the SIR model, $ \bXtil(t)  = \lim_{N \rightarrow \infty} \E(\bX(t)/N)$ is the solution to the following system of ODEs, subject to the initial constraint that $ \bX(\tau_0) = \bx_0 $:
 \begin{align*}
 \deriv{S}{t} = -\beta S I,\hspace{0.25in} 
 \deriv{I}{t} = \beta S I - \mu I,\hspace{0.25in} 
