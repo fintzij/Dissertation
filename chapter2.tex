@@ -371,7 +371,9 @@ Finally, agent--based data augmentation (DA) methods for fitting SEMs, first pre
 \section{Bayesian Computation and Markov Chain Monte Carlo}
 \label{sec:bayesian_computation}
 
-The objective of Bayesian inference is to quantify uncertainty about a parameter of interest, $ \theta $, given data, $ y $. Uncertainty in the Bayesian paradigm is quantified through the posterior distribution, $$\pi(\theta|y)=\frac{\pi(y|\theta)\pi(\theta)}{\pi(y)},$$
+The objective of Bayesian inference is to quantify uncertainty about \vmdel{a} parameter\vmadd{s} of interest, $\btheta $, given data, $\mathbf{y}$. 
+\vmcomment{Bold vectors; it looks odd that $\theta$ and $y$ are scalars.}
+Uncertainty in the Bayesian paradigm is quantified through the posterior distribution, $$\pi(\theta|y)=\frac{\pi(y|\theta)\pi(\theta)}{\pi(y)},$$
 where $ \pi(y|\theta) $ and $ \pi(\theta) $ are the sampling distribution and the prior distribution. The marginal distribution of the data, $ \pi(y) = \int\pi(y|\theta)\rmd\theta $, is constant with respect to $ \theta $, and so we typically work with the unnormalized posterior, $$ \pi(\theta|y)\propto\pi(y|\theta)\pi(\theta). $$
 
 Having computed a posterior, we define a Bayes estimator as a decision rule that minimizes the expected posterior loss, or Bayes risk, $ \E_{\theta|y}(L(\theta,\thetahat)) $, i.e., $$ \widehat{\theta} = \underset{\theta^\prime}{\mr{argmin}}\int L(\theta,\theta^\prime(y)) \pi(\theta|y)\rmd\theta .$$ Some common Bayes estimators are the posterior mean, which minimizes the expected squared error loss, and the posterior median, which minimizes expected absolute error. More broadly, we are interested in the posterior distribution of a function, $ f(\theta) $,  $$\E_{\theta|y}(f(\theta)) = \int f(\theta)\pi(\theta|y)\rmd\theta.$$
@@ -394,6 +396,7 @@ $$\pi(\theta)K(\theta^\prime,\theta) = \pi(\theta^\prime)K(\theta,\theta^\prime)
 
 Though samples drawn from the Markov chain are correlated, the ergodic theorem ensures that the ergodic mean of an integrable function will converge, almost surely, to its target, i.e.,
 $$\lim\limits_{n\longrightarrow\infty}\sum_{i=1}^n\E_{\theta|y}(f(\theta_i)).$$
+\vmcomment{Do you want to put the ``target'' in the above equation?}
 Due to the autocorrelation of MCMC samples, the estimated Monte Carlo variance is now 
 $$\what{\sigma}_n^2 = \frac{1}{n}\frac{1}{\what{n}_{eff}}\sum_{i=1}^n(f(\theta_i) - \what{\mu}_n)^2,$$
 where $ \what{n}_{eff} = n / \left (1 + 2\sum_{\ell=1}^{\infty}\what{\rho}(\ell)\right ) $, and $ \what{\rho}(\ell) $ is the estimated autocorrelation at lag $ \ell $. 
@@ -403,16 +406,18 @@ It is often challenging to design an MCMC scheme that explores the posterior eff
 \subsubsection{Metropolis--Hastings sampler}
 \label{subsubsec:metropolis_hastings}
 
-One of the most important MCMC sampler, due to its simplicity and generality, is the Metropolis--Hastings (MH) algorithm \cite{hastings1970monte,metropolis1953equation}. At each step in the Markov chain, a new state is proposed from the distribution $ q(\prop{\theta}|\cur{\theta}) $, and is accepted with probability
+One of the most important MCMC sampler\vmadd{s}, due to its simplicity and generality, is the Metropolis--Hastings (MH) algorithm \cite{hastings1970monte,metropolis1953equation}. At each step in the Markov chain, a new state is proposed from the distribution $ q(\prop{\theta}|\cur{\theta}) $, and is accepted with probability
 \begin{align}
 \label{eqn:metropolis_hastings_1}
 \alpha_{\cur{\theta}\rightarrow\prop{\theta}} &= \min\left \lbrace 1, \frac{\pi(\prop{\theta}|y)}{\pi(\cur{\theta}|y)}\frac{q(\cur{\theta}|\prop{\theta})}{q(\prop{\theta}|\cur{\theta})}\right \rbrace \\
 \label{eqn:metropolis_hastings_2}
 &= \min\left \lbrace 1, \frac{\pi(y|\prop{\theta})\pi(\prop{\theta})}{\pi(y|\cur{\theta})\pi(\cur{\theta})}\frac{q(\cur{\theta}|\prop{\theta})}{q(\prop{\theta}|\cur{\theta})}\right \rbrace.
 \end{align}
-The Metropolis--Hastings acceptance ratio has a nice interpretation as the ratio of posteriors for the proposed and current state, multiplied by the ratio of proposal probabilities for the reverse and forward transitions. When the next value is proposed from a symmetric distribution centered at the current state, the proposal densities cancel out and the algorithm is referred to as the Metropolis algorithm (this was the original formulation given in \cite{metropolis1953equation}). The proposal distribution Metropolis algorithm is typically a multivariate Gaussian.
+The Metropolis--Hastings acceptance ratio has a nice interpretation as the ratio of posteriors for the proposed and current state, multiplied by the ratio of proposal probabilities for the reverse and forward transitions. When the next value is proposed from a symmetric distribution centered at the current state, the proposal densities cancel out and the algorithm is referred to as the Metropolis algorithm (this was the original formulation given in \cite{metropolis1953equation}). The proposal distribution \vmadd{in the} Metropolis algorithm is typically a \vmadd{univariate or} multivariate Gaussian.
 
-The computational efficiency of the MH algorithm depends on having a proposal distribution that proposes jumps that are not so large as to never be accepted, but large enough that the sampler is able to explore the parameter space reasonably quickly. One strategy for achieving good performance is to obtain an empirical estimate of the posterior covariance matrix, which is then rescaled by a theoretically optimal factor \cite{,gelman1997weak,roberts2001optimal,roberts2009examples}. Alternately, the proposal covariance can be estimated adaptively over the MCMC run and tuned to achieve a target acceptance rate for proposals \cite{andrieu2008tutorial,liang2011advanced}. 
+The computational efficiency of the MH algorithm depends on having a proposal distribution that proposes jumps that are not so large as to never be accepted, but large enough that the sampler is able to explore the parameter space reasonably quickly. One strategy for achieving good performance is to obtain an empirical estimate of the posterior covariance matrix, which is then rescaled by a theoretically optimal factor \cite{,gelman1997weak,roberts2001optimal,roberts2009examples}. 
+\vmcomment{How? This seems tautological. Also, you didn't discuss at all univariate moves and why then can be bad.}
+Alternately, the proposal covariance can be estimated adaptively over the MCMC run and tuned to achieve a target acceptance rate for proposals \cite{andrieu2008tutorial,liang2011advanced}. 
 
 \begin{algorithm}[htbp]
 	\caption{Metropolis--Hastings sampler.}
@@ -436,7 +441,7 @@ The computational efficiency of the MH algorithm depends on having a proposal di
 \subsubsection{Gibbs sampler}
 \label{subsubsec:gibbs}
 
-The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter, from its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},y) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters from their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},y) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
+The Gibbs sampler \cite{geman1984stochastic} arises as a special case of MH when we update a parameter\vmdel{, from} \vmadd{using} its full conditional distribution, $ \pi(\theta_j|\btheta_{-j},y) $, given the values of other parameters. MCMC samples obtained from single--site Gibbs updates can become strongly autocorrelated, resulting in poor MCMC mixing. One solution is to jointly update blocks of model parameters from their full conditionals, $ \pi(\btheta_{J}|\btheta_{-J},y) $, ideally grouping together parameters that are strongly correlated and minimizing the correlation between blocks \cite{knorr2002block,roberts1997updating,rue2005gaussian}.
 
 The MH acceptance probability for the Gibbs sampler is one, thus all Gibbs proposals are automatically accepted. To see why this is so, note that $$q(\btheta_{J}|\btheta_{-J},y) = \frac{\pi(\btheta|y)}{\pi(\btheta_{-J}|y)} \propto\pi(\btheta|y).$$
 Therefore, the MH ratio simplifies as
@@ -456,6 +461,7 @@ Hence, an attractive property of the Gibbs sampler is that there are no tuning p
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
+\vmcomment{Indices do not work. Also Gibbs sample is tricky to right in pseudo-code, because once you update one block, you need to condition on the updated values. See my MCMC lecture notes from SISMID (on my webpage) for not so elegant, but formal way to write Gibbs in pseudo-code.}
 
 \subsubsection{Slice sampling}
 \label{subsubsec:slice_sampling}
