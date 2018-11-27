@@ -206,45 +206,45 @@ In the main analysis presented in Section \ref{sec:flu_results}, we used a multi
 
 \subsubsection{Priors for time--homogeneous parameters}
 \label{subsubsec:flu_param_priors_homog}
-
 \begin{sidewaystable}[htbp]
 	\begin{fullpage}
-		\caption[Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland.]{Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland, prior distributions used in the main analysis. Vaccination adjusted intrinsic reproduction numbers are defined as in equation (\ref{eqn:R0_adj}). The form of the parameter listed in the leftmost column corresponds to the estimation scale used in the MCMC. All parameters in this table were jointly updated using multivariate normal slice sampling.}
-		\label{tab:flu_priors}
-		\scriptsize
-		\centering
-		\begin{tabular}{lllrr}
-			\hline
-			\textbf{Param.} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (90\% Interval)} & \textbf{References/Justification} \\ \hline
-			$ \log(\psi_{Y,0}) $ & Intrinsic reproduction \# & $N$(log(1.1), $ 0.06^2 $) & $ \psi^{adj}_{Y,0} = 1.10\ (1.00, 1.21) $ & Nearly endemic dynamics \\ 
-			$ \log(\psi_{Y,19}) $ & Intrinsic reproduction \# & $N$(log(1.5), $ 0.175^2 $) & $ \psi_{Y,19} = 1.50\ (1.12, 2.00) $ & \cite{biggerstaff2014estimates} \\ 
-			$ \log(\psi^{adj}_{Y,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.3), $ 0.11^2 $) & $ \psi^{adj}_{Y,71} = 1.3\ (1.08, 1.56) $ & \cite{biggerstaff2014estimates} and  $ \psi^{adj}_{Y,71} < \psi^{adj}_{A,71} $ \\ 
-			$ \log(\psi^{adj}_{A,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{A,0} = 1.10\ (1.00, 1.21) $ & Nearly endemic dynamics \\ 
-			$ \log(\psi^{adj}_{A,19}) $ & Intrinsic reproduction \# & $N$(log(1.3), $ 0.11^2 $) & $ \psi^{adj}_{A,19} = 1.3\ (1.10, 1.78) $ & \cite{biggerstaff2014estimates} and$ \psi^{adj}_{A,19} < \psi^{adj}_{Y,19} $ \\ 
-			$ \log(\psi^{adj}_{A,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.4), $ 0.145^2 $) & $ \psi^{adj}_{A,71}= 1.4\ (1.10, 1.78) $ & \cite{biggerstaff2014estimates} and $ \psi^{adj}_{A,71} > \psi^{adj}_{Y,71} $ \\
-			$ \log(\alpha_{Y,0}N_Ys_y) $ & Scaled rate of exogenous infection & $ N $(1.8, $ 0.54^2 $) & 6.0 (2.5, 14.7) & Small w.r.t. $ s_YN_Y $ \\ 
-			$ \log(\alpha_{Y,19}\alpha_{Y,0}N_Ys_Y) $ & Scaled rate of exogenous infection& $ N $(2.3, $ 0.54^2 $) & 10.0 (4.1, 24.2) & Small w.r.t. $ s_YN_Y $ \\
-			$ \log(\alpha_{Y,71}\alpha_{Y,0}N_Ys_Y) $ &Scaled rate of exogenous infection& $ N $(1.6, $ 0.54^2 $) & 5.0 (2.0, 12.0) & Small w.r.t. $ s_YN_Y $\\
-			$ \log(\alpha_{A,0}\alpha_{A,0}N_As_A) $ & Scaled rate of exogenous infection & $ N $(3, $ 0.54^2 $) & 20 (8.2, 48.8) & Small w.r.t. $ s_AN_A $\\ 
-			$ \log(\alpha_{A,19}N_As_A) $ & Scaled rate of exogenous infection& $ N $(3.2, $ 0.54^2 $) & 24.5 (10.1, 59.6) & Small w.r.t. $ s_AN_A $\\
-			$ \log(\alpha_{A,71}N_as_A) $ & $ N $(2, $ 0.54^2 $) & Scaled rate of exogenous infection&  7.4 (3.0, 18.0) & Small w.r.t. $ s_AN_A $ \\
-			$ 7/\mu_{Y}-1 $ & Avg. infectious period, youths (days--1) & $N$(0.41, 0.32$ ^2 $) & $  7/\mu_Y =$ 2.5 (1.9, 3.55) & \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
-			$ 7/\mu_A -1 $ & Avg. infectious period, adults (days--1) & $N$(0.22, 0.165$ ^2 $) & $ 7/\mu_A =$ 2.25 (1.95, 2.63) & $ 1/\mu_Y > 1/\mu_A $,  \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
-			$ \log(52/\omega) $ & Mean duration of immunity (years) & $N$(1.1, 0.3$ ^2 $) & $ 52/\omega = 3 $ (1.8, 4.9) & $ \Pr(\text{Lose immunity in 1 year}) = 0.3 $ \\
-			$ \logit(\nu) $ & 1 - VE for susceptibility & $N$(-1.39, 1) & $ \nu = 0.2\ (0.05,\ 0.56) $ & \cite{lansbury2017effectiveness,syrjanen2014effectiveness}\\
-			$ \logit(\rho_Y) $ & Mean case detection rate, youths & $ N(\logit(0.0125),\ 0.31^2) $& $ \rho = 0.0125\ (0.0075,\ 0.02) $ & \cite{shubin2016revealing}\\
-			$ \logit(\rho_A) $ & Mean case detection rate, adults & $ N(\logit(0.01),\ 0.31^2) $& $ \rho = 0.01\ (0.006,\ 0.017) $ & $ \rho_A < \rho_Y $, \cite{shubin2016revealing}\\
-			$ \log(1/\sqrt{\phi_Y}) $ & Neg. binom. overdispersion, youths & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
-			$ \log(1/\sqrt{\phi_A}) $ & Neg. binom. overdispersion, adults & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
-			\hline
-		\end{tabular}
-	\end{fullpage}
+			\caption[Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland.]{Parameters and priors for age--vaccination stratified SIRS ODE models fit to the A(H1N1)pdm09 influenza outbreak in Finland, prior distributions used in the main analysis. Vaccination adjusted intrinsic reproduction numbers are defined as in equation (\ref{eqn:R0_adj}). The form of the parameter listed in the leftmost column corresponds to the estimation scale used in the MCMC. All parameters in this table were jointly updated using multivariate normal slice sampling.}
+			\label{tab:flu_priors}
+			\scriptsize
+			\centering
+			\begin{tabular}{lllrr}
+				\hline
+				\textbf{Param.} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (90\% Interval)} & \textbf{References/Justification} \\ \hline
+				$ \log(\psi_{Y,0}) $ & Intrinsic reproduction \# & $N$(log(1.1), $ 0.06^2 $) & $ \psi^{adj}_{Y,0} = 1.10\ (1.00, 1.21) $ & Nearly endemic dynamics \\ 
+				$ \log(\psi_{Y,19}) $ & Intrinsic reproduction \# & $N$(log(1.5), $ 0.175^2 $) & $ \psi_{Y,19} = 1.50\ (1.12, 2.00) $ & \cite{biggerstaff2014estimates} \\ 
+				$ \log(\psi^{adj}_{Y,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.3), $ 0.11^2 $) & $ \psi^{adj}_{Y,71} = 1.3\ (1.08, 1.56) $ & \cite{biggerstaff2014estimates} and  $ \psi^{adj}_{Y,71} < \psi^{adj}_{A,71} $ \\ 
+				$ \log(\psi^{adj}_{A,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{A,0} = 1.10\ (1.00, 1.21) $ & Nearly endemic dynamics \\ 
+				$ \log(\psi^{adj}_{A,19}) $ & Intrinsic reproduction \# & $N$(log(1.3), $ 0.11^2 $) & $ \psi^{adj}_{A,19} = 1.3\ (1.10, 1.78) $ & \cite{biggerstaff2014estimates} and$ \psi^{adj}_{A,19} < \psi^{adj}_{Y,19} $ \\ 
+				$ \log(\psi^{adj}_{A,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.4), $ 0.145^2 $) & $ \psi^{adj}_{A,71}= 1.4\ (1.10, 1.78) $ & \cite{biggerstaff2014estimates} and $ \psi^{adj}_{A,71} > \psi^{adj}_{Y,71} $ \\
+				$ \log(\alpha_{Y,0}N_Ys_y) $ & Scaled rate of exogenous infection & $ N $(1.8, $ 0.54^2 $) & 6.0 (2.5, 14.7) & Small w.r.t. $ s_YN_Y $ \\ 
+				$ \log(\alpha_{Y,19}\alpha_{Y,0}N_Ys_Y) $ & Scaled rate of exogenous infection& $ N $(2.3, $ 0.54^2 $) & 10.0 (4.1, 24.2) & Small w.r.t. $ s_YN_Y $ \\
+				$ \log(\alpha_{Y,71}\alpha_{Y,0}N_Ys_Y) $ &Scaled rate of exogenous infection& $ N $(1.6, $ 0.54^2 $) & 5.0 (2.0, 12.0) & Small w.r.t. $ s_YN_Y $\\
+				$ \log(\alpha_{A,0}\alpha_{A,0}N_As_A) $ & Scaled rate of exogenous infection & $ N $(3, $ 0.54^2 $) & 20 (8.2, 48.8) & Small w.r.t. $ s_AN_A $\\ 
+				$ \log(\alpha_{A,19}N_As_A) $ & Scaled rate of exogenous infection& $ N $(3.2, $ 0.54^2 $) & 24.5 (10.1, 59.6) & Small w.r.t. $ s_AN_A $\\
+				$ \log(\alpha_{A,71}N_as_A) $  & Scaled rate of exogenous infection& $ N $(2, $ 0.54^2 $) & 7.4 (3.0, 18.0) & Small w.r.t. $ s_AN_A $ \\
+				$ 7/\mu_{Y}-1 $ & Avg. infec. period, youths (days--1) & $N$(0.41, 0.32$ ^2 $) & $  7/\mu_Y =$ 2.5 (1.9, 3.55) & \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
+				$ 7/\mu_A -1 $ & Avg. infec. period, adults (days--1) & $N$(0.22, 0.165$ ^2 $) & $ 7/\mu_A =$ 2.25 (1.95, 2.63) & $ 1/\mu_Y > 1/\mu_A $,  \cite{biggerstaff2014estimates,carrat2008time,cori2012estimating,vink2014serial}\\
+				$ \log(52/\omega) $ & Mean duration of immunity (years) & $N$(1.1, 0.3$ ^2 $) & $ 52/\omega = 3 $ (1.8, 4.9) & $ \Pr(\text{Lose immunity in 1 year}) = 0.3 $ \\
+				$ \logit(\nu) $ & 1 - VE for susceptibility & $N$(-1.39, 1) & $ \nu = 0.2\ (0.05,\ 0.56) $ & \cite{lansbury2017effectiveness,syrjanen2014effectiveness}\\
+				$ \logit(\rho_Y) $ & Mean case detection rate, youths & $ N(\logit(0.0125),\ 0.31^2) $& $ \rho = 0.0125\ (0.0075,\ 0.02) $ & \cite{shubin2016revealing}\\
+				$ \logit(\rho_A) $ & Mean case detection rate, adults & $ N(\logit(0.01),\ 0.31^2) $& $ \rho = 0.01\ (0.006,\ 0.017) $ & $ \rho_A < \rho_Y $, \cite{shubin2016revealing}\\
+				$ \log(1/\sqrt{\phi_Y}) $ & Neg. binom. overdispersion, youths & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
+				$ \log(1/\sqrt{\phi_A}) $ & Neg. binom. overdispersion, adults & $ \exp(1) $ & 0.69 (0.05, 3.0) & It works.\\
+				\hline
+			\end{tabular}
+		\end{fullpage}
 \end{sidewaystable}
 
+\newpage
 \subsubsection{Priors for GMRFs}
 \label{subsubsec:flu_gmrf_priors}
 
-\begin{table}
+\begin{table}[htbp]
 	\caption[Priors for initial values of GMRFs for the numbers of exogenous infection in each age stratum.]{Priors for initial values of GMRFs for the numbers of exogenous infection in each age stratum. Parameters are subscripted by age stratum and week number, indexed from epiweek 15, 2009.}
 	\label{tab:flu_alpha_gmrf_initpriors}
 	\centering
@@ -261,7 +261,7 @@ In the main analysis presented in Section \ref{sec:flu_results}, we used a multi
 	\end{tabular}
 \end{table}
 
-\begin{table}
+\begin{table}[htbp]
 	\caption[Priors for standard deviations of GMRF increments of reproduction numbers and rates of exogenous infection.]{Priors for standard deviations of GMRF increments of reproduction numbers and rates of exogenous infection. Parameters are superscripted by whether they apply to a GRMF for intrinsic reproduction numbers, $ \psi $, or for numbers of exogenous infections, $ \alpha $, and are subscripted by age stratum and week number, indexed from epiweek 15, 2009.}
 	\label{key}
 	\centering
@@ -285,20 +285,21 @@ In the main analysis presented in Section \ref{sec:flu_results}, we used a multi
 	\end{tabular}
 \end{table}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/flu_RW1_prior}
 	\caption[Induced prior distribution of for vaccination adjusted basic reproduction numbers A(H1N1)pdm09 influenza in Finland.]{Induced prior distribution of for vaccination adjusted basic reproduction numbers A(H1N1)pdm09 influenza in Finland. Shaded bands correspond to the central 50\%, 80\%, and 95\% prior probability intervals. }
 	\label{fig:flurw1prior}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/flu_alpha_t_prior}
 	\caption[Induced prior distribution of for effective numbers of exogenous infections among youths and adults.]{Induced prior distribution of for the effective number of exogenous infections among youths and adults. Shaded bands correspond to the central 50\%, 80\%, and 95\% prior probability intervals. }
 	\label{fig:flualphaprior}
 \end{figure}
 
+\newpage
 \subsection{Additional Results}
 \label{subsec:flu_additional_results}
 
@@ -333,7 +334,7 @@ In the main analysis presented in Section \ref{sec:flu_results}, we used a multi
 		\begin{tabular}{lllrr}
 			\hline
 			\textbf{Parameter} &  \textbf{Interpretation} & \textbf{Prior} & \textbf{Median (95\% Interval)} & \textbf{References} \\ \hline
-			$ \log(\psi^{adj}_{Y,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{Y,0} = 1.05\ (1.00, 1.09) $ & Nearly endemic dynamics \\ 
+			$ \log(\psi^{adj}_{Y,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{Y,0} = 1.05\ (1.00, 1.09) $ & $ \approx $ endemic dynamics \\ 
 			$ \log(\psi^{adj}_{Y,19}) $ & Intrinsic reproduction \# & $N$(log(1.075), $ 0.03^2 $) & $ \psi^{adj}_{Y,19} = 1.075\ (1.00, 1.09) $ & Nearly endemic and $ \psi^{adj}_{Y,19} > \psi^{adj}_{Y,0} $ \\ 
 			$ \log(\psi^{adj}_{Y,71}) $ & Adjusted intrinsic reproduction \# & $N$(log(1.2), $ 0.06^2 $) & $ \psi^{adj}_{Y,71} = 1.2\ (1.09, 1.32) $ & Nearly endemic with 10\% immune \\ 
 			$ \log(\psi^{adj}_{A,0}) $ & Intrinsic reproduction \# & $N$(log(1.05), $ 0.025^2 $) & $ \psi^{adj}_{A,0} = 1.05\ (1.00, 1.09) $ & Nearly endemic dynamics \\ 
