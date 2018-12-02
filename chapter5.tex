@@ -123,9 +123,9 @@ S_{A}^{(v)}, I_{A}^{(v)}, R_{A}^{(v)},D_A^{(v)} \right \rbrace, $$ where $ S_j^{
 	\draw (9.15,6.5) coordinate (rec2) {};
 	
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Iju) node[midway,above] {$ \lambda_{SI,j}^{(u)}(t) $};
-	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Rju) node[midway,above] {$ \lambda_{IR,j}^{(u)}(t) $};
+	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Iju) -- (Rju) node[midway,above] {$ \lambda_{IR,j}^{(u)} $};
 	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sjv) -- (Ijv) node[midway,above] {$ \lambda_{SI,j}^{(v)}(t) $};
-	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Ijv) -- (Rjv) node[midway,above] {$ \lambda_{IR,j}^{(v)}(t) $};
+	\draw [thick,shorten >=0.25cm,shorten <=0.25cm,->] (Ijv) -- (Rjv) node[midway,above] {$ \lambda_{IR,j}^{(v)} $};
 	
 	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Dju) -- (Djv) node[midway,right] {$ \xi_{D,j}^{(uv)}(t_\ell) $};
 	\draw [dashed,thick,shorten >=0.25cm,shorten <=0.25cm,->] (Sju) -- (Sjv) node[midway,right] {$ \xi_{S,j}^{(uv)}(t_\ell) $};
@@ -147,8 +147,8 @@ The contact rate between individuals in age stratum $ j $ and age stratum $ k $,
 \label{eqn:flu_sirs_rates}
 \blambda_{j} = \left\lbrace
 \begin{array}{ll}
-\lambda_{SI,j}^{(u)} = \left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{u} \\ 
-\lambda_{SI,j}^{(v)} = \nu\left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{v}\\
+\lambda_{SI,j}^{(u)}(t) = \left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{u} \\ 
+\lambda_{SI,j}^{(v)}(t) = \nu\left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{v}\\
 \lambda_{IR,j}^{(u)} = \mu_{j} I_{j}^{(u)} \\
 \lambda_{IR,j}^{(v)} = \mu_{j} I_{j}^{(v)} \\
 \lambda_{RS,j}^{(u)} = \omega R_{j}^{(u)} \\

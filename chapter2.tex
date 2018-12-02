@@ -197,7 +197,26 @@ The \textit{backward} Kolmogorov equation is similarly obtained by
 
 It is often infeasible to work with the CTMC formulation of a SEM when modeling an outbreak in a large population, particularly when working within a Bayesian MCMC framework. The cardinality of model's state space grows polynomially in the population size. This makes it difficult to efficiently sample from the posterior or to explore the likelihood surface, even when fitting SEMs with relatively simple dynamics. A second challenge is that as the population size grows, so too do the numbers of transition events. Hence, repeatedly evaluating the likelihoods (\ref{eqn:sir_subj_likelihood}) and (\ref{eqn:sir_pop_likelihood}) is prohibitively expensive. 
 
-Two commonly used approximations of the MJP representation of a SEM are through a system of ordinary differential equations (ODEs) and through a system of stochastic differential equations (SDEs). We will not go into detail on the derivations of these representations, except to give some intuition about the conditions under which they are appropriate, and refer to \cite{allen2017primer,greenwood2009stochastic} for more detailed overviews. 
+Two commonly used approximations of the MJP representation of a SEM are through a system of ordinary differential equations (ODEs) and through a system of stochastic differential equations (SDEs). We will not go into detail on the derivations of these representations, except to give some intuition about the conditions under which they are appropriate, and refer to \cite{allen2017primer,greenwood2009stochastic} for more detailed overviews.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}[scale=0.5]
+	\draw (0,7) circle(1.25) node (MJP) {MJP};
+	\draw (15,7) circle(1.25) node (SDE) {SDE};
+	\draw (30,7) circle(1.25) node (ODE) {ODE};
+	\draw (15,0) circle(1.25) node (LNA) {LNA};
+	
+	\draw [thick,shorten >=0.1cm,shorten <=0.1cm,->] (MJP) -- (SDE) node[midway,above] {Normal approximation};
+	\draw [thick,shorten >=0.1cm,shorten <=0.1cm,->] (SDE) -- (ODE) node[midway,above] { Limit as $ N \rightarrow \infty$};
+	\draw [thick,shorten >=0.1cm,shorten <=0.1cm,->] (LNA) -- (ODE) node[midway,right,yshift=-0.5cm,xshift=-0.5cm] {Mean};
+	\draw [thick,shorten >=0.5cm,shorten <=0.5cm,->] (SDE) -- (LNA) node[midway,right,yshift=0.35cm] { Taylor expansion};
+	\draw [thick,shorten >=0.1cm,shorten <=0.1cm,->] (MJP) -- (LNA) node[midway,left,yshift=-0.5cm,xshift=0.5cm]{ System size expansion};
+	\draw [thick, shorten >= 0.1cm, shorten <=0.1cm, ->] (MJP) to [out=30, in=150] (ODE); \draw (15,12.5) node {Limit as $N\rightarrow\infty$};
+	\end{tikzpicture}
+	\caption[Relationship between various compartmental model representations.]{Relationship between various compartmental model representations. The Markov jump process (MJP) is typically the model of interest, and in large populations can be approximated by a system of stochastic differential equations (SDE). The linear noise approximation (LNA) is a tractable approximation obtained by Taylor expansion of the SDE about its deterministic limit, given by a system of ordinary differential equations (ODE), or by a system size expansion of the backward Kolmogorov equation of the MJP.}
+	\label{fig:mjp_approximations}
+\end{figure}
 
 We presented the MJP representation of the SIR model as an \textit{extensive}, $ \bX $, where transition events led to jumps of size one in the compartment counts. We could have equivalently defined the model in terms of an \textit{intensive} process, $ \bXtil = \bX / N = (S/N,I/N,R/N) $, where transition events led to jumps of size $ 1/N $. As $ N\longrightarrow \infty$ , it becomes reasonable to consider approximating $ \bXtil $ by a process with continuous sample paths. The large population stochastic \textit{approximation} is the solution to an It\^{o} diffusion whose sample paths are continuous but nowhere differentiable. The infinite population deterministic functional \textit{limit} solves a system of ODEs and has smooth sample paths. We will present extensive forms of the SDE and ODE models, which are obtained by simply rescaling the intensive processes from which the approximations derive. 
 
