@@ -22,6 +22,7 @@ which implies that
 \end{array}\right ), \]
 and hence $ \e^{t\mathbf{V}} = \diag(\e^{v_1t},\dots,\e^{v_rt},\e^{t\mathbf{B}_{r+1}},\dots, \e^{t\mathbf{B}_n}) $. Therefore, we can compute the matrix exponential of $ t\bLambda $ as $ \e^{t\bLambda} = \mathbf{T}\e^{t\mathbf{V}}\mathbf{T}^{-1}. $
 
+\newpage
 \section{Conjugate priors for SIR, SEIR, and SIRS model parameters}
 \label{sec:bda_priors}
 
@@ -270,6 +271,7 @@ We ran three chains for 300,000 iterations each, sampling the paths for 3 subjec
 
 We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with the PMMH algorithm for 50,000 iterations each with 500 particles per chain, and discarded the first 100 iterations as burn-in. We also ran a set of chains with 200 particles but mixing was poor and not all of the chains converged. We attempted to exactly simulate particle paths but ultimately failed due to degeneracies in the algorithm. The time step for the $ \tau $--leaping algorithm was 8 hours. Parameters were updated using random walk Metropolis--Hastings (RWMH) with a proposal covariance matrix estimated from an initial run of 5,000 iterations using an adaptive RWMH algorithm with a target acceptance rate of 23.4\%. We updated parameters on transformed scales in order to remove restrictions on the parameter space, applying a log transformation to $ \beta $, $ \mu $, and $ \gamma $, a logit transformation to $ \rho $, and a generalized logit transformation to $ \bp_{t_1} $.
 
+\newpage
 \subsection{Additional results and MCMC diagnostics for the SIRS model}
 
 \begin{table}[htbp]
@@ -321,7 +323,7 @@ We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with
 	\label{fig:sirspompapproxtraceplotsnp200}
 \end{figure}
 
-
+\newpage
 \subsection{Estimated latent posterior distributions for all models}
 \begin{figure}[htbp]
 	\centering
@@ -330,12 +332,13 @@ We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with
 	\label{fig:sim1_latent_post_all}
 \end{figure}
 
-
-\section{Simulation 2 --- Inference under Model\\ Misspecification --- Setup and Additional Results}
+\newpage
+\section{Simulation 2 --- Inference under Model Misspecification,\\ Setup and Additional Results}
 \label{sec:bda_misspec_sim_details}
 \subsection{Simulation setup}
 We simulated an epidemic in a population of size N=400 with time--varying dynamics using Gillespie's direct algorithm over a four year period. Weekly prevalence counts were binomially distributed with detection probability $ \rho = 0.95 $. The epidemic dynamics varied over four epochs, based on the parameters given in Table \ref{tab:misspec_sim_params}. We fit SIR and SEIR models to the data, running three MCMC chains per model, discarding the first 100 iterations as burn--in, and sampling the paths of 150 subjects, chosen uniformly at random, per MCMC iteration. After discarding the burn--in, the resulting samples were combined to form the final sample. We also attempted to fit the models using PMMH. We ran three chains per model, each using 2,500 particles, the paths for which were simulated approximately via $ \tau$--leaping with a one day time step. The PMMH chains were plagued by severe particle degeneracy and did not converge.
 
+\begin{small}
 \begin{table}[htbp]
 	\centering
 	\begin{tabular}{ll}
@@ -349,7 +352,6 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 		$ \rho $ &  0.95 \\
 		$ \bX(t_0) $ &  $ S_0 = 397, E_0 = 2, I_0 = 1, R_0 =0 $  \\ 
 		\hline	
-		&\\
 		\textbf{Epoch 2: Weeks 26--105} & \\
 		\hline\hline
 		$ \beta $ &  0.0001 \\
@@ -358,7 +360,6 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 		$ \rho $ &  0.95 \\
 		$ \bX(t_{26}) $ &  $ S_0 = 279, E_0 = 98, I_0 = 20, R_0 =3 $  \\ 
 		\hline
-		&\\
 		\textbf{Epoch 3: Weeks 105--167} & \\
 		\hline\hline
 		$ \beta $ &  0.00035 \\
@@ -367,7 +368,6 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 		$ \rho $ &  0.95 \\
 		$ \bX(t_{105}) $ &  $ S_0 = 1, E_0 = 43, I_0 = 145, R_0 =211 $  \\ 
 		\hline
-		&\\
 		\textbf{Epoch 4: Weeks 167 -- 209} & \\
 		\hline\hline
 		$ \beta $ &  0.0001 \\
@@ -380,6 +380,7 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 	\caption[Simulation 2 SEIR model parameters.]{Parameter values governing the time--varying SEIR dynamics and binomial emissions process. The epidemic was simulated using Gillespie's direct algorithm and the process was restarted with the new parameter values at the beginning of each epoch.}
 	\label{tab:misspec_sim_params}
 \end{table}
+\end{small}
 
 \begin{table}[htbp]
 	\centering
@@ -394,7 +395,6 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 		$ \bp_{t_1} $ &  Dirichlet(90, 0.5, 0.01)  \\ 
 		$ \rho $ &  Beta(10, 1) \\
 		\hline	
-		&\\
 		\textbf{SEIR model} & \\
 		\hline\hline
 		$ R_0 $ &  Beta$ ^\prime $(0.6, 0.7, 1, 4) \\
