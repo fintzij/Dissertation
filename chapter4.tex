@@ -52,10 +52,7 @@ Our goal is to infer the posterior distribution of the latent epidemic process, 
 &= \prod_{\ell=1}^L \Pr\left (Y_\ell|\Delta\bN_{SI}^c(t_\ell),\btheta\right )\pi\left (\bN^c(t_\ell)|\bn^c(t_{\ell-1}),\btheta\right )\pi(\btheta),
 \end{align}
 where $ \pi(\btheta) $ denotes the prior distribution of the model parameters.
-The challenge in sampling from this posterior is that the state space of $ \bN^c $ is extremely high dimensional, even in small population settings. 
-\vmcomment{I would say explicitly that the main challenge is that transition probabilities are intractable. Otherwise, it is not clear why you need to integrate to get the complete data likelhood.}
-Moreover, we cannot analytically integrate over the latent epidemic process, except in trivial cases that are of little practical interest. 
-In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:intractable_posterior}) into a more computationally tractable product of Gaussian transition densities and emission probabilities. As we shall see, this approximation of the complete data likelihood with a Gaussian state space model will facilitate the use of efficient algorithms for sampling from the approximate posterior. 
+The challenge in sampling from this posterior is that transition probabilities of $ \bN^c $ are intractable due to the dimensionality of the state space of $ \bN^c $. Moreover, we cannot analytically integrate over the latent epidemic process, except in trivial cases that are of little practical interest. In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:intractable_posterior}) into a more computationally tractable product of Gaussian transition densities and emission probabilities. As we shall see, this approximation of the complete data likelihood with a Gaussian state space model will facilitate the use of efficient algorithms for sampling from the approximate posterior. 
 
 \subsection{Diffusion Approximation}
 \label{subsec:diff_approx}
