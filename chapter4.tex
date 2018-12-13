@@ -84,7 +84,7 @@ where $ \bLambda = \diag\left (\blambda(\bX) \right )$ and $ \bZ\sim MVN(\bs{0},
 \end{equation}
 where the vector $ \bW_t $ is distributed as independent Brownian motion, and $ \bLambda(\bX(t))^{1/2} $ denotes the matrix square root of $ \bLambda(\bX(t)) $. 
 
-\subsubsection{Reparameterizating the CLE in terms of incidence}
+\subsubsection{Reparameterizating the CLE in Terms of Incidence}
 \label{subsubsec:cle_repar}
 We borrow from \cite{breto2011compound,ho2016direct} a reparameterization for $ \bX (t)$ in terms of $ \bN(t) $, conditional on the initial conditions $ \bX(t) = \bX_0 $ and $ \bN(t) = \bs{0} $. Let $ \bA $ denote the matrix whose rows specify changes in counts of susceptible, infected, and recovered individuals corresponding to one infection or recovery event:
 \begin{equation}
@@ -125,7 +125,7 @@ so we rewrite (\ref{eqn:sir_cle_X}) as
 \end{array}\right)^{1/2}\rmd\bW_t. \nonumber 
 \end{align}
 
-\subsubsection{Log transforming the CLE}
+\subsubsection{Log Transforming the CLE}
 \label{subsubsec:log_cle}
 Changes in compartment volumes affect the rates, and hence incidence increments, multiplicatively. Therefore, we would like for perturbations about the drift in (\ref{eqn:sir_cle_N}) to be symmetric on a multiplicative, not an additive scale, which leads us to log transform (\ref{eqn:sir_cle_N}). Let $ \bNtil = \log(\bN + \bs{1}) \implies\bN = \exp(\bNtil) - \bs{1}$. By It\^{o}'s lemma \cite{oksendal2003stochastic}, the corresponding SDE for $ \bNtil $ is 
 \begin{align}
