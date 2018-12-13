@@ -52,7 +52,10 @@ Our goal is to infer the posterior distribution of the latent epidemic process, 
 &= \prod_{\ell=1}^L \Pr\left (Y_\ell|\Delta\bN_{SI}^c(t_\ell),\btheta\right )\pi\left (\bN^c(t_\ell)|\bn^c(t_{\ell-1}),\btheta\right )\pi(\btheta),
 \end{align}
 where $ \pi(\btheta) $ denotes the prior distribution of the model parameters.
-The challenge in sampling from this posterior is that the state space of $ \bN^c $ is extremely high dimensional, even in small population settings. Moreover, we cannot analytically integrate over the latent epidemic process, except in trivial cases that are of little practical interest. In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:intractable_posterior}) into a more computationally tractable product of Gaussian transition densities and emission probabilities. As we shall see, this approximation of the complete data likelihood with a Gaussian state space model will facilitate the use of efficient algorithms for sampling from the approximate posterior. 
+The challenge in sampling from this posterior is that the state space of $ \bN^c $ is extremely high dimensional, even in small population settings. 
+\vmcomment{I would say explicitly that the main challenge is that transition probabilities are intractable. Otherwise, it is not clear why you need to integrate to get the complete data likelhood.}
+Moreover, we cannot analytically integrate over the latent epidemic process, except in trivial cases that are of little practical interest. 
+In the following subsections, we will obtain the LNA for transition densities of $ \bN^c $, turning (\ref{eqn:intractable_posterior}) into a more computationally tractable product of Gaussian transition densities and emission probabilities. As we shall see, this approximation of the complete data likelihood with a Gaussian state space model will facilitate the use of efficient algorithms for sampling from the approximate posterior. 
 
 \subsection{Diffusion Approximation}
 \label{subsec:diff_approx}
@@ -83,7 +86,7 @@ where $ \bLambda = \diag\left (\blambda(\bX) \right )$ and $ \bZ\sim MVN(\bs{0},
 \end{equation}
 where the vector $ \bW_t $ is distributed as independent Brownian motion, and $ \bLambda(\bX(t))^{1/2} $ denotes the matrix square root of $ \bLambda(\bX(t)) $. 
 
-\subsubsection{Reparameterizating the CLE in terms of incidence}
+\subsubsection{Reparameterizating the CLE in Terms of Incidence}
 \label{subsubsec:cle_repar}
 We borrow from \cite{breto2011compound,ho2016direct} a reparameterization for $ \bX (t)$ in terms of $ \bN(t) $, conditional on the initial conditions $ \bX(t) = \bX_0 $ and $ \bN(t) = \bs{0} $. Let $ \bA $ denote the matrix whose rows specify changes in counts of susceptible, infected, and recovered individuals corresponding to one infection or recovery event:
 \begin{equation}
@@ -124,7 +127,7 @@ so we rewrite (\ref{eqn:sir_cle_X}) as
 \end{array}\right)^{1/2}\rmd\bW_t. \nonumber 
 \end{align}
 
-\subsubsection{Log transforming the CLE}
+\subsubsection{Log Transforming the CLE}
 \label{subsubsec:log_cle}
 Changes in compartment volumes affect the rates, and hence incidence increments, multiplicatively. Therefore, we would like for perturbations about the drift in (\ref{eqn:sir_cle_N}) to be symmetric on a multiplicative, not an additive scale, which leads us to log transform (\ref{eqn:sir_cle_N}). Let $ \bNtil = \log(\bN + \bs{1}) \implies\bN = \exp(\bNtil) - \bs{1}$. By It\^{o}'s lemma \cite{oksendal2003stochastic}, the corresponding SDE for $ \bNtil $ is 
 \begin{align}
