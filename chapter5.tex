@@ -287,7 +287,7 @@ The initial reproduction numbers, for which we retain the centered parameterizat
 %jointly with the LNA path 
 using elliptical slice sampling (Algorithm \ref{alg:elliptical_slice_sampler}).
 %(Algorithm \ref{alg:elliptss_lna_gmrf}). 
-Readers familiar with GMRFs will note the, somewhat unconventional, Gaussian prior for the standard deviation of the GMRF increments. This choice was made for computational reasons in order to facilitate joint updates of the GMRF and its hyper--parameters. Alternating between field and hyper--parameter updates is known to result\vmdel{s} in poorly mixing MCMC chains as large updates to the hyper--parameters quickly result in fields that are not concordant with the data  \cite{knorr2002block,murray2010hyper}. 
+Readers familiar with GMRFs will note the, somewhat unconventional, Gaussian prior for the standard deviation of the GMRF increments. This choice was made for computational reasons in order to facilitate joint updates of the GMRF and its hyper--parameters. Alternating between field and hyper--parameter updates is known to result in poorly mixing MCMC chains as large updates to the hyper--parameters quickly result in fields that are not concordant with the data  \cite{knorr2002block,murray2010hyper}. 
 
 \subsection{Computation and Inference}
 \label{subsec:flu_mcmc}
