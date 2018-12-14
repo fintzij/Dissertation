@@ -4,7 +4,7 @@
 \section{Simulation Details for Results in Section \ref{sec:tparam_motivation}}
 \label{sec:tparam_motiv_details}
 
-\subsection{Simulation setup}
+\subsection{Simulation Setup}
 \label{subsec:tparam_motiv_setup}
 
 We simulated an outbreak with SIRS dynamics in a population of $ N= 100,000$ individuals, ten of whom were initially infected, spanning two wave of the outbreak over thirty weeks. The mean infectious period duration was one week, and the mean duration of immunity was four weeks. The basic reproduction numbers of the outbreak, and hence the per--contact infectivity rates, varied sinusoidally with additive noise, over the course of the outbreak:
@@ -44,7 +44,7 @@ The first order GMRF shrinkage prior penalizes the magnitude of one--step differ
 We used non--centered parameterizations for both the LNA and the GMRF. The models were fit under informative priors, summarized in Table \ref{tab:tparam_sim_priors}. We ran five MCMC chains per model for 100,000 iterations per chain, alternating between five elliptical slice sampling (EllipSS) updates and one multivariate normal slice sampling (MVNSS) updates per MCMC iteration. The estimation scale on which the MCMC explored the parameter space was given by $\lbrace \log(R0(t_0)), \log(1/mu), \logit(\rho), 1/\sqrt(\phi) \rbrace$. The MVNSS proposal covariance matrix was adapted throughout the first 50,000 iterations, samples from which were subsequently discarded, using the gain factor sequence: the gain factor sequence, $\gamma_n = 0.5(1 + 0.01n)^{-0.99}$. The contribution of isotropic Gaussian noise to the MVNSS proposal was initialized at 0.001 and reduced throughout the adaptation phase according to the sequence $ \iota_n = 0.001(1 + 0.01n)^{-0.99} $. Convergence was assessed visually by inspection of traceplots of posterior samples, and via potential scale reduction factors (PSRFs) \cite{brooks1998general} computed via the \texttt{coda} R package \cite{codapackage}.
 
 \newpage
-\subsection{Additional results}
+\subsection{Additional Results}
 \label{subsec:sinfoi_supp_res}
 
 \begin{figure}[htbp]

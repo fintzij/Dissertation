@@ -5,10 +5,10 @@
 \label{sec:mtx_exp}
 The transition probability matrix (TPM), $ \bP(t) $, for a time--homogeneous CTMC over an interval of length $ t $, solves the matrix differential equation \[ \frac{\rmd}{\rmd t}\bP(t) = \bLambda\bP(t),\hspace{0.2in} \mathrm{s.t.\ }\mathbf{P}(0) = \mathbf{I}, \] where $ \bLambda $ is the transition rate matrix for the CTMC and $ \mathbf{I} $ is an identity matrix of the same size as $ \bLambda $ \citep{wilkinson2011stochastic}.  Therefore, $ \bP $ is computed using the matrix exponential solution of the above differential equation, $ \bP = \exp(t\bLambda) $. This is the most intensive step in our algorithm. However, we may lessen the computational burden to a large extent by leveraging the fact that we are computing the matrix exponential for the same rate matrix for possibly many values of $ t $. Therefore, computing the matrix exponential using the eigen decomposition of $ \bLambda $ and caching the resulting eigenvalues and eigenvectors will be relatively efficient \citep{moler2003nineteen}. We outline this computation in the following two cases: when the eigenvalues of $ \bLambda $ are all real (e.g. as with the SIR and SEIR models), and when $ \bLambda $ has complex eigenvalues (e.g. as is possibly the case with the SIRS model).
 
-\subsection{Case 1: $ \bLambda $ has real eigenvalues}
+\subsection{Case 1: $ \bLambda $ has Real Eigenvalues}
 Suppose that $ \bLambda_{n\times n} =  \mathbf{UVU}^{-1}$, where $ \mathbf{V} $ is a diagonal matrix of eigenvalues, $ v_1,\dots,v_n $, and $ \mathbf{U} $ is the matrix whose columns are the corresponding right eigenvectors. Then, \[ \e^{t\mathbf{V}} = \diag(\e^{v_1t},\dots,\e^{v_nt}). \] That $ \mathbf{U} $ is nonsingular yields \[ \e^{t\bLambda} = \mathbf{U} \e^{t\mathbf{V}}\mathbf{U}^{-1}. \] 
 
-\subsection{Case 2: $ \bLambda $ has complex eigenvalues}
+\subsection{Case 2: $ \bLambda $ has Complex Eigenvalues}
 In the event that $ \bLambda $ has complex eigenvalues, we may obtain a real-valued TPM by transforming $ \bLambda $ into its real canonical form \citep{hirsch2013differential}. Suppose that $ \bLambda $ has $ r $ real eigenvalues, $ v_1,\dots,v_r $, with corresponding real eigenvectors, $ \bu_1,\dots,\bu_r $, and $ n-r $ pairs of complex conjugate eigenvalues. Let $ (\bu_j|\bw_j) $ denote the real and imaginary parts of the eigenvector corresponding to the $ j^{th} $ eigenvalue, $ \alpha_j + i\beta_j $, for $ j = r+1,\dots,n $, and define the matrix $ \mathbf{T} = \left (\bu_1|\dots|\bu_r|\bu_{r+1}|\bw_{r+1}|\dots|\bu_n|\bw_n\right ) $. 
 The real canonical form for a rate matrix with complex eigenvalues can now be written as $ \mathbf{V} = \mathbf{T}^{-1}\bLambda \mathbf{T} $, where $ \mathbf{V} = \diag(v_1,\dots,v_r,\mathbf{B}_{r+1},\dots, \mathbf{B}_n) $, and each $ \mathbf{B}_j,\ j=r+1,\dots,n $ is given by 
 \[ \mathbf{B}_j = \left (\begin{array}{cc}
@@ -106,7 +106,7 @@ and hence $ \e^{t\mathbf{V}} = \diag(\e^{v_1t},\dots,\e^{v_rt},\e^{t\mathbf{B}_{
 
 \section{Simulation 1 --- Inference Under Various Epidemic\\ Dynamics --- Setup and Additional Results}
 \label{sec:bda_sim1_details}
-\subsection{Simulation details for the SIR model}
+\subsection{Simulation Details for the SIR Model}
 We simulated an epidemic in a population of 750 individuals, 90\% of whom were initially susceptible and 3\% of whom were initially infected. Prevalence was observed with detection probability $ \rho=0.2 $ at weekly intervals over a four month period which captured both the exponential growth and decline of the epidemic. The mean infectious period was $ 1/\mu = 7 $ days and the per-contact infectivity rate was 0.00035, which combined to give a basic reproductive number was $ R_0 = \beta N /\mu \approx 1.8$.
 
 We ran three chains for 100,000 iterations each, sampling the paths for 75 subjects, chosen uniformly at random, per MCMC iteration. We discarded the first 10 iterations from each chain as burn-in. Priors for the rate parameters (summarized in Table \ref{tab:sim1_sir_priors}) were scaled so that the prior mass spanned a reasonable range of values, but were otherwise mild. Similarly, the prior for the binomial sampling probability reflected a general prior belief that fewer than 40\% of cases were detected. The prior for the initial distribution parameters was informative, and was chosen as such because of the paucity of data available for estimation of the initial distribution parameters.
@@ -131,7 +131,7 @@ We ran three chains for 100,000 iterations each, sampling the paths for 75 subje
 We also fit the SIR model to the data using PMMH. We ran two sets of three MCMC chains with the PMMH algorithm for 50,000 iterations each with 100 particles per chain, and discarded the first 100 iterations as burn-in. The first set of chains simulated particle paths approximately using $ \tau $--leaping with a time step of two hours, while the second chain simulated paths exactly via Gillespie's direct algorithm. Parameters were updated using random walk Metropolis--Hastings (RWMH) with a proposal covariance matrix estimated from an initial run of 5,000 iterations using an adaptive RWMH algorithm with a target acceptance rate of 23.4\%. We updated parameters on transformed scales in  order to remove restrictions on the parameter space, applying a log transformation to $ \beta $ and $ \mu $, a logit transformation to $ \rho $, and a generalized logit transformation to $ \bp_{t_1} $.
 
 \newpage
-\subsection{Additional results and MCMC diagnostics for the SIR model}
+\subsection{Additional Results and MCMC Diagnostics for the SIR Model}
 \begin{table}[htbp]
 	\centering
 	\begin{tabular}{lrrrr}
@@ -175,7 +175,7 @@ We also fit the SIR model to the data using PMMH. We ran two sets of three MCMC 
 \end{figure}
 
 \newpage
-\subsection{Simulation details for the SEIR model}
+\subsection{Simulation Details for the SEIR Model}
 \label{subsec:bda_seir_sim1_details}
 We simulated an outbreak under near-endemic SEIR dynamics, with $ R_0 = \beta N / \mu = 1.05 $, in a population of 500 individuals. The outbreak was initiated by a single infected individual in an otherwise susceptible population, 121 of whom eventually became infected. The mean sojourn time in the exposed state was $ 1/\gamma = 14 $ days, while the mean infectious period duration was $ 1/\mu = 28$ days. Prevalence was observed at weekly intervals, with detection probability $ \rho = 0.3 $, over a two year period.
 
@@ -201,7 +201,7 @@ We ran three chains for 100,000 iterations each, sampling the paths for 100 subj
 
 We also fit the SEIR model to the data using PMMH. We ran two sets of three MCMC chains with the PMMH algorithm for 50,000 iterations each with 200 particles per chain, and discarded the first 100 iterations as burn-in. The first set of chains simulated particle paths approximately using $ \tau $--leaping with a time step of 8 hours, while the second chain simulated paths exactly via Gillespie's direct algorithm. Parameters were updated using random walk Metropolis--Hastings (RWMH) with a proposal covariance matrix estimated from an initial run of 5,000 iterations using an adaptive RWMH algorithm with a target acceptance rate of 23.4\%. We updated parameters on transformed scales in order to remove restrictions on the parameter space, applying a log transformation to $ \beta $, $ \gamma $, and $ \mu $, a logit transformation to $ \rho $, and a generalized logit transformation to $ \bp_{t_1} $.
 
-\subsection{Additional results and MCMC diagnostics for the SEIR model}
+\subsection{Additional Results and MCMC Diagnostics for the SEIR Model}
 
 \begin{table}[htbp]
 	\centering
@@ -246,7 +246,7 @@ We also fit the SEIR model to the data using PMMH. We ran two sets of three MCMC
 \end{figure}
 
 \newpage
-\subsection{Simulation details for the SIRS model}
+\subsection{Simulation Details for the SIRS Model}
 The final outbreak was simulated under SIRS dynamics in a population of 200 individuals, in which $ R_0 = \beta N / \mu = 2.52 $, the mean infectious period was $ 1/\mu = 14 $ days, and the mean time until loss of immunity was $ 1/\gamma = 150 $ days. One percent of of the population was initially at the time of the first observation and the rest of the individuals were susceptible. Prevalence was observed weekly, with detection probability $ \rho = 0.95 $, over a one year period that spanned the initial wave of the epidemic as well as most of the second wave of the epidemic. 
 
 We ran three chains for 300,000 iterations each, sampling the paths for 3 subjects, chosen uniformly at random, per MCMC iteration. We discarded the first 2,000 iterations from each chain as burn-in. Priors for the rate parameters (summarized in Table \ref{tab:sim1_sirs_priors}) were scaled so that the prior mass spanned a reasonable range of values, but were otherwise mild. Similarly, the prior for the binomial sampling probability reflected a general prior belief that more than 60\% of cases were detected, but was not otherwise particularly informative. The prior for the initial distribution parameters was informative.
@@ -272,7 +272,7 @@ We ran three chains for 300,000 iterations each, sampling the paths for 3 subjec
 We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with the PMMH algorithm for 50,000 iterations each with 500 particles per chain, and discarded the first 100 iterations as burn-in. We also ran a set of chains with 200 particles but mixing was poor and not all of the chains converged. We attempted to exactly simulate particle paths but ultimately failed due to degeneracies in the algorithm. The time step for the $ \tau $--leaping algorithm was 8 hours. Parameters were updated using random walk Metropolis--Hastings (RWMH) with a proposal covariance matrix estimated from an initial run of 5,000 iterations using an adaptive RWMH algorithm with a target acceptance rate of 23.4\%. We updated parameters on transformed scales in order to remove restrictions on the parameter space, applying a log transformation to $ \beta $, $ \mu $, and $ \gamma $, a logit transformation to $ \rho $, and a generalized logit transformation to $ \bp_{t_1} $.
 
 \newpage
-\subsection{Additional results and MCMC diagnostics for the SIRS model}
+\subsection{Additional Results and MCMC Diagnostics for the SIRS Model}
 
 \begin{table}[htbp]
 	\centering
@@ -324,7 +324,7 @@ We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with
 \end{figure}
 
 \newpage
-\subsection{Estimated latent posterior distributions for all models}
+\subsection{Estimated Latent Posterior Distributions for All Models}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\linewidth]{figures/sim1_latent_posts_all.pdf}
@@ -335,7 +335,7 @@ We also fit the SIRS model to the data using PMMH. We ran three MCMC chains with
 \newpage
 \section{Simulation 2 --- Inference under Model Misspecification,\\ Setup and Additional Results}
 \label{sec:bda_misspec_sim_details}
-\subsection{Simulation setup}
+\subsection{Simulation Setup}
 We simulated an epidemic in a population of size N=400 with time--varying dynamics using Gillespie's direct algorithm over a four year period. Weekly prevalence counts were binomially distributed with detection probability $ \rho = 0.95 $. The epidemic dynamics varied over four epochs, based on the parameters given in Table \ref{tab:misspec_sim_params}. We fit SIR and SEIR models to the data, running three MCMC chains per model, discarding the first 100 iterations as burn--in, and sampling the paths of 150 subjects, chosen uniformly at random, per MCMC iteration. After discarding the burn--in, the resulting samples were combined to form the final sample. We also attempted to fit the models using PMMH. We ran three chains per model, each using 2,500 particles, the paths for which were simulated approximately via $ \tau$--leaping with a one day time step. The PMMH chains were plagued by severe particle degeneracy and did not converge.
 
 \begin{small}
@@ -410,7 +410,7 @@ We simulated an epidemic in a population of size N=400 with time--varying dynami
 \end{table}
 
 \newpage
-\subsection{Additional results}
+\subsection{Additional Results}
 \label{subsec:bda_misspec_additional_results}
 \begin{table}[htbp]
 	\centering
@@ -495,7 +495,7 @@ We ran three chains for 100,000 iterations each under the following assumed popu
 
 \section{Simulation 4 --- Effect of Prior Specification on\\ Inference --- Setup and Additional Results}
 \label{sec:prior_effect_details}
-\subsection{Simulation details}
+\subsection{Simulation Details}
 We ran three MCMC chains for each of the SIR models fit under the prior regimes that are specified in Table \ref{tab:prior_effect_priors} along with the true parameter values under which the data were simulated. Each chain was run for 100,000 MCMC iterations  with 75 subject--paths per iteration. The first 100 iterations of each were discarded as burn--in, after which the samples from all three chains for each model were combined to form the posterior sample.
 
 \begin{table}[htbp]
@@ -516,7 +516,7 @@ We ran three MCMC chains for each of the SIR models fit under the prior regimes 
 	\label{tab:prior_effect_priors}
 \end{table}
 
-\subsection{Convergence diagnostics}
+\subsection{Convergence Diagnostics}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/informative_informative_traceplots.pdf}
@@ -593,7 +593,7 @@ We also fit the SIR and SEIR models using PMMH with paths for 5,000 particles si
 	\end{center}
 \end{table}
 
-\subsection{Boarding school example --- MCMC diagnostics}
+\subsection{Boarding School Example --- MCMC Diagnostics}
 
 \begin{figure}[htbp]
 	\centering
@@ -625,7 +625,7 @@ We also fit the SIR and SEIR models using PMMH with paths for 5,000 particles si
 
 \newpage 
 
-\subsection{Supplementary analysis of the British boarding school example under negative binomial emissions}
+\subsection{Supplementary Analysis of the British Boarding School Example Under Negative Binomial Emissions}
 \label{sec:bbs_neg_binom}
 
 The PMMH MCMC runs in which SIR and SEIR models were fit to the boarding school data under a binomial emission distribution were plagued by severe particle degeneracy (Figures \ref{fig:bbs_sir_pmmh_traceplots} and \ref{fig:bbs_seir_pmmh_traceplots}). The binomial emission distribution requires that the latent prevalence always be at least as great as the observed prevalence. However, this seemed to be a very stringent criterion with such a high case detection rate. That this criterion was so stringent is suggestive of non--trivial model misspecification. We attempted to confirm this by simulating a dataset that resembled the boarding school data. One possible data generating mechanism that yielded to similar prevalence counts resulted from an outbreak evolving under SEIR dynamics that varied over three epochs (Figure \ref{fig:bbs_dat_sim}). That even a model with this simple set of time--varying dynamics would undoubtedly still be misspecified with respect to the real world circumstances in the boarding school is suggestive of a non--trivial level of model misspecification for both the simple SIR and SEIR models that we attempted to fit. Still, the inability of PMMH to fit simple, easily interpretable, SEMs to this data under binomial emissions is a severe limitation.
