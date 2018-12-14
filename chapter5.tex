@@ -147,12 +147,12 @@ The contact rate between individuals in age stratum $ j $ and age stratum $ k $,
 \label{eqn:flu_sirs_rates}
 \blambda_{j} = \left\lbrace
 \begin{array}{ll}
-\lambda_{SI,j}^{(u)}(t) = \left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{u} \\ 
-\lambda_{SI,j}^{(v)}(t) = \nu\left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{v}\\
-\lambda_{IR,j}^{(u)} = \mu_{j} I_{j}^{(u)} \\
-\lambda_{IR,j}^{(v)} = \mu_{j} I_{j}^{(v)} \\
-\lambda_{RS,j}^{(u)} = \omega R_{j}^{(u)} \\
-\lambda_{RS,j}^{(v)} = \omega R_{j}^{(v)}
+\lambda_{SI,j}^{(u)}(t) = \left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{u}\vmadd{,} \\ 
+\lambda_{SI,j}^{(v)}(t) = \nu\left [\alpha_{j}(t) + \beta_{j}(t)\left (C_{jk}\left (I_{j}^{(u)} + I_{j}^{(v)}\right ) + (1-C_{jk})\left (I_{k}^{(u)} + I_{k}^{(v)}\right )\right )\right ]S_{j}^{v}\vmadd{,}\\
+\lambda_{IR,j}^{(u)} = \mu_{j} I_{j}^{(u)}\vmadd{,} \\
+\lambda_{IR,j}^{(v)} = \mu_{j} I_{j}^{(v)}\vmadd{,} \\
+\lambda_{RS,j}^{(u)} = \omega R_{j}^{(u)}\vmadd{,} \\
+\lambda_{RS,j}^{(v)} = \omega R_{j}^{(v)}\vmadd{.}
 \end{array}
 \right .
 \end{equation}
