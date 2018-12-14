@@ -169,8 +169,6 @@ Algorithmically, the forcing of individuals from unvaccinated compartments to th
 \end{align}
 The procedure for mapping LNA draws onto an LNA path using the non--centered parameterization with vaccination forcings is given in Algorithm \ref{alg:doLNA2} (Section \ref{sec:dolna_forcings}). ODE paths are obtained using a similar procedure by omitting the stochastic terms in the LNA. 
 
-%As in Chapter \ref{chap:lna_for_sems}, we will use the non--centered parameterization of the restarting LNA of the log--transformed SDE to approximate the time--evolution of $ \bX^c $ and $ \bN^c $. Algorithm \ref{alg:doLNA2} details the procedure for mapping standard normal LNA draws onto an LNA sample path with vaccination forcings.
-
 \subsubsection{Reproduction numbers}
 \label{subsubsec:stratmod_repnumbs}
 The basic reproduction number, $ R_0 $, and its variants describe the propensity of an outbreak to spread through a population \cite{heffernan2005perspectives,van2008further}. $ R_0 $ is loosely interpreted as the average number of secondary infections arising from a single infected individual in a completely susceptible population. An outbreak will fail to sustain itself (almost surely when it evolves deterministically, but in reality with high probability due to the inherently stochastic nature of epidemics) when $ R_0 < 1 $. For this reason, epidemiologists often quantify the effectiveness of a control measure by estimating the extent to which the intervention reduces $ R_0 $. In settings, such as this, where the force of infection also includes pressure from outside the density dependent transmission process, e.g., due to importation of infection from outside the population, we can interpret the basic reproduction number as an intrinsic reproduction number \cite{blackwood2018introduction}. From a modeling perspective, it is important to understand not only how $ R_0 $ affects the transmission dynamics, but also how various aspects of the model interact to affect $ R_0 $. 
@@ -476,7 +474,7 @@ The posterior predictive distributions in Figure \ref{fig:flupostpredsrwode} sug
 	\label{fig:flupostpredsrwode}
 \end{figure}
 
-\subsection{Comparison with Piecewise Homogeneous Dynamics}
+\subsection{Comparison with Piecewise--Homogeneous Dynamics}
 \label{subsec:flu_res_homog}
 
 For comparison, we fit a model where the outbreak dynamics were piecewise homogeneous in each epoch. The basic reproduction numbers and rates of exogenous infection were estimated for each of the three epochs, but unlike the previous model were held constant within each epoch. The remaining aspects of the model structure and emission distributions were similar to the time--varying model. Estimates of incidence and attack rates are presented in Table \ref{tab:flu_attack_rates}, posterior distributions of time--varying quantities are presented in Figure \ref{fig:fluconstodetimevaryingplots}, and posterior estimates of model parameters are summarized in Table \ref{tab:flu_param_ests}. 
