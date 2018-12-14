@@ -13,13 +13,13 @@ Section \ref{sec:bda_sir_model} presents the DA algorithm in the context of fitt
 
 The SIR model describes the time evolution of an epidemic in terms of the disease histories of individuals as they transition through three states --- susceptible (S), infected/infectious (I), and recovered (R). Under simple SIR dynamics, each individual becomes infectious immediately upon becoming infected, and acquires lifelong immunity upon recovery. For simplicity, we assume that the population is closed and mixes homogeneously, and that there is no external force of infection. Therefore, the epidemic ceases once the pool of infectious individuals is depleted.
 
-\subsection{Measurement process and data}
+\subsection{Measurement Process and Data}
 \label{subsec:bda_meas_proc}
 Our data, $\bY = \lbrace Y_{1}, \dots, Y_L \rbrace$, are disease prevalence counts recorded at times $t_1,\dots,t_L \in [t_1,t_L]$. It should not beggar belief that the data could be subject to measurement error, for example underreporting in settings where asymptomatic individuals escape detection. Let $ S_\tau $, $ I_\tau $, and $ R_\tau $ denote the total susceptible, infected, and recovered people at time $ \tau $. We model the observed prevalence as a binomial sample, with constant mean case detection probability $ \rho $. Thus,
 \begin{equation}\label{eqn:bda_emit_dist}
 Y_\ell | I_{t_\ell},\rho \sim \mathrm{Binomial}\left (I_{t_\ell}, \rho\right ).\end{equation}
 
-\subsection{Latent epidemic process}
+\subsection{Latent Epidemic Process}
 \label{subsec:bda_pop_proc}
 The data are sampled from a latent epidemic process, $ \bX = \lbrace \bX_1,\dots,\bX_N\rbrace $, that evolves continuously in time  as individuals become infected and recover. The state space of this process is $ \mcS = \lbrace S,I,R\rbrace^N $, the Cartesian product of $ N $ state labels taking values in $ \lbrace S,I,R\rbrace $. The state space of the infection process for a single subject, $ \bX_j $, is $\mcS_j = \lbrace S, I, R\rbrace $, and a realized subject--path is of the form 
 \begin{equation} \bx_j(\tau) = \left \lbrace \begin{array}{ll}
@@ -51,7 +51,7 @@ L(\bX, \bY | \btheta) &= \Pr(\bY|\bX, \rho)\times \Pr(\bX(t_1)|\bp_{t_1}) \times
 	\label{fig:bda_SIRdynamics_HMM}
 \end{figure}
 
-\subsection{Subject--path proposal framework}
+\subsection{Subject--Path Proposal Framework}
 \label{subsec:bda_subj_proc}
 The observed data likelihood in the posterior  $$ \pi(\btheta|\bY) \propto \pi(\bY|\btheta)\pi(\btheta)=\int L(\bY|\bX, \btheta) \pi(\bX|\btheta) \pi(\btheta) \rmd\bX$$
 is analytically intractable for even moderately sized $ N $ as it involves a  high dimensional integral over the collection of subject--paths, $ \bX $. DA methods introduce the subject--paths, $ \bX $, as latent variables in the model that are jointly estimated along with the model parameters, $ \btheta $. Introducing $ \bX $ in this way enables us to work with the tractable complete data likelihood, (\ref{eqn:bda_comp_data_likelihood}). The joint posterior distribution is \begin{equation}
@@ -193,7 +193,7 @@ One MCMC iteration includes a number of subject--path updates, followed by a set
 
 There is no need to re--sample the path of every subject within each MCMC iteration. Indeed, we might suspect that the efficiency of our MCMC could be improved by sampling only a few subject--paths between parameter updates. Successive subject--path proposal tend to be highly autocorrelated, as with other DA methods \cite{roberts2001}, and incur a relatively high computational cost. Frequently updating model parameters may help to break this correlation, despite the strong autocorrelations in posterior samples of model parameters. Often, the effective sample size (ESS) per CPU time is optimized by sampling only a handful of subject--paths per MCMC iteration. However, many factors, including the SEM dynamics, population size, efficiency of the implementation, and the degree of model misspecification could affect the optimal number subject--path updates per MCMC iteration. It is clearly impossible to disentangle all possible factors affecting the optimal number of subject--path updates per iteration. Therefore, we set the number of subject--paths per iteration on the basis of log--posterior ESS per CPU time in an initial run of 5,000--10,000 iterations.
 
-\subsection{Data augmentation for SEIR dynamics}
+\subsection{Data Augmentation for SEIR Dynamics}
 \label{subsec:bda_seir_model}
 
 The SEIR model adds a latent state to the SIR model in which subjects who are exposed to an infected individual incubate before becoming infectious. As with the SIR model, recovery is assumed to confer lifelong immunity. The structure of this model does not affect any of the machinery involved in the subject--path proposal mechanism, but rather merely redefines the population--level time--homogeneous CMTC for the epidemic process, and the subject--level time--inhomogeneous CTMC used in the subject--path proposals.
@@ -209,7 +209,7 @@ where $ \tau^{(j)}_{\mathrm{E}} $, $ \tau^{(j)}_{\mathrm{I}} $, and $ \tau^{(j)}
 \end{equation}
 As with the SIR model, the eigenvalues of the CTMC rate matrices for the SEIR model are always real valued. The only computational modification, relative to the SIR model, that we suggest is that times of state transition in inter--event intervals be sampled conditional on the state at the endpoints via uniformization.
 
-\subsection{Data augmentation for SIRS dynamics}
+\subsection{Data Augmentation for SIRS Dynamics}
 \label{subsec:bda_sirs_model}
 
 The SIRS model modifies the SIR model to allow for loss of immunity. Again, fitting this model using our Bayesian data augmentation algorithm does not affect any of the machinery involved in the subject--path proposal mechanism, although the recurrent nature of the disease dynamics increases the computational burden since the disease state at the interval endpoints does not absolve us of sampling the full path within each inter--event interval where the states at the endpoints are the same.
@@ -250,7 +250,7 @@ The true epidemic paths and parameter values fell well within the 95\% Bayesian 
 	\label{fig:sim1_credint}
 \end{figure}
 
-\subsection{Inference under model misspecification}
+\subsection{Inference Under Model Misspecification}
 \label{subsec:bda_misspec_sim}
 In practice, every stochastic epidemic model is misspecified with respect to the real world epidemic process from which the data arise, and the malignancy of the model misspecification is often impossible to fully diagnose. We can build up an understanding of the epidemic dynamics by fitting SEMS under a range of dynamics, beginning with simple, easily interpretable models. Given the iterative nature of epidemic modeling and the inherent misspecification of simple models that form the building blocks for more realistic models, a minimal criteria for the usefulness of a computational algorithm is that be computationally robust to model misspecification. In other words, we had better, at the very least, be able to use the algorithm to sample from the posterior distribution of simple models. 
 
@@ -285,7 +285,7 @@ Both models fit via DA yield reasonable estimates for the within--subject diseas
 	\label{fig:misspec_latent_posts}
 \end{figure}
 
-\subsection{Effect of prior specification on posterior inference}
+\subsection{Effect of Prior Specification on Posterior Inference}
 \label{subsec:prior_effect_sim}
 Given the limited extent of aggregated prevalence counts, we must consider how our choices of prior distributions influence our posterior inferences. We simulated an outbreak with SIR dynamics in a population of 750 individuals for which $ R_0 = \beta \times 763 / \mu \approx 1.84 $ and the mean infectious period was $ 1/\mu = 7 $ days. We fit SIR models to binomially distributed weekly prevalence data, sampled with detection probability $ \rho = 0.2$, under the following four prior regimes: Regime 1 --- informative priors for all model parameters; Regime 2 --- vague priors for the rate parameters and an informative prior for the sampling probability; Regime 3 --- informative priors for the rate parameters and a flat prior for the sampling probability; Regime 4 --- vague priors for the rate parameters and a flat prior for the sampling probability. The same prior for the initial state probabilities was used in all four regimes. Complete simulation details and convergence diagnostics are supplied in Section \ref{sec:prior_effect_details}.
 
